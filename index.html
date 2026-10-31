@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="To-scale, photo-textured 3D model of the Guthrie front porch (Tucson), with moon lighting for the night of Feb 1, 2026.">
+<meta property="og:title" content="Guthrie porch, to scale">
+<meta property="og:description" content="Photo-textured 3D reconstruction of the porch with moon lighting for any minute of the night of Feb 1, 2026.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://USERNAME.github.io/guthrie-porch-3d/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://USERNAME.github.io/guthrie-porch-3d/og.jpg">
+<title>Guthrie Porch 3D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+[hidden]{display:none!important}
+/* Layout: full-bleed WebGL stage; one floating instrument panel (left on desktop, bottom sheet on phones) */
+:root{
+  --night:#070a12; --panel:rgba(12,16,26,.88); --line:#273047; --fg:#e6ebf5; --muted:#8d98ae;
+  --moon:#cfdcff; --clay:#d98a5f;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--night);color:var(--fg);font-family:var(--sans);overflow:hidden}
+#stage{position:fixed;inset:0}
+#stage canvas{display:block;width:100%;height:100%;touch-action:none}
+#panel{position:fixed;left:max(16px,env(safe-area-inset-left,0px));top:calc(16px + env(safe-area-inset-top,0px));width:340px;max-height:calc(100% - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow:auto;
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:14px;backdrop-filter:blur(6px)}
+h1{font-size:15px;font-weight:600;margin:0;letter-spacing:.01em;text-wrap:balance}
+.sub{color:var(--muted);font-size:12px;margin-top:2px}
+.lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+.time{font-family:var(--mono);font-size:30px;font-weight:500;color:var(--moon);font-variant-numeric:tabular-nums;line-height:1}
+.row{display:flex;gap:6px;flex-wrap:wrap}
+button{font:500 12px var(--sans);color:var(--fg);background:transparent;border:1px solid var(--line);border-radius:6px;padding:6px 9px;cursor:pointer}
+button:hover{border-color:var(--muted)}
+button[aria-pressed="true"]{background:var(--moon);color:#0b1020;border-color:var(--moon)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--moon);outline-offset:2px}
+input[type=range]{width:100%;accent-color:var(--moon)}
+.ticks{display:flex;justify-content:space-between;font:11px var(--mono);color:var(--muted);margin-top:2px}
+dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:12px}
+dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.band{height:6px;border-radius:3px;background:linear-gradient(90deg,transparent 0%,transparent var(--s),rgba(207,220,255,.55) var(--s),rgba(207,220,255,.55) var(--e),transparent var(--e)),#1a2133;margin-top:6px}
+.note{font-size:11.5px;color:var(--muted);line-height:1.45}
+.note b{color:var(--fg);font-weight:500}
+#loading{position:fixed;inset:0;display:grid;place-items:center;color:var(--muted);font-size:13px;pointer-events:none}
+#toggle{display:none}
+#loading[hidden]{display:none}
+@media (max-width:640px){
+  #panel{left:0;right:0;top:auto;bottom:0;width:auto;border-radius:12px 12px 0 0;max-height:52%;
+    padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+  #panel.collapsed > :not(.head){display:none}
+  #toggle{display:inline-block}
+  .time{font-size:24px}
+}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="loading">Loading porch model…</div>
+<aside id="panel">
+  <div class="head"><div><h1>Guthrie porch, to scale</h1><div class="sub">1 tile spacing ≈ 12.6 in · drag to orbit, pinch or scroll to zoom</div></div><button id="toggle" aria-expanded="true">Hide</button></div>
+  <div>
+    <div class="lbl">Moon time, Feb 1 2026 (MST)</div>
+    <div class="time" id="t">2:25 am</div>
+    <input id="slider" type="range" min="0" max="240" value="115" aria-label="Moon time">
+    <div class="ticks"><span>0:30</span><span>1:30</span><span>2:30</span><span>3:30</span><span>4:30</span></div>
+    <div class="band" style="--s:42.5%;--e:49.2%" title="Footage estimate 2:12–2:28"></div>
+    <div class="ticks"><span></span><span>footage estimate 2:12–2:28</span><span></span></div>
+  </div>
+  <dl>
+    <dt>Moon altitude</dt><dd id="alt">–</dd>
+    <dt>Moon azimuth</dt><dd id="az">–</dd>
+    <dt id="shl">Shadow (65 in tall)</dt><dd id="sh">–</dd>
+  </dl>
+  <div><div class="lbl">Light</div><div class="row">
+    <button id="lm" aria-pressed="true">Moonlight</button><button id="ld" aria-pressed="false">Daylight</button></div></div>
+  <div><div class="lbl">View</div><div class="row">
+    <button data-v="edge">Moonlit edge</button><button data-v="walk">Walk-up</button><button data-v="door">Doorbell</button><button data-v="top">Top-down</button><button data-v="corner">Gravel corner</button></div>
+    <div class="row" style="margin-top:6px"><button id="cut" aria-pressed="false">Cut away roof and arch top</button></div></div>
+  <div><div class="lbl">Figure</div><div class="row">
+    <button id="fig" aria-pressed="true">Show figure</button><button id="home">Footage position</button><button id="place" aria-pressed="false">Tap floor to place</button></div>
+    <div class="row" style="align-items:center;gap:10px;margin-top:8px"><label for="hgt" style="font-size:12px;color:var(--muted);width:56px">Height</label><input id="hgt" type="range" min="64" max="74" step="1" value="69" style="flex:1"><span id="hgtv" style="font:500 13px var(--mono);width:52px;text-align:right">5′9″</span></div>
+    <div class="row" style="align-items:center;gap:10px"><label for="cr" style="font-size:12px;color:var(--muted);width:56px">Crouch</label><input id="cr" type="range" min="0" max="10" step="0.5" value="4" style="flex:1"><span id="crv" style="font:500 13px var(--mono);width:52px;text-align:right">4 in</span></div></div>
+  <div><div class="lbl">Security door</div>
+    <div class="row" style="align-items:center;gap:10px"><input id="door" type="range" min="0" max="90" step="1" value="0" aria-label="Security door angle" style="flex:1"><span id="doorv" style="font:500 13px var(--mono);width:52px;text-align:right">0°</span></div></div>
+  <p class="note"><b>Images:</b> NewsNation, Fox News Digital, BBC News, Just Jared (justjared.com). Used for non-commercial analysis; images remain the property of their owners. Model: WarpedWing Labs.</p>
+  <p class="note"><b>Estimated:</b> ceiling height, pillar overhang, doorbell camera (fitted to footage), left gravel bed and plants, wreath, mailer. Tiles not visible in any image are shown as plain tiles.</p>
+</aside>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js","three/addons/":"./vendor/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+const S=0.32004; const HEAD=334; let H_IN=69, CR_IN=4, FIG_IN=65;
+const W=(a,b,h)=>new THREE.Vector3(-b*S,h*S,a*S);
+const stage=document.getElementById('stage');
+const r=new THREE.WebGLRenderer({antialias:true}); r.setPixelRatio(Math.min(devicePixelRatio,2));
+r.outputColorSpace=THREE.SRGBColorSpace; r.toneMapping=THREE.ACESFilmicToneMapping; r.shadowMap.enabled=true; r.shadowMap.type=THREE.PCFSoftShadowMap;
+stage.appendChild(r.domElement);
+const scene=new THREE.Scene();
+const cam=new THREE.PerspectiveCamera(55,1,0.03,200);
+const ctl=new OrbitControls(cam,r.domElement); ctl.enableDamping=true; ctl.maxPolarAngle=Math.PI*0.495;
+const hemi=new THREE.HemisphereLight(0x9fb3d9,0x2a2018,0.12); scene.add(hemi);
+const moon=new THREE.DirectionalLight(0xd7e2ff,4.0); moon.castShadow=true;
+moon.shadow.mapSize.set(2048,2048); const sc=moon.shadow.camera; sc.left=-4;sc.right=4;sc.top=4;sc.bottom=-4;sc.near=0.5;sc.far=40; sc.updateProjectionMatrix(); moon.shadow.bias=-0.0006; moon.shadow.normalBias=0;
+scene.add(moon); scene.add(moon.target); moon.target.position.copy(W(2,2.5,0));
+const sun=new THREE.DirectionalLight(0xfff3e0,2.2); sun.position.copy(W(8,-2,14)); sun.castShadow=true; sun.shadow.mapSize.set(2048,2048);
+Object.assign(sun.shadow.camera,{left:-4,right:4,top:4,bottom:-4,near:0.5,far:40}); sun.shadow.camera.updateProjectionMatrix(); sun.target.position.copy(W(2,2.5,0)); scene.add(sun); scene.add(sun.target);
+// figure (5'8" standing, 5'4" crouched)
+const fig=new THREE.Group(); const fm=new THREE.MeshStandardMaterial({color:0x2b3140,roughness:0.9});
+function buildFig(){ fig.clear(); const H=FIG_IN*0.0254;
+  const body=new THREE.Mesh(new THREE.CapsuleGeometry(0.15,H-0.30-0.24,6,16),fm); body.position.y=(H-0.24)/2; body.scale.set(1,1,0.55);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(0.1,20,14),fm); head.position.y=H-0.12;
+  fig.add(body,head); fig.traverse(o=>{if(o.isMesh)o.castShadow=true}); }
+buildFig(); const FOOT=[4.85,1.5]; fig.position.copy(W(FOOT[0],FOOT[1],0)); scene.add(fig);
+let floors=[];
+window.MOON=await (await fetch('moon.json')).json();
+new GLTFLoader().load('porch.glb',g=>{
+  g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=true;o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
+    if(/porch_floor|B6_C6|gravel|walkway|doormat/.test(o.name))floors.push(o); if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=2;}}});
+  let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
+  scene.add(g.scene); document.getElementById('loading').hidden=true; setView('door'); setCut(false); render();
+},undefined,e=>{document.getElementById('loading').textContent='The model could not be loaded: '+(e.message||e)});
+// moon
+const M=window.MOON, slider=document.getElementById('slider');
+function fmt(k){const m=30+ +k; const h=Math.floor(m/60), mm=m%60; return h+':'+String(mm).padStart(2,'0')+' am';}
+function moonDir(alt,az){const d=(az-HEAD)*Math.PI/180, ca=Math.cos(alt*Math.PI/180);
+  const da=Math.cos(d)*ca, db=Math.sin(d)*ca; return new THREE.Vector3(-db*S,Math.sin(alt*Math.PI/180)*S,da*S).normalize();}
+function update(){const k=+slider.value,[alt,az]=M[k];
+  document.getElementById('t').textContent=fmt(k);
+  document.getElementById('alt').textContent=alt.toFixed(1)+'°';
+  document.getElementById('az').textContent=az.toFixed(1)+'°';
+  const L=FIG_IN/Math.tan(alt*Math.PI/180); document.getElementById('sh').textContent=L.toFixed(1)+' in · '+(L/12.6).toFixed(2)+' sp'; document.getElementById('shl').textContent='Shadow ('+FIG_IN+' in tall)';
+  moon.position.copy(moon.target.position).addScaledVector(moonDir(alt,az),18); render();}
+slider.addEventListener('input',update);
+
+// light mode
+let day=false; const lm=document.getElementById('lm'), ld=document.getElementById('ld');
+function setLight(d){day=d; lm.setAttribute('aria-pressed',!d); ld.setAttribute('aria-pressed',d);
+  moon.visible=!d; sun.visible=d; hemi.intensity=d?1.1:0.14; hemi.color.set(d?0xcfe0ff:0x9fb3d9); hemi.groundColor.set(d?0x8a6a50:0x2a2018);
+  scene.background=new THREE.Color(d?0x9cb7d6:0x070a12); r.toneMappingExposure=d?1.0:1.8; render();}
+lm.onclick=()=>setLight(false); ld.onclick=()=>setLight(true);
+// views
+const V={edge:[[3.4,2.9,9.5],[4.6,2.9,0],40],walk:[[11,2.6,2.2],[2,2.6,3.0],55],door:[[-1.2,0.65,4.4],[4,1.8,0],90],top:[[2.0,2.2,20],[2.0,2.2,0],45],corner:[[5.5,3.5,5.5],[0.5,-1.0,0],55]};
+function setView(k){fish=(k==='door'); ctl.enabled=!fish; if(fish){render(); return;} const [p,t,f]=V[k]; cam.fov=f; cam.up.set(0,1,0); if(k==='top'){cam.up.set(0,0,-1);} 
+  const P=W(...p),Tt=W(...t); if(cam.aspect<0.8&&k!=='door'){P.sub(Tt).multiplyScalar(k==='top'?1.9:1.7).add(Tt);} cam.position.copy(P); ctl.target.copy(Tt); cam.updateProjectionMatrix(); ctl.update(); render();}
+document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{setView(b.dataset.v); setCut(b.dataset.v==='edge');});
+// cutaway: hide ceiling, beams and the arch mass from the camera; they still cast shadows
+let cut=false; const cutb=document.getElementById('cut');
+function setCut(c){cut=c; cutb.setAttribute('aria-pressed',cut); scene.traverse(o=>{ if(o.isMesh&&/ceiling|beam|door_wall_top|arch_upper|lantern/.test(o.name)){
+  if(!o.userData.m0){o.userData.m0=o.material; const m=o.material.clone(); m.colorWrite=false; m.depthWrite=false; o.userData.m1=m;}
+  o.material=cut?o.userData.m1:o.userData.m0; }}); render();}
+cutb.onclick=()=>setCut(!cut);
+// figure controls
+const fb=document.getElementById('fig'), pb=document.getElementById('place'); let placing=false;
+fb.onclick=()=>{fig.visible=!fig.visible; fb.setAttribute('aria-pressed',fig.visible); render();};
+pb.onclick=()=>{placing=!placing; pb.setAttribute('aria-pressed',placing);};
+const fmtH=i=>Math.floor(i/12)+'′'+(i%12)+'″';
+function setFig(){FIG_IN=H_IN-CR_IN; document.getElementById('hgtv').textContent=fmtH(H_IN); document.getElementById('crv').textContent=CR_IN+' in'; buildFig(); update();}
+document.getElementById('hgt').addEventListener('input',e=>{H_IN=+e.target.value; setFig();});
+document.getElementById('cr').addEventListener('input',e=>{CR_IN=+e.target.value; setFig();});
+document.getElementById('home').onclick=()=>{fig.position.copy(W(FOOT[0],FOOT[1],0)); fig.visible=true; fb.setAttribute('aria-pressed',true); render();};
+const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(); let down=null;
+r.domElement.addEventListener('pointerdown',e=>down=[e.clientX,e.clientY]);
+r.domElement.addEventListener('pointerup',e=>{ if(!placing||!down) return; if(Math.hypot(e.clientX-down[0],e.clientY-down[1])>6) return;
+  const rc=r.domElement.getBoundingClientRect(); ptr.set((e.clientX-rc.left)/rc.width*2-1,-(e.clientY-rc.top)/rc.height*2+1);
+  ray.setFromCamera(ptr,cam); const hit=ray.intersectObjects(floors,false)[0]; if(hit){fig.position.set(hit.point.x,hit.point.y,hit.point.z); fig.visible=true; fb.setAttribute('aria-pressed',true); render();}});
+// panel toggle (phones)
+const tg=document.getElementById('toggle'), panel=document.getElementById('panel');
+tg.onclick=()=>{const c=panel.classList.toggle('collapsed'); tg.textContent=c?'Show':'Hide'; tg.setAttribute('aria-expanded',!c);};
+// render loop on demand
+// Doorbell: fisheye camera fitted to the Nest footage (equidistant lens, 3:4 frame, f=333.3 px on 600x800)
+const cubeRT=new THREE.WebGLCubeRenderTarget(1024,{type:THREE.HalfFloatType,generateMipmaps:false});
+const cubeCam=new THREE.CubeCamera(0.02,60,cubeRT); cubeCam.position.copy(W(-1.12,0.67,4.40)); scene.add(cubeCam);
+const fishMat=new THREE.ShaderMaterial({uniforms:{env:{value:cubeRT.texture},Rt:{value:new THREE.Matrix3().set(-0.940064,0.058971,-0.335861,0.016692,-0.975795,-0.218051,-0.340590,-0.210588,0.916325)},f:{value:340.652},va:{value:1}},
+ vertexShader:'varying vec2 vUv; void main(){vUv=uv; gl_Position=vec4(position.xy,0.,1.);}',
+ fragmentShader:`uniform samplerCube env; uniform mat3 Rt; uniform float f,va; varying vec2 vUv;
+ void main(){ float fa=0.75; vec2 q=vUv;
+  if(va>fa){ q.x=(vUv.x-0.5)*va/fa+0.5; } else { q.y=(vUv.y-0.5)*fa/va+0.5; }
+  if(q.x<0.||q.x>1.||q.y<0.||q.y>1.){ gl_FragColor=vec4(0.02,0.02,0.03,1.); return; }
+  vec2 px=vec2(q.x*600.-300.,(1.-q.y)*800.-400.); float th=length(px)/f; float ph=atan(px.y,px.x);
+  vec3 dw=Rt*vec3(sin(th)*cos(ph),sin(th)*sin(ph),cos(th));
+  gl_FragColor=textureCube(env,dw);
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
+ }`,depthTest:false,depthWrite:false,toneMapped:true});
+const fishScene=new THREE.Scene(); fishScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),fishMat)); const fishCam=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+let fish=false;
+let pending=false; function render(){ if(pending) return; pending=true; requestAnimationFrame(()=>{pending=false; ctl.update();
+  if(fish){ fishMat.uniforms.va.value=r.domElement.width/r.domElement.height; cubeCam.update(r,scene); r.render(fishScene,fishCam); } else r.render(scene,cam);}); }
+ctl.addEventListener('change',render);
+function resize(){const w=stage.clientWidth,h=stage.clientHeight; r.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix(); render();}
+addEventListener('resize',resize); resize(); setLight(false); update();
+window.__ready=()=>floors.length>0;
+document.getElementById('door').addEventListener('input',e=>{const v=+e.target.value; document.getElementById('doorv').textContent=v+'°'; if(window.__sd){window.__sd.rotation.y=-v*Math.PI/180; render();}}); window.__cut=c=>setCut(c); window.__cam=(p,t,f)=>{V.custom=[p,t,f]; setView('custom');}; window.__hideTop=()=>{scene.traverse(o=>{if(/ceiling|beam|door_wall_top/.test(o.name)&&o.material){o.material=o.material.clone();o.material.colorWrite=false;o.material.depthWrite=false;}}); render();}; window.__view=setView; window.__light=setLight; window.__time=v=>{slider.value=v;update();};
+</script>
+</body>
+</html>
