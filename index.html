@@ -83,8 +83,8 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
   <div><div class="lbl">Light</div><div class="row">
     <button id="lm" aria-pressed="true">Moonlight</button><button id="ld" aria-pressed="false">Daylight</button></div></div>
   <div><div class="lbl">View</div><div class="row">
-    <button data-v="edge">Moonlit edge</button><button data-v="walk">Walk-up</button><button data-v="door">Doorbell</button><button data-v="top">Top-down</button><button data-v="corner">Gravel corner</button></div>
-    <div class="row" style="margin-top:6px"><button id="cut" aria-pressed="false">Cut away roof and arch top</button></div></div>
+    <button data-v="door">Doorbell</button><button data-v="edge">Moonlit edge</button><button data-v="top">Top-down</button><button data-v="walk">Walk-up</button><button data-v="yard">Front yard</button><button data-v="corner">Gravel corner</button></div></div>
+  <div><div class="lbl">View options</div><div class="row"><button id="cut" aria-pressed="false">Cut away roof and arch top</button></div></div>
   <div><div class="lbl">Figure</div><div class="row">
     <button id="fig" aria-pressed="true">Show figure</button><button id="home">Footage position</button><button id="place" aria-pressed="false">Tap floor to place</button></div>
     <div class="row" style="align-items:center;gap:10px;margin-top:8px"><label for="hgt" style="font-size:12px;color:var(--muted);width:56px">Height</label><input id="hgt" type="range" min="64" max="74" step="1" value="69" style="flex:1"><span id="hgtv" style="font:500 13px var(--mono);width:52px;text-align:right">5′9″</span></div>
@@ -92,7 +92,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
   <div><div class="lbl">Security door</div>
     <div class="row" style="align-items:center;gap:10px"><input id="door" type="range" min="0" max="90" step="1" value="0" aria-label="Security door angle" style="flex:1"><span id="doorv" style="font:500 13px var(--mono);width:52px;text-align:right">0°</span></div></div>
   <p class="note"><b>Images:</b> NewsNation, Fox News Digital, BBC News, Just Jared (justjared.com). Used for non-commercial analysis; images remain the property of their owners. Model: WarpedWing Labs.</p>
-  <p class="note"><b>Estimated:</b> ceiling height, pillar overhang, doorbell camera (fitted to footage), left gravel bed and plants, wreath, mailer. Tiles not visible in any image are shown as plain tiles.</p>
+  <p class="note"><b>Estimated:</b> ceiling height, pillar overhang, doorbell camera (fitted to footage), left gravel bed and plants, wreath, mailer. Tiles not visible in any image are shown as plain tiles. Everything outside the porch is approximate.</p>
 </aside>
 <script type="importmap">{"imports":{"three":"./vendor/three.module.min.js","three/addons/":"./vendor/jsm/"}}</script>
 <script type="module">
@@ -109,11 +109,27 @@ const scene=new THREE.Scene();
 const cam=new THREE.PerspectiveCamera(55,1,0.03,200);
 const ctl=new OrbitControls(cam,r.domElement); ctl.enableDamping=true; ctl.maxPolarAngle=Math.PI*0.495;
 const hemi=new THREE.HemisphereLight(0x9fb3d9,0x2a2018,0.12); scene.add(hemi);
-const moon=new THREE.DirectionalLight(0xd7e2ff,4.0); moon.castShadow=true;
+const moon=new THREE.DirectionalLight(0xd7e2ff,1.7); moon.castShadow=true;
 moon.shadow.mapSize.set(2048,2048); const sc=moon.shadow.camera; sc.left=-4;sc.right=4;sc.top=4;sc.bottom=-4;sc.near=0.5;sc.far=40; sc.updateProjectionMatrix(); moon.shadow.bias=-0.0006; moon.shadow.normalBias=0;
 scene.add(moon); scene.add(moon.target); moon.target.position.copy(W(2,2.5,0));
 const sun=new THREE.DirectionalLight(0xfff3e0,2.2); sun.position.copy(W(8,-2,14)); sun.castShadow=true; sun.shadow.mapSize.set(2048,2048);
-Object.assign(sun.shadow.camera,{left:-4,right:4,top:4,bottom:-4,near:0.5,far:40}); sun.shadow.camera.updateProjectionMatrix(); sun.target.position.copy(W(2,2.5,0)); scene.add(sun); scene.add(sun.target);
+Object.assign(sun.shadow.camera,{left:-22,right:22,top:22,bottom:-22,near:0.5,far:80}); sun.shadow.mapSize.set(4096,4096); sun.position.copy(W(40,-10,70)); sun.shadow.camera.updateProjectionMatrix(); sun.target.position.copy(W(2,2.5,0)); scene.add(sun); scene.add(sun.target);
+// night sky: stars, moon disk at the true moon position, low hills, a few distant lights
+const night=new THREE.Group(); scene.add(night);
+const skyMat=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,fog:false,
+  uniforms:{top:{value:new THREE.Color(0x04060d)},hor:{value:new THREE.Color(0x1f2a40)}},
+  vertexShader:'varying vec3 vP; void main(){vP=normalize(position); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+  fragmentShader:'uniform vec3 top,hor; varying vec3 vP; void main(){float t=pow(clamp(vP.y,0.,1.),0.45); gl_FragColor=vec4(mix(hor,top,t),1.);\n#include <colorspace_fragment>\n}'});
+const sky=new THREE.Mesh(new THREE.SphereGeometry(57,32,16),skyMat); sky.renderOrder=-1; scene.add(sky);
+const moonDisk=new THREE.Mesh(new THREE.SphereGeometry(0.45,24,16),new THREE.MeshBasicMaterial({color:0xf4f1e6})); night.add(moonDisk);
+{ const N=96, pts=[]; for(let k=0;k<=N;k++){const t=k/N*Math.PI*2, h=0.6+1.6*Math.abs(Math.sin(t*3.1))+0.9*Math.abs(Math.sin(t*7.3+1)); pts.push(t,h);}
+  const pos=[],idx=[]; for(let k=0;k<=N;k++){const [t,h]=[pts[2*k],pts[2*k+1]]; pos.push(Math.cos(t)*45,-1,Math.sin(t)*45, Math.cos(t)*45,h,Math.sin(t)*45);}
+  for(let k=0;k<N;k++){const a=2*k; idx.push(a,a+1,a+2, a+1,a+3,a+2);}
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); g.setIndex(idx);
+  const hills=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:0x0b0d14,side:THREE.DoubleSide})); scene.add(hills); window.__hills=hills;
+  const lp=new Float32Array(14*3); for(let k=0;k<14;k++){const t=1.25+ (k/14)*0.9 + Math.sin(k*5)*0.05; lp.set([Math.cos(t)*44,0.4+0.25*Math.sin(k*3),Math.sin(t)*44],k*3);}
+  const lg=new THREE.BufferGeometry(); lg.setAttribute('position',new THREE.BufferAttribute(lp,3));
+  night.add(new THREE.Points(lg,new THREE.PointsMaterial({color:0xffd9a0,size:3,sizeAttenuation:false}))); }
 // figure (5'8" standing, 5'4" crouched)
 const fig=new THREE.Group(); const fm=new THREE.MeshStandardMaterial({color:0x2b3140,roughness:0.9});
 function buildFig(){ fig.clear(); const H=FIG_IN*0.0254;
@@ -125,9 +141,9 @@ let floors=[];
 window.MOON=await (await fetch('moon.json')).json();
 new GLTFLoader().load('porch.glb',g=>{
   g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=true;o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
-    if(/porch_floor|B6_C6|gravel|walkway|doormat/.test(o.name))floors.push(o); if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=2;}}});
+    if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
-  scene.add(g.scene); document.getElementById('loading').hidden=true; setView('door'); setCut(false); render();
+  scene.add(g.scene); document.getElementById('loading').hidden=true; setView('yard'); setCut(false); render();
 },undefined,e=>{document.getElementById('loading').textContent='The model could not be loaded: '+(e.message||e)});
 // moon
 const M=window.MOON, slider=document.getElementById('slider');
@@ -139,23 +155,23 @@ function update(){const k=+slider.value,[alt,az]=M[k];
   document.getElementById('alt').textContent=alt.toFixed(1)+'°';
   document.getElementById('az').textContent=az.toFixed(1)+'°';
   const L=FIG_IN/Math.tan(alt*Math.PI/180); document.getElementById('sh').textContent=L.toFixed(1)+' in · '+(L/12.6).toFixed(2)+' sp'; document.getElementById('shl').textContent='Shadow ('+FIG_IN+' in tall)';
-  moon.position.copy(moon.target.position).addScaledVector(moonDir(alt,az),18); render();}
+  moon.position.copy(moon.target.position).addScaledVector(moonDir(alt,az),18); moonDisk.position.copy(moon.target.position).addScaledVector(moonDir(alt,az),50); render();}
 slider.addEventListener('input',update);
 
 // light mode
 let day=false; const lm=document.getElementById('lm'), ld=document.getElementById('ld');
 function setLight(d){day=d; lm.setAttribute('aria-pressed',!d); ld.setAttribute('aria-pressed',d);
-  moon.visible=!d; sun.visible=d; hemi.intensity=d?1.1:0.14; hemi.color.set(d?0xcfe0ff:0x9fb3d9); hemi.groundColor.set(d?0x8a6a50:0x2a2018);
+  moon.visible=!d; sun.visible=d; night.visible=!d; skyMat.uniforms.top.value.set(d?0x5f8fc6:0x04060d); skyMat.uniforms.hor.value.set(d?0xcfdbe6:0x1f2a40); if(window.__hills) window.__hills.material.color.set(d?0x8a7f74:0x0b0d14); hemi.intensity=d?1.1:0.14; hemi.color.set(d?0xcfe0ff:0x9fb3d9); hemi.groundColor.set(d?0x8a6a50:0x2a2018);
   scene.background=new THREE.Color(d?0x9cb7d6:0x070a12); r.toneMappingExposure=d?1.0:1.8; render();}
 lm.onclick=()=>setLight(false); ld.onclick=()=>setLight(true);
 // views
-const V={edge:[[3.4,2.9,9.5],[4.6,2.9,0],40],walk:[[11,2.6,2.2],[2,2.6,3.0],55],door:[[-1.2,0.65,4.4],[4,1.8,0],90],top:[[2.0,2.2,20],[2.0,2.2,0],45],corner:[[5.5,3.5,5.5],[0.5,-1.0,0],55]};
-function setView(k){fish=(k==='door'); ctl.enabled=!fish; if(fish){render(); return;} const [p,t,f]=V[k]; cam.fov=f; cam.up.set(0,1,0); if(k==='top'){cam.up.set(0,0,-1);} 
+const V={sattop:[[22,4,250],[22.01,4,0],50],yard:[[24,-2.0,6.5],[3.0,2.6,3.0],50],edge:[[3.4,2.9,9.5],[4.6,2.9,0],40],walk:[[11,2.6,2.2],[2,2.6,3.0],55],door:[[-1.2,0.65,4.4],[4,1.8,0],90],top:[[2.0,2.2,20],[2.0,2.2,0],45],corner:[[5.5,3.5,5.5],[0.5,-1.0,0],55]};
+function setView(k){fish=(k==='door'); if(window.__hills) window.__hills.visible=(k!=='sattop'); ctl.enabled=!fish; if(fish){render(); return;} const [p,t,f]=V[k]; cam.fov=f; cam.up.set(0,1,0); if(k==='top'){cam.up.set(0,0,-1);} if(k==='sattop'){cam.up.set(0,0,1);} 
   const P=W(...p),Tt=W(...t); if(cam.aspect<0.8&&k!=='door'){P.sub(Tt).multiplyScalar(k==='top'?1.9:1.7).add(Tt);} cam.position.copy(P); ctl.target.copy(Tt); cam.updateProjectionMatrix(); ctl.update(); render();}
-document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{setView(b.dataset.v); setCut(b.dataset.v==='edge');});
+document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{setView(b.dataset.v); setCut(b.dataset.v==='edge'||b.dataset.v==='top');});
 // cutaway: hide ceiling, beams and the arch mass from the camera; they still cast shadows
 let cut=false; const cutb=document.getElementById('cut');
-function setCut(c){cut=c; cutb.setAttribute('aria-pressed',cut); scene.traverse(o=>{ if(o.isMesh&&/ceiling|beam|door_wall_top|arch_upper|lantern/.test(o.name)){
+function setCut(c){cut=c; cutb.setAttribute('aria-pressed',cut); scene.traverse(o=>{ if(o.isMesh&&/ceiling|beam|door_wall_top|arch_upper|lantern|porch_roof/.test(o.name)){
   if(!o.userData.m0){o.userData.m0=o.material; const m=o.material.clone(); m.colorWrite=false; m.depthWrite=false; o.userData.m1=m;}
   o.material=cut?o.userData.m1:o.userData.m0; }}); render();}
 cutb.onclick=()=>setCut(!cut);
@@ -172,7 +188,12 @@ const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(); let down=null;
 r.domElement.addEventListener('pointerdown',e=>down=[e.clientX,e.clientY]);
 r.domElement.addEventListener('pointerup',e=>{ if(!placing||!down) return; if(Math.hypot(e.clientX-down[0],e.clientY-down[1])>6) return;
   const rc=r.domElement.getBoundingClientRect(); ptr.set((e.clientX-rc.left)/rc.width*2-1,-(e.clientY-rc.top)/rc.height*2+1);
-  ray.setFromCamera(ptr,cam); const hit=ray.intersectObjects(floors,false)[0]; if(hit){fig.position.set(hit.point.x,hit.point.y,hit.point.z); fig.visible=true; fb.setAttribute('aria-pressed',true); render();}});
+  if(fish){ const va=rc.width/rc.height, fa=0.75; let qx=(e.clientX-rc.left)/rc.width, qy=1-(e.clientY-rc.top)/rc.height;
+    if(va>fa) qx=(qx-0.5)*va/fa+0.5; else qy=(qy-0.5)*fa/va+0.5;
+    const px=qx*600-300, py=(1-qy)*800-400, th=Math.hypot(px,py)/fishMat.uniforms.f.value, ph=Math.atan2(py,px);
+    const d=new THREE.Vector3(Math.sin(th)*Math.cos(ph),Math.sin(th)*Math.sin(ph),Math.cos(th)).applyMatrix3(fishMat.uniforms.Rt.value).normalize();
+    ray.set(cubeCam.position.clone(),d); } else ray.setFromCamera(ptr,cam);
+  const hit=ray.intersectObjects(floors,false)[0]; if(hit){fig.position.set(hit.point.x,hit.point.y,hit.point.z); fig.visible=true; fb.setAttribute('aria-pressed',true); render();}});
 // panel toggle (phones)
 const tg=document.getElementById('toggle'), panel=document.getElementById('panel');
 tg.onclick=()=>{const c=panel.classList.toggle('collapsed'); tg.textContent=c?'Show':'Hide'; tg.setAttribute('aria-expanded',!c);};
@@ -199,7 +220,8 @@ let pending=false; function render(){ if(pending) return; pending=true; requestA
 ctl.addEventListener('change',render);
 function resize(){const w=stage.clientWidth,h=stage.clientHeight; r.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix(); render();}
 addEventListener('resize',resize); resize(); setLight(false); update();
-window.__ready=()=>floors.length>0;
+window.__ready=()=>floors.length>0; window.__figpos=()=>{const v=fig.position; return [v.z/S, -v.x/S];};
+
 document.getElementById('door').addEventListener('input',e=>{const v=+e.target.value; document.getElementById('doorv').textContent=v+'°'; if(window.__sd){window.__sd.rotation.y=-v*Math.PI/180; render();}}); window.__cut=c=>setCut(c); window.__cam=(p,t,f)=>{V.custom=[p,t,f]; setView('custom');}; window.__hideTop=()=>{scene.traverse(o=>{if(/ceiling|beam|door_wall_top/.test(o.name)&&o.material){o.material=o.material.clone();o.material.colorWrite=false;o.material.depthWrite=false;}}); render();}; window.__view=setView; window.__light=setLight; window.__time=v=>{slider.value=v;update();};
 </script>
 </body>
