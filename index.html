@@ -50,6 +50,11 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 .note b{color:var(--fg);font-weight:500}
 #loading{position:fixed;inset:0;display:grid;place-items:center;color:var(--muted);font-size:13px;pointer-events:none}
 #toggle{display:none}
+#panel{transition:transform .25s ease}
+#panel.side-hidden{transform:translateX(calc(-100% - 24px))}
+#sidetab{position:fixed;left:calc(8px + env(safe-area-inset-left,0px));top:calc(16px + env(safe-area-inset-top,0px));z-index:5;background:var(--panel);border:1px solid var(--line);color:var(--fg);border-radius:8px;padding:8px 10px;font:600 13px var(--sans);cursor:pointer}
+#sidehide{font-size:13px;padding:4px 9px;line-height:1}
+@media (max-width:640px){#sidehide,#sidetab{display:none!important}}
 #loading[hidden]{display:none}
 @media (max-width:640px){
   #panel{left:0;right:0;top:auto;bottom:0;width:auto;border-radius:12px 12px 0 0;max-height:52%;
@@ -65,8 +70,9 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 <body>
 <div id="stage"></div>
 <div id="loading">Loading porch model…</div>
+<button id="sidetab" hidden aria-label="Show panel" title="Show panel">» Controls</button>
 <aside id="panel">
-  <div class="head"><div><h1>Guthrie porch, to scale</h1><div class="sub">1 tile spacing ≈ 12.6 in · drag to orbit, pinch or scroll to zoom</div></div><button id="toggle" aria-expanded="true">Hide</button></div>
+  <div class="head"><div><h1>Guthrie porch, to scale</h1><div class="sub">1 tile spacing ≈ 12.6 in · drag to orbit, pinch or scroll to zoom</div></div><button id="toggle" aria-expanded="true">Hide</button><button id="sidehide" aria-label="Collapse panel" title="Collapse panel">«</button></div>
   <div>
     <div class="lbl">Moon time, Feb 1 2026 (MST)</div>
     <div class="time" id="t">2:25 am</div>
@@ -81,7 +87,8 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
     <dt id="shl">Shadow (65 in tall)</dt><dd id="sh">–</dd>
   </dl>
   <div><div class="lbl">Light</div><div class="row">
-    <button id="lm" aria-pressed="true">Moonlight</button><button id="ld" aria-pressed="false">Daylight</button></div></div>
+    <button id="lm" aria-pressed="true">Moonlight</button><button id="ld" aria-pressed="false">Daylight</button></div>
+    <div class="row" style="align-items:center;gap:10px;margin-top:8px"><label for="cloud" style="font-size:12px;color:var(--muted);width:76px">Brightness</label><input id="cloud" type="range" min="10" max="100" step="5" value="10" aria-label="Moonlight brightness" style="flex:1"><span id="cloudv" style="font:500 13px var(--mono);width:44px;text-align:right">10%</span></div></div>
   <div><div class="lbl">View</div><div class="row">
     <button data-v="door">Doorbell</button><button data-v="edge">Moonlit edge</button><button data-v="top">Top-down</button><button data-v="walk">Walk-up</button><button data-v="yard">Front yard</button><button data-v="corner">Gravel corner</button></div></div>
   <div><div class="lbl">View options</div><div class="row"><button id="cut" aria-pressed="false">Cut away roof and arch top</button></div></div>
@@ -89,6 +96,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
     <button id="fig" aria-pressed="true">Show figure</button><button id="home">Footage position</button><button id="place" aria-pressed="false">Tap floor to place</button></div>
     <div class="row" style="align-items:center;gap:10px;margin-top:8px"><label for="hgt" style="font-size:12px;color:var(--muted);width:56px">Height</label><input id="hgt" type="range" min="64" max="74" step="1" value="69" style="flex:1"><span id="hgtv" style="font:500 13px var(--mono);width:52px;text-align:right">5′9″</span></div>
     <div class="row" style="align-items:center;gap:10px"><label for="cr" style="font-size:12px;color:var(--muted);width:56px">Crouch</label><input id="cr" type="range" min="0" max="10" step="0.5" value="4" style="flex:1"><span id="crv" style="font:500 13px var(--mono);width:52px;text-align:right">4 in</span></div></div>
+  <div><div class="lbl">Doorbell camera</div><div class="row"><button id="bell" aria-pressed="true">Show doorbell</button><button id="glow" aria-pressed="false">Person detected (glow)</button><button data-v="perp">Suspect's eye view</button></div></div>
   <div><div class="lbl">Security door</div>
     <div class="row" style="align-items:center;gap:10px"><input id="door" type="range" min="0" max="90" step="1" value="0" aria-label="Security door angle" style="flex:1"><span id="doorv" style="font:500 13px var(--mono);width:52px;text-align:right">0°</span></div></div>
   <p class="note"><b>Images:</b> NewsNation, Fox News Digital, BBC News, Just Jared (justjared.com). Used for non-commercial analysis; images remain the property of their owners. Model: WarpedWing Labs.</p>
@@ -138,8 +146,8 @@ function buildFig(){ fig.clear(); const H=FIG_IN*0.0254;
   fig.add(body,head); fig.traverse(o=>{if(o.isMesh)o.castShadow=true}); }
 buildFig(); const FOOT=[4.85,1.5]; fig.position.copy(W(FOOT[0],FOOT[1],0)); scene.add(fig);
 let floors=[];
-window.MOON=await (await fetch('moon.json?v=29')).json();
-new GLTFLoader().load('porch.glb?v=29',g=>{
+window.MOON=await (await fetch('moon.json?v=44')).json();
+new GLTFLoader().load('porch.glb?v=44',g=>{
   g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=!/porch_floor|gravel|walkway|yard|ground|doormat|B6_C6|tile_edge|drive|road|stepstone|stone_path/.test(o.name);o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
     if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
@@ -166,7 +174,7 @@ function setLight(d){day=d; lm.setAttribute('aria-pressed',!d); ld.setAttribute(
 lm.onclick=()=>setLight(false); ld.onclick=()=>setLight(true);
 // views
 const V={sattop:[[22,4,250],[22.01,4,0],50],yard:[[24,-2.0,6.5],[3.0,2.6,3.0],50],edge:[[3.4,2.9,9.5],[4.6,2.9,0],40],walk:[[11,2.6,2.2],[2,2.6,3.0],55],door:[[-1.2,0.65,4.4],[4,1.8,0],90],top:[[2.0,2.2,20],[2.0,2.2,0],45],corner:[[5.5,3.5,5.5],[0.5,-1.0,0],55]};
-function setView(k){fish=(k==='door'); if(window.__hills) window.__hills.visible=(k!=='sattop'); ctl.enabled=!fish; if(fish){render(); return;} const [p,t,f]=V[k]; cam.fov=f; cam.up.set(0,1,0); if(k==='top'){cam.up.set(0,0,-1);} if(k==='sattop'){cam.up.set(0,0,1);} 
+function setView(k){ if(k==='perp'){ const hp=fig.position.clone(); hp.y+=(FIG_IN*0.0254)-0.1; V.perp=[[hp.z/S,-hp.x/S,hp.y/S],[-1.24,0.67,4.30],60]; bellG.visible=true; bb_.setAttribute('aria-pressed',true);} fish=(k==='door'); if(window.__hills) window.__hills.visible=(k!=='sattop'); ctl.enabled=!fish; if(fish){render(); return;} const [p,t,f]=V[k]; cam.fov=f; cam.up.set(0,1,0); if(k==='top'){cam.up.set(0,0,-1);} if(k==='sattop'){cam.up.set(0,0,1);} 
   const P=W(...p),Tt=W(...t); if(cam.aspect<0.8&&k!=='door'){P.sub(Tt).multiplyScalar(k==='top'?1.9:1.7).add(Tt);} cam.position.copy(P); ctl.target.copy(Tt); cam.updateProjectionMatrix(); ctl.update(); render();}
 document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{setView(b.dataset.v); setCut(b.dataset.v==='edge'||b.dataset.v==='top');});
 // cutaway: hide ceiling, beams and the arch mass from the camera; they still cast shadows
@@ -220,7 +228,33 @@ let pending=false; function render(){ if(pending) return; pending=true; requestA
 ctl.addEventListener('change',render);
 function resize(){const w=stage.clientWidth,h=stage.clientHeight; r.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix(); render();}
 addEventListener('resize',resize); resize(); setLight(false); update();
-window.__ready=()=>floors.length>0; window.__figpos=()=>{const v=fig.position; return [v.z/S, -v.x/S];};
+window.__ready=()=>floors.length>0;
+{ const pn=document.getElementById('panel'), tab=document.getElementById('sidetab'), hb=document.getElementById('sidehide');
+  hb.onclick=()=>{pn.classList.add('side-hidden'); tab.hidden=false; tab.focus();};
+  tab.onclick=()=>{pn.classList.remove('side-hidden'); tab.hidden=true; hb.focus();}; }
+const MOON_I=moon.intensity, SUN_I=sun.intensity;
+const setBright=v=>{document.getElementById('cloudv').textContent=v+'%'; moon.intensity=MOON_I*v/100; render();};
+document.getElementById('cloud').addEventListener('input',e=>setBright(+e.target.value)); setBright(10);
+// ---- doorbell model on the bracket (hidden from the fisheye render via layer 1)
+const bellG=new THREE.Group(); bellG.visible=true; scene.add(bellG); cam.layers.enable(1);
+{ const wht=new THREE.MeshStandardMaterial({color:0xf2f2ee,roughness:0.35}), blk=new THREE.MeshStandardMaterial({color:0x0b0c10,roughness:0.15,metalness:0.2});
+  const H=0.50*S, Wd=0.15*S, D=0.08*S;
+  const body=new THREE.Mesh(new THREE.CapsuleGeometry(Wd/2,H-Wd,8,20),wht); body.scale.set(1,1,D/Wd);
+  const face=new THREE.Mesh(new THREE.CircleGeometry(Wd*0.36,24),blk); face.position.set(0,H/2-Wd*0.62,D/2+0.0006);
+  const lens=new THREE.Mesh(new THREE.CircleGeometry(Wd*0.14,20),new THREE.MeshStandardMaterial({color:0x223355,roughness:0.05,metalness:0.6})); lens.position.set(0,H/2-Wd*0.62,D/2+0.0012);
+  window.__btnMat=new THREE.MeshStandardMaterial({color:0xd8d8d4,roughness:0.6,emissive:0x000000}); const btn=new THREE.Mesh(new THREE.CircleGeometry(Wd*0.335,28),window.__btnMat); btn.position.set(0,-H/2+Wd*0.62,D/2+0.0006);
+  window.__ringMat=new THREE.MeshBasicMaterial({color:0x5a5f66,toneMapped:false});
+  const ring=new THREE.Mesh(new THREE.RingGeometry(Wd*0.335,Wd*0.375,48),window.__ringMat); ring.position.set(0,-H/2+Wd*0.62,D/2+0.0010);
+  window.__bellLight=new THREE.PointLight(0xffffff,0,0.08,2); window.__bellLight.position.set(0,-H/2+Wd*0.62,D/2+0.02);
+  window.__ledMat=new THREE.MeshBasicMaterial({color:0x37ff6a,toneMapped:false}); const led=new THREE.Mesh(new THREE.CircleGeometry(Wd*0.035,12),window.__ledMat); led.position.set(0,H/2-Wd*0.62-Wd*0.24,D/2+0.0016);
+  [body,face,lens,btn,ring,led,window.__bellLight].forEach(m=>{bellG.add(m); m.layers.set(1);});
+  bellG.position.copy(W(-1.30+0.06,0.67,4.30)); bellG.layers.set(1);
+}
+const bb_=document.getElementById('bell'), gb_=document.getElementById('glow');
+bb_.onclick=()=>{bellG.visible=!bellG.visible; bb_.setAttribute('aria-pressed',bellG.visible); render();};
+gb_.onclick=()=>{const on=gb_.getAttribute('aria-pressed')!=='true'; gb_.setAttribute('aria-pressed',on);
+  window.__ringMat.color.set(on?0xffffff:0x5a5f66); window.__bellLight.intensity=on?0.002:0; 
+  if(on&&!bellG.visible){bellG.visible=true; bb_.setAttribute('aria-pressed',true);} render();}; window.__figpos=()=>{const v=fig.position; return [v.z/S, -v.x/S];};
 
 document.getElementById('door').addEventListener('input',e=>{const v=+e.target.value; document.getElementById('doorv').textContent=v+'°'; if(window.__sd){window.__sd.rotation.y=-v*Math.PI/180; render();}}); window.__cut=c=>setCut(c); window.__cam=(p,t,f)=>{V.custom=[p,t,f]; setView('custom');}; window.__hideTop=()=>{scene.traverse(o=>{if(/ceiling|beam|door_wall_top/.test(o.name)&&o.material){o.material=o.material.clone();o.material.colorWrite=false;o.material.depthWrite=false;}}); render();}; window.__view=setView; window.__light=setLight; window.__time=v=>{slider.value=v;update();};
 </script>
