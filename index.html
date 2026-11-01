@@ -96,7 +96,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
     <button id="fig" aria-pressed="true">Show figure</button><button id="home">Footage position</button><button id="place" aria-pressed="false">Tap floor to place</button></div>
     <div class="row" style="align-items:center;gap:10px;margin-top:8px"><label for="hgt" style="font-size:12px;color:var(--muted);width:56px">Height</label><input id="hgt" type="range" min="64" max="74" step="1" value="69" style="flex:1"><span id="hgtv" style="font:500 13px var(--mono);width:52px;text-align:right">5′9″</span></div>
     <div class="row" style="align-items:center;gap:10px"><label for="cr" style="font-size:12px;color:var(--muted);width:56px">Crouch</label><input id="cr" type="range" min="0" max="10" step="0.5" value="4" style="flex:1"><span id="crv" style="font:500 13px var(--mono);width:52px;text-align:right">4 in</span></div></div>
-  <div><div class="lbl">Doorbell camera</div><div class="row"><button id="bell" aria-pressed="true">Show doorbell</button><button id="glow" aria-pressed="false">Person detected (glow)</button><button data-v="perp">Suspect's eye view</button></div></div>
+  <div><div class="lbl">Doorbell camera</div><div class="row"><button id="bell" aria-pressed="true">Show doorbell</button><button id="glow" aria-pressed="false">Person detected (glow)</button><button data-v="perp">Suspect's eye view</button><button id="irb" aria-pressed="true">IR night vision (doorbell view)</button></div></div>
   <div><div class="lbl">Security door</div>
     <div class="row" style="align-items:center;gap:10px"><input id="door" type="range" min="0" max="90" step="1" value="0" aria-label="Security door angle" style="flex:1"><span id="doorv" style="font:500 13px var(--mono);width:52px;text-align:right">0°</span></div></div>
   <p class="note"><b>Images:</b> NewsNation, Fox News Digital, BBC News, Just Jared (justjared.com). Used for non-commercial analysis; images remain the property of their owners. Model: WarpedWing Labs.</p>
@@ -146,8 +146,8 @@ function buildFig(){ fig.clear(); const H=FIG_IN*0.0254;
   fig.add(body,head); fig.traverse(o=>{if(o.isMesh)o.castShadow=true}); }
 buildFig(); const FOOT=[4.85,1.5]; fig.position.copy(W(FOOT[0],FOOT[1],0)); scene.add(fig);
 let floors=[];
-window.MOON=await (await fetch('moon.json?v=44')).json();
-new GLTFLoader().load('porch.glb?v=44',g=>{
+window.MOON=await (await fetch('moon.json?v=48')).json();
+new GLTFLoader().load('porch.glb?v=48',g=>{
   g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=!/porch_floor|gravel|walkway|yard|ground|doormat|B6_C6|tile_edge|drive|road|stepstone|stone_path/.test(o.name);o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
     if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
@@ -168,13 +168,13 @@ slider.addEventListener('input',update);
 
 // light mode
 let day=false; const lm=document.getElementById('lm'), ld=document.getElementById('ld');
-function setLight(d){day=d; lm.setAttribute('aria-pressed',!d); ld.setAttribute('aria-pressed',d);
+function setLight(d){day=d; if(typeof applyIR==='function') try{applyIR();}catch(e){} lm.setAttribute('aria-pressed',!d); ld.setAttribute('aria-pressed',d);
   moon.visible=!d; sun.visible=d; night.visible=!d; skyMat.uniforms.top.value.set(d?0x5f8fc6:0x04060d); skyMat.uniforms.hor.value.set(d?0xcfdbe6:0x1f2a40); if(window.__hills) window.__hills.material.color.set(d?0x8a7f74:0x0b0d14); hemi.intensity=d?1.1:0.14; hemi.color.set(d?0xcfe0ff:0x9fb3d9); hemi.groundColor.set(d?0x8a6a50:0x2a2018);
   scene.background=new THREE.Color(d?0x9cb7d6:0x070a12); r.toneMappingExposure=d?1.0:1.8; render();}
 lm.onclick=()=>setLight(false); ld.onclick=()=>setLight(true);
 // views
 const V={sattop:[[22,4,250],[22.01,4,0],50],yard:[[24,-2.0,6.5],[3.0,2.6,3.0],50],edge:[[3.4,2.9,9.5],[4.6,2.9,0],40],walk:[[11,2.6,2.2],[2,2.6,3.0],55],door:[[-1.2,0.65,4.4],[4,1.8,0],90],top:[[2.0,2.2,20],[2.0,2.2,0],45],corner:[[5.5,3.5,5.5],[0.5,-1.0,0],55]};
-function setView(k){ if(k==='perp'){ const hp=fig.position.clone(); hp.y+=(FIG_IN*0.0254)-0.1; V.perp=[[hp.z/S,-hp.x/S,hp.y/S],[-1.24,0.67,4.30],60]; bellG.visible=true; bb_.setAttribute('aria-pressed',true);} fish=(k==='door'); if(window.__hills) window.__hills.visible=(k!=='sattop'); ctl.enabled=!fish; if(fish){render(); return;} const [p,t,f]=V[k]; cam.fov=f; cam.up.set(0,1,0); if(k==='top'){cam.up.set(0,0,-1);} if(k==='sattop'){cam.up.set(0,0,1);} 
+function setView(k){ if(k==='perp'){ const hp=fig.position.clone(); hp.y+=(FIG_IN*0.0254)-0.1; V.perp=[[hp.z/S,-hp.x/S,hp.y/S],[-1.24,0.67,4.30],60]; bellG.visible=true; bb_.setAttribute('aria-pressed',true);} fish=(k==='door'); if(window.__hills) window.__hills.visible=(k!=='sattop'); ctl.enabled=!fish; applyIR(); if(fish){render(); return;} const [p,t,f]=V[k]; cam.fov=f; cam.up.set(0,1,0); if(k==='top'){cam.up.set(0,0,-1);} if(k==='sattop'){cam.up.set(0,0,1);} 
   const P=W(...p),Tt=W(...t); if(cam.aspect<0.8&&k!=='door'){P.sub(Tt).multiplyScalar(k==='top'?1.9:1.7).add(Tt);} cam.position.copy(P); ctl.target.copy(Tt); cam.updateProjectionMatrix(); ctl.update(); render();}
 document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{setView(b.dataset.v); setCut(b.dataset.v==='edge'||b.dataset.v==='top');});
 // cutaway: hide ceiling, beams and the arch mass from the camera; they still cast shadows
@@ -209,22 +209,41 @@ tg.onclick=()=>{const c=panel.classList.toggle('collapsed'); tg.textContent=c?'S
 // Doorbell: fisheye camera fitted to the Nest footage (equidistant lens, 3:4 frame, f=333.3 px on 600x800)
 const cubeRT=new THREE.WebGLCubeRenderTarget(1024,{type:THREE.HalfFloatType,generateMipmaps:false});
 const cubeCam=new THREE.CubeCamera(0.02,60,cubeRT); cubeCam.position.copy(W(-1.12,0.67,4.40)); scene.add(cubeCam);
-const fishMat=new THREE.ShaderMaterial({uniforms:{env:{value:cubeRT.texture},Rt:{value:new THREE.Matrix3().set(-0.940064,0.058971,-0.335861,0.016692,-0.975795,-0.218051,-0.340590,-0.210588,0.916325)},f:{value:340.652},va:{value:1}},
+const fishMat=new THREE.ShaderMaterial({uniforms:{ir:{value:1},seed:{value:0},dep:{value:null},env:{value:cubeRT.texture},Rt:{value:new THREE.Matrix3().set(-0.940064,0.058971,-0.335861,0.016692,-0.975795,-0.218051,-0.340590,-0.210588,0.916325)},f:{value:340.652},va:{value:1}},
  vertexShader:'varying vec2 vUv; void main(){vUv=uv; gl_Position=vec4(position.xy,0.,1.);}',
- fragmentShader:`uniform samplerCube env; uniform mat3 Rt; uniform float f,va; varying vec2 vUv;
+ fragmentShader:`uniform samplerCube env; uniform samplerCube dep; uniform mat3 Rt; uniform float f,va,ir,seed; varying vec2 vUv;
+ vec3 dirOf(vec2 px){ float th=length(px)/f; float ph=atan(px.y,px.x); return Rt*vec3(sin(th)*cos(ph),sin(th)*sin(ph),cos(th)); }
  void main(){ float fa=0.75; vec2 q=vUv;
   if(va>fa){ q.x=(vUv.x-0.5)*va/fa+0.5; } else { q.y=(vUv.y-0.5)*fa/va+0.5; }
   if(q.x<0.||q.x>1.||q.y<0.||q.y>1.){ gl_FragColor=vec4(0.02,0.02,0.03,1.); return; }
-  vec2 px=vec2(q.x*600.-300.,(1.-q.y)*800.-400.); float th=length(px)/f; float ph=atan(px.y,px.x);
-  vec3 dw=Rt*vec3(sin(th)*cos(ph),sin(th)*sin(ph),cos(th));
-  gl_FragColor=textureCube(env,dw);
+  vec2 px=vec2(q.x*600.-300.,(1.-q.y)*800.-400.);
+  vec4 col;
+  if(ir>0.5){
+    float d=textureCube(dep,dirOf(px)).r*60.;            // metres from the lens
+    float k=smoothstep(3.5,14.0,d);                        // clear on the porch, soft beyond the arch
+        float rad=mix(0.,1.6,k); col=vec4(0.);
+    for(int i=0;i<9;i++){ float a=float(i)*2.39996; float rr=rad*sqrt(float(i)/8.); col+=textureCube(env,dirOf(px+rr*vec2(cos(a),sin(a)))); }
+    col/=9.;
+  } else col=textureCube(env,dirOf(px));
+  gl_FragColor=col;
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
+  if(ir>0.5){ float l=dot(gl_FragColor.rgb,vec3(0.30,0.59,0.11)); l=pow(clamp(l*1.6,0.,1.),0.75);
+    float n=fract(sin(dot(vUv*800.+seed,vec2(12.9898,78.233)))*43758.5453)-0.5; l+=n*0.06;
+    float r=length((q-0.5)*vec2(0.75,1.)); l*=1.0-0.55*smoothstep(0.30,0.62,r);
+    l=floor(l*48.)/48.; gl_FragColor=vec4(vec3(l)*vec3(0.94,0.97,1.0),1.); }
  }`,depthTest:false,depthWrite:false,toneMapped:true});
 const fishScene=new THREE.Scene(); fishScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),fishMat)); const fishCam=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
 let fish=false;
+const depRT=new THREE.WebGLCubeRenderTarget(256,{type:THREE.HalfFloatType,generateMipmaps:false}); const depCam=new THREE.CubeCamera(0.02,60,depRT); depCam.position.copy(cubeCam.position); scene.add(depCam);
+const depMat=new THREE.ShaderMaterial({uniforms:{cp:{value:cubeCam.position}},vertexShader:'varying vec3 wp; void main(){vec4 w=modelMatrix*vec4(position,1.); wp=w.xyz; gl_Position=projectionMatrix*viewMatrix*w;}',
+  fragmentShader:'uniform vec3 cp; varying vec3 wp; void main(){gl_FragColor=vec4(distance(wp,cp)/60.,0.,0.,1.);}',side:THREE.DoubleSide});
+fishMat.uniforms.dep.value=depRT.texture; let depDirty=true;
+const irLight=new THREE.PointLight(0xffffff,0,0,2); irLight.castShadow=true; irLight.shadow.mapSize.set(1024,1024); irLight.shadow.bias=-0.0005; irLight.shadow.normalBias=0.02;
+irLight.position.copy(W(-1.05,0.67,4.40)); scene.add(irLight);
+let irOn=true; function applyIR(){ const on=irOn&&fish&&!day; fm.color.set(on?0x9a9ea6:0x2b3140); irLight.intensity=on?1.9:0; fishMat.uniforms.ir.value=(irOn&&!day)?1:0; }
 let pending=false; function render(){ if(pending) return; pending=true; requestAnimationFrame(()=>{pending=false; ctl.update();
-  if(fish){ fishMat.uniforms.va.value=r.domElement.width/r.domElement.height; cubeCam.update(r,scene); r.render(fishScene,fishCam); } else r.render(scene,cam);}); }
+  if(fish){ applyIR(); if(fishMat.uniforms.ir.value>0.5){ const bg=scene.background, sh=r.shadowMap.enabled; scene.overrideMaterial=depMat; scene.background=new THREE.Color(1,0,0); r.shadowMap.enabled=false; depCam.update(r,scene); scene.overrideMaterial=null; scene.background=bg; r.shadowMap.enabled=sh; } fishMat.uniforms.seed.value=Math.random()*100; fishMat.uniforms.va.value=r.domElement.width/r.domElement.height; cubeCam.update(r,scene); r.render(fishScene,fishCam); } else r.render(scene,cam);}); }
 ctl.addEventListener('change',render);
 function resize(){const w=stage.clientWidth,h=stage.clientHeight; r.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix(); render();}
 addEventListener('resize',resize); resize(); setLight(false); update();
@@ -250,6 +269,7 @@ const bellG=new THREE.Group(); bellG.visible=true; scene.add(bellG); cam.layers.
   [body,face,lens,btn,ring,led,window.__bellLight].forEach(m=>{bellG.add(m); m.layers.set(1);});
   bellG.position.copy(W(-1.30+0.06,0.67,4.30)); bellG.layers.set(1);
 }
+{const ib=document.getElementById('irb'); ib.onclick=()=>{irOn=!irOn; ib.setAttribute('aria-pressed',irOn); applyIR(); render();};}
 const bb_=document.getElementById('bell'), gb_=document.getElementById('glow');
 bb_.onclick=()=>{bellG.visible=!bellG.visible; bb_.setAttribute('aria-pressed',bellG.visible); render();};
 gb_.onclick=()=>{const on=gb_.getAttribute('aria-pressed')!=='true'; gb_.setAttribute('aria-pressed',on);
