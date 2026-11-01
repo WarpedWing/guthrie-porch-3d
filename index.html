@@ -110,10 +110,10 @@ const cam=new THREE.PerspectiveCamera(55,1,0.03,200);
 const ctl=new OrbitControls(cam,r.domElement); ctl.enableDamping=true; ctl.maxPolarAngle=Math.PI*0.495;
 const hemi=new THREE.HemisphereLight(0x9fb3d9,0x2a2018,0.12); scene.add(hemi);
 const moon=new THREE.DirectionalLight(0xd7e2ff,1.7); moon.castShadow=true;
-moon.shadow.mapSize.set(2048,2048); const sc=moon.shadow.camera; sc.left=-4;sc.right=4;sc.top=4;sc.bottom=-4;sc.near=0.5;sc.far=40; sc.updateProjectionMatrix(); moon.shadow.bias=-0.0006; moon.shadow.normalBias=0;
+moon.shadow.mapSize.set(2048,2048); const sc=moon.shadow.camera; sc.left=-4;sc.right=4;sc.top=4;sc.bottom=-4;sc.near=0.5;sc.far=40; sc.updateProjectionMatrix(); moon.shadow.bias=-0.0003; moon.shadow.normalBias=0.012;
 scene.add(moon); scene.add(moon.target); moon.target.position.copy(W(2,2.5,0));
 const sun=new THREE.DirectionalLight(0xfff3e0,2.2); sun.position.copy(W(8,-2,14)); sun.castShadow=true; sun.shadow.mapSize.set(2048,2048);
-Object.assign(sun.shadow.camera,{left:-22,right:22,top:22,bottom:-22,near:0.5,far:80}); sun.shadow.mapSize.set(4096,4096); sun.position.copy(W(40,-10,70)); sun.shadow.camera.updateProjectionMatrix(); sun.target.position.copy(W(2,2.5,0)); scene.add(sun); scene.add(sun.target);
+Object.assign(sun.shadow.camera,{left:-22,right:22,top:22,bottom:-22,near:0.5,far:80}); sun.shadow.mapSize.set(4096,4096); sun.shadow.bias=-0.0003; sun.shadow.normalBias=0.02; sun.position.copy(W(40,-10,70)); sun.shadow.camera.updateProjectionMatrix(); sun.target.position.copy(W(2,2.5,0)); scene.add(sun); scene.add(sun.target);
 // night sky: stars, moon disk at the true moon position, low hills, a few distant lights
 const night=new THREE.Group(); scene.add(night);
 const skyMat=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,fog:false,
@@ -140,7 +140,7 @@ buildFig(); const FOOT=[4.85,1.5]; fig.position.copy(W(FOOT[0],FOOT[1],0)); scen
 let floors=[];
 window.MOON=await (await fetch('moon.json')).json();
 new GLTFLoader().load('porch.glb',g=>{
-  g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=true;o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
+  g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=!/porch_floor|gravel|walkway|yard|ground|doormat|B6_C6|tile_edge|drive|road|stepstone|stone_path/.test(o.name);o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
     if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
   scene.add(g.scene); document.getElementById('loading').hidden=true; setView('yard'); setCut(false); render();
