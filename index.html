@@ -176,8 +176,8 @@ function buildFig(){ fig.clear(); const H=FIG_IN*0.0254;
   fig.add(body,head); fig.traverse(o=>{if(o.isMesh)o.castShadow=true}); }
 buildFig(); const FOOT=[4.85,1.5]; fig.position.copy(W(FOOT[0],FOOT[1],0)); scene.add(fig);
 let floors=[];
-window.MOON=await (await fetch('moon.json?v=60')).json();
-new GLTFLoader().load('porch.glb?v=60',g=>{
+window.MOON=await (await fetch('moon.json?v=61')).json();
+new GLTFLoader().load('porch.glb?v=61',g=>{
   g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=!/porch_floor|gravel|walkway|yard|ground|doormat|B6_C6|tile_edge|drive|road|stepstone|stone_path/.test(o.name);o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
     if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=/hires/.test(o.name)?3:2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
@@ -203,8 +203,8 @@ function setLight(d){day=d; if(typeof applyIR==='function') try{applyIR();}catch
   scene.background=new THREE.Color(d?0x9cb7d6:0x070a12); r.toneMappingExposure=d?1.0:1.8; render();}
 lm.onclick=()=>setLight(false); ld.onclick=()=>setLight(true);
 // views
-const V={sattop:[[22,4,250],[22.01,4,0],50],yard:[[24,-2.0,6.5],[3.0,2.6,3.0],50],edge:[[3.4,2.9,9.5],[4.6,2.9,0],40],walk:[[11,2.6,2.2],[2,2.6,3.0],55],door:[[-1.2,0.65,4.4],[4,1.8,0],90],top:[[2.0,2.2,20],[2.0,2.2,0],45],corner:[[5.5,3.5,5.5],[0.5,-1.0,0],55]};
-function setView(k){ if(k==='perp'){ const hp=fig.position.clone(); hp.y+=(FIG_IN*0.0254)-0.1; V.perp=[[hp.z/S,-hp.x/S,hp.y/S],[-1.24,0.67,4.30],60]; bellG.visible=true; bb_.setAttribute('aria-pressed',true);} fish=(k==='door'); if(window.__hills) window.__hills.visible=(k!=='sattop'); ctl.enabled=!fish; applyIR(); if(fish){render(); return;} const [p,t,f]=V[k]; cam.fov=f; cam.up.set(0,1,0); if(k==='top'){cam.up.set(0,0,-1);} if(k==='sattop'){cam.up.set(0,0,1);} 
+const V={sattop:[[21.2,4,250],[22,4,0],50],yard:[[24,-2.0,6.5],[3.0,2.6,3.0],50],edge:[[3.4,2.9,9.5],[4.6,2.9,0],40],walk:[[11,2.6,2.2],[2,2.6,3.0],55],door:[[-1.2,0.65,4.4],[4,1.8,0],90],top:[[2.06,2.2,20],[2.0,2.2,0],45],corner:[[5.5,3.5,5.5],[0.5,-1.0,0],55]};
+function setView(k){ if(k==='perp'){ const hp=fig.position.clone(); hp.y+=(FIG_IN*0.0254)-0.1; V.perp=[[hp.z/S,-hp.x/S,hp.y/S],[-1.24,0.67,4.30],60]; bellG.visible=true; bb_.setAttribute('aria-pressed',true);} fish=(k==='door'); if(window.__hills) window.__hills.visible=(k!=='sattop'); ctl.enabled=!fish; applyIR(); if(fish){render(); return;} const [p,t,f]=V[k]; cam.fov=f; cam.up.set(0,1,0); 
   const P=W(...p),Tt=W(...t); if(cam.aspect<0.8&&k!=='door'){P.sub(Tt).multiplyScalar(k==='top'?1.9:1.7).add(Tt);} cam.position.copy(P); ctl.target.copy(Tt); cam.updateProjectionMatrix(); ctl.update(); render();}
 document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{setView(b.dataset.v); setCut(b.dataset.v==='edge'||b.dataset.v==='top');});
 // cutaway: hide ceiling, beams and the arch mass from the camera; they still cast shadows
