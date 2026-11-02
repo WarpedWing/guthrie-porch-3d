@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="To-scale, photo-textured 3D model of the Guthrie front porch (Tucson), with moon lighting for the night of Feb 1, 2026.">
-<meta property="og:title" content="Guthrie porch, to scale">
-<meta property="og:description" content="Photo-textured 3D reconstruction of the porch with moon lighting for any minute of the night of Feb 1, 2026.">
+<meta name="description" content="PBATT (Porch Blood Analysis and Timing Tool): a to-scale, photo-textured 3D model of the Guthrie front porch (Tucson), with moon lighting for the night of Feb 1, 2026 and tools for measuring and tracing marks on the floor. By WarpedWing Labs.">
+<meta property="og:title" content="PBATT · Porch Blood Analysis and Timing Tool">
+<meta property="og:description" content="Photo-textured 3D reconstruction of the Guthrie porch with moon lighting for any minute of the night of Feb 1, 2026, plus measuring, wheel-path and axle tools. By WarpedWing Labs.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://warpedwing.github.io/guthrie-porch-3d/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://warpedwing.github.io/guthrie-porch-3d/og.jpg">
-<title>Guthrie Porch 3D</title>
+<title>PBATT</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -82,27 +82,60 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
   .time{font-size:24px}
 }
 .head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.head .helpb{margin-left:auto}
+.helpb{font:600 13px var(--sans);padding:4px 9px;line-height:1;border-radius:50%;min-width:26px}
+#tools.tcollapsed .helpb{display:none}
+.tsec{border-top:1px solid var(--line);padding-top:8px}
+.tsec:first-child{border-top:0;padding-top:0}
+.tsec .lbl{margin-bottom:5px}
+.srow{display:flex;align-items:center;gap:10px;margin-top:8px}
+.srow label{font-size:12px;color:var(--muted);width:90px}
+.srow input{flex:1} .srow span{font:500 13px var(--mono);width:44px;text-align:right}
+.tedit{border-top:1px solid var(--line);padding-top:8px}
+.tsec[data-for="path"]:not([hidden]) + .tsec{border-top:0;padding-top:0;margin-top:-4px}
+#tout{margin-top:2px}
+#help{max-width:min(560px,calc(100% - 32px));max-height:calc(100% - 48px);overflow:auto;background:#0c101a;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:18px 20px;font-size:13px;line-height:1.5}
+#help::backdrop{background:rgba(3,5,10,.6)}
+#help h2{font-size:15px;margin:0 0 8px} #help h3{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:16px 0 6px;font-weight:600}
+#help p,#help ul{margin:0 0 6px} #help ul{padding-left:18px} #help li{margin:2px 0} #help b{font-weight:600}
+#help .x{position:sticky;top:0;float:right}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 <div id="stage"></div>
+<dialog id="help" aria-labelledby="helpt"><button class="x" aria-label="Close help">Close</button><h2 id="helpt">PBATT help</h2>
+<h3>Getting around</h3>
+<p>Drag to orbit, right-drag or two-finger drag to pan, scroll or pinch to zoom. The model is to scale: one tile spacing (tile plus grout) is about 12.6 in.</p>
+<h3 id="help-tools">Measure &amp; path tools</h3>
+<ul>
+<li><b>Measure:</b> tap two points. Drag an end to adjust it.</li>
+<li><b>Wheel path:</b> tap to add points, then drag a point, or drag the line itself to bend it. <b>New path</b> starts another path in a new colour. <b>Tire width</b> sets the band width.</li>
+<li><b>Second wheel:</b> shows where the other wheel on the same axle would run, on the left or right of the active path as seen walking from its first point. <b>Wheel spacing</b> sets the distance between the wheel centres. Red means that wheel would hit a wall, pillar or bed, or would have to roll backward.</li>
+<li><b>Mark imprint:</b> tap each imprint to drop a numbered pin, then <b>Copy imprint list</b> to copy their positions.</li>
+<li><b>Groove line:</b> tap two points along the gap in a twin-block imprint (the rolling direction). It draws the axle across it with markers at the wheel spacing on each side.</li>
+<li><b>Editing:</b> double-tap any point or pin to delete it; a measure or groove end deletes the whole line. <b>Undo point</b> removes the last thing you added.</li>
+</ul>
+<h3>What's estimated</h3>
+<p>Ceiling height, pillar overhang, doorbell camera position (fitted to the footage), the left gravel bed and plants, wreath, mailer and front planting. Tiles not visible in any image are shown as plain tiles. Everything outside the porch is approximate.</p>
+</dialog>
 <div id="loading">Loading porch model…</div>
 <button id="sidetab" hidden aria-label="Show panel" title="Show panel">» Controls</button>
 <aside id="tools" class="tcollapsed">
-  <div class="thead"><span class="ttitle">Measure &amp; path</span><button id="ttog" aria-expanded="false" aria-label="Measure and path tools" title="Measure and path tools"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16.5 16.5 3l4.5 4.5L7.5 21z"/><path d="M7 12.5l1.8 1.8M9.8 9.7l2.6 2.6M12.6 6.9l1.8 1.8M15.4 4.1l2.6 2.6"/></svg></button></div>
-  <div class="tbody"><div class="row">
-    <button id="tmeas" aria-pressed="false">Measure</button><button id="tpath" aria-pressed="false">Wheel path</button><button id="tnew">New path</button><button id="tmark" aria-pressed="false">Mark imprint</button></div>
-    <div class="row" style="margin-top:6px"><button id="taxle">Second wheel: off</button><button id="tgroove" aria-pressed="false">Groove line</button></div>
-    <div class="row" style="margin-top:6px"><button id="tundo">Undo point</button><button id="tclear">Clear all</button><button id="tcopy" hidden>Copy imprint list</button></div>
-    <textarea id="tcopytxt" hidden rows="3" style="width:100%;font:11px var(--mono);background:#0c101a;color:var(--fg);border:1px solid var(--line);border-radius:6px"></textarea>
-    <div class="row" style="align-items:center;gap:10px;margin-top:8px"><label for="tw" style="font-size:12px;color:var(--muted);width:76px">Tire width</label><input id="tw" type="range" min="0.5" max="4" step="0.25" value="1.5" style="flex:1"><span id="twv" style="font:500 13px var(--mono);width:44px;text-align:right">1.5″</span></div>
-    <div class="row" style="align-items:center;gap:10px;margin-top:4px"><label for="tg" style="font-size:12px;color:var(--muted);width:76px">Wheel spacing</label><input id="tg" type="range" min="8" max="26" step="0.25" value="16" style="flex:1"><span id="tgv" style="font:500 13px var(--mono);width:44px;text-align:right">16″</span></div>
-    <p class="note" id="thelp" style="margin:6px 0 0">Measure: tap two points; drag an end to adjust. Wheel path: tap to add points, then drag a point or the line itself. New path starts another one. Mark imprint: tap each imprint, then copy the list. Second wheel: draws where the other wheel of an axle would run, on the left or right of the active path (as seen walking from its first point); red means it would hit a wall or bed, or roll backward. Groove line: tap two points along the gap in an imprint; it draws the axle across it. Double-tap any point or pin to delete it.</p>
-    <dl id="tout" style="margin-top:6px"></dl></div>
+  <div class="thead"><span class="ttitle">Measure &amp; path</span><span style="display:flex;gap:6px"><button class="helpb" data-sec="tools" aria-label="Help with measuring tools" title="Help">?</button><button id="ttog" aria-expanded="false" aria-label="Measure and path tools" title="Measure and path tools"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16.5 16.5 3l4.5 4.5L7.5 21z"/><path d="M7 12.5l1.8 1.8M9.8 9.7l2.6 2.6M12.6 6.9l1.8 1.8M15.4 4.1l2.6 2.6"/></svg></button></span></div>
+  <div class="tbody">
+    <div class="tsec"><div class="lbl">Tool</div><div class="row">
+      <button id="tmeas" aria-pressed="false">Measure</button><button id="tpath" aria-pressed="false">Wheel path</button><button id="tmark" aria-pressed="false">Mark imprint</button><button id="tgroove" aria-pressed="false">Groove line</button></div></div>
+    <div class="tsec" data-for="path" hidden><div class="lbl">Wheel path</div><div class="row"><button id="tnew">New path</button><button id="taxle">Second wheel: off</button></div>
+      <div class="srow"><label for="tw">Tire width</label><input id="tw" type="range" min="0.5" max="4" step="0.25" value="1.5"><span id="twv">1.5″</span></div></div>
+    <div class="tsec" data-for="path groove" hidden><div class="srow"><label for="tg">Wheel spacing</label><input id="tg" type="range" min="8" max="26" step="0.25" value="16"><span id="tgv">16″</span></div></div>
+    <div class="tsec" data-for="mark" hidden><div class="row"><button id="tcopy" hidden>Copy imprint list</button></div>
+      <textarea id="tcopytxt" hidden rows="3" style="width:100%;font:11px var(--mono);background:#0c101a;color:var(--fg);border:1px solid var(--line);border-radius:6px"></textarea></div>
+    <div class="row tedit"><button id="tundo">Undo point</button><button id="tclear">Clear all</button></div>
+    <dl id="tout"></dl></div>
 </aside>
 <aside id="panel">
-  <div class="head"><div><h1>Guthrie porch, to scale</h1><div class="sub">1 tile spacing ≈ 12.6 in · drag to orbit, pinch or scroll to zoom</div></div><button id="toggle" aria-expanded="true">Hide</button><button id="sidehide" aria-label="Collapse panel" title="Collapse panel">«</button></div>
+  <div class="head"><div><h1>PBATT</h1><div class="sub">Porch Blood Analysis and Timing Tool</div></div><button class="helpb" aria-label="Help" title="Help">?</button><button id="toggle" aria-expanded="true">Hide</button><button id="sidehide" aria-label="Collapse panel" title="Collapse panel">«</button></div>
   <div>
     <div class="lbl">Moon time, Feb 1 2026 (MST)</div>
     <div class="time" id="t">2:25 am</div>
@@ -130,7 +163,6 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
   <div><div class="lbl">Security door</div>
     <div class="row" style="align-items:center;gap:10px"><input id="door" type="range" min="0" max="90" step="1" value="0" aria-label="Security door angle" style="flex:1"><span id="doorv" style="font:500 13px var(--mono);width:52px;text-align:right">0°</span></div></div>
   <p class="note"><b>Images:</b> NewsNation, Fox News Digital, BBC News, Just Jared (justjared.com). Used for non-commercial analysis; images remain the property of their owners. Model: WarpedWing Labs.</p>
-  <p class="note"><b>Estimated:</b> ceiling height, pillar overhang, doorbell camera (fitted to footage), left gravel bed and plants, wreath, mailer. Tiles not visible in any image are shown as plain tiles. Everything outside the porch is approximate.</p>
 </aside>
 <script type="importmap">{"imports":{"three":"./vendor/three.module.min.js","three/addons/":"./vendor/jsm/"}}</script>
 <script type="module">
@@ -176,8 +208,8 @@ function buildFig(){ fig.clear(); const H=FIG_IN*0.0254;
   fig.add(body,head); fig.traverse(o=>{if(o.isMesh)o.castShadow=true}); }
 buildFig(); const FOOT=[4.85,1.5]; fig.position.copy(W(FOOT[0],FOOT[1],0)); scene.add(fig);
 let floors=[];
-window.MOON=await (await fetch('moon.json?v=61')).json();
-new GLTFLoader().load('porch.glb?v=61',g=>{
+window.MOON=await (await fetch('moon.json?v=63')).json();
+new GLTFLoader().load('porch.glb?v=63',g=>{
   g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=!/porch_floor|gravel|walkway|yard|ground|doormat|B6_C6|tile_edge|drive|road|stepstone|stone_path/.test(o.name);o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
     if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=/hires/.test(o.name)?3:2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
@@ -417,11 +449,13 @@ function updateOut(){ let h='';
 // --- buttons
 const bm=document.getElementById('tmeas'), bp=document.getElementById('tpath'), bk=document.getElementById('tmark');
 function setTool(t){ tool=(tool===t)?'none':t; bm.setAttribute('aria-pressed',tool==='measure'); bp.setAttribute('aria-pressed',tool==='path'); bk.setAttribute('aria-pressed',tool==='mark'); bg.setAttribute('aria-pressed',tool==='groove');
+  document.querySelectorAll('#tools .tsec[data-for]').forEach(el=>{ el.hidden=!el.dataset.for.split(' ').includes(tool); });
   if(tool!=='none'&&placing){ document.getElementById('place').click(); } }
 const bg=document.getElementById('tgroove');
 bm.onclick=()=>setTool('measure'); bp.onclick=()=>setTool('path'); bk.onclick=()=>setTool('mark'); bg.onclick=()=>setTool('groove');
 document.getElementById('taxle').onclick=()=>{ const P=paths[active]; if(!P){ return; } P.axle=!P.axle?-1:P.axle<0?1:0; rebuildPath(P); };
 document.getElementById('tg').addEventListener('input',e=>{ gauge=+e.target.value; document.getElementById('tgv').textContent=gauge+'″'; paths.forEach(P=>{ if(P.axle) rebuildPath(P); }); grooves.forEach(grooveGeom); updateOut(); render(); });
+{ const dlg=document.getElementById('help'); document.querySelectorAll('.helpb').forEach(b=>b.onclick=()=>{ dlg.showModal(); if(b.dataset.sec) document.getElementById('help-'+b.dataset.sec).scrollIntoView({block:'start'}); else dlg.scrollTop=0; }); dlg.querySelector('.x').onclick=()=>dlg.close(); dlg.addEventListener('click',e=>{ if(e.target===dlg) dlg.close(); }); }
 document.getElementById('tnew').onclick=()=>{ newPath(); if(tool!=='path') setTool('path'); };
 document.getElementById('tclear').onclick=()=>{ toolG.clear(); labels.forEach(l=>l.el.remove()); labels.length=0; meas.length=0; mPend=null; paths.length=0; active=-1; marks.length=0; hist.length=0; grooves.length=0; gPend=null; updateOut(); render(); };
 document.getElementById('tundo').onclick=()=>{
