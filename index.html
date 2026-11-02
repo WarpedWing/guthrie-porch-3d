@@ -113,8 +113,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 <li><b>Wheel path:</b> tap to add points, then drag a point, or drag the line itself to bend it. <b>New path</b> starts another path in a new colour. <b>Tire width</b> sets the band width.</li>
 <li><b>Second wheel:</b> shows where the other wheel on the same axle would run, on the left or right of the active path as seen walking from its first point. <b>Wheel spacing</b> sets the distance between the wheel centres. Red means that wheel would hit a wall, pillar or bed, or would have to roll backward.</li>
 <li><b>Mark imprint:</b> tap each imprint to drop a numbered pin, then <b>Copy imprint list</b> to copy their positions.</li>
-<li><b>Groove line:</b> tap two points along the gap in a twin-block imprint (the rolling direction). It draws the axle across it with markers at the wheel spacing on each side.</li>
-<li><b>Editing:</b> double-tap any point or pin to delete it; a measure or groove end deletes the whole line. <b>Undo point</b> removes the last thing you added.</li>
+<li><b>Editing:</b> double-tap any point or pin to delete it; a measure end deletes the whole measurement. <b>Undo point</b> removes the last thing you added.</li>
 </ul>
 <h3>What's estimated</h3>
 <p>Ceiling height, pillar overhang, doorbell camera position (fitted to the footage), the left gravel bed and plants, wreath, mailer and front planting. Tiles not visible in any image are shown as plain tiles. Everything outside the porch is approximate.</p>
@@ -125,10 +124,10 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
   <div class="thead"><span class="ttitle">Measure &amp; path</span><span style="display:flex;gap:6px"><button class="helpb" data-sec="tools" aria-label="Help with measuring tools" title="Help">?</button><button id="ttog" aria-expanded="false" aria-label="Measure and path tools" title="Measure and path tools"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16.5 16.5 3l4.5 4.5L7.5 21z"/><path d="M7 12.5l1.8 1.8M9.8 9.7l2.6 2.6M12.6 6.9l1.8 1.8M15.4 4.1l2.6 2.6"/></svg></button></span></div>
   <div class="tbody">
     <div class="tsec"><div class="lbl">Tool</div><div class="row">
-      <button id="tmeas" aria-pressed="false">Measure</button><button id="tpath" aria-pressed="false">Wheel path</button><button id="tmark" aria-pressed="false">Mark imprint</button><button id="tgroove" aria-pressed="false">Groove line</button></div></div>
+      <button id="tmeas" aria-pressed="false">Measure</button><button id="tpath" aria-pressed="false">Wheel path</button><button id="tmark" aria-pressed="false">Mark imprint</button></div></div>
     <div class="tsec" data-for="path" hidden><div class="lbl">Wheel path</div><div class="row"><button id="tnew">New path</button><button id="taxle">Second wheel: off</button></div>
       <div class="srow"><label for="tw">Tire width</label><input id="tw" type="range" min="0.5" max="4" step="0.25" value="1.5"><span id="twv">1.5″</span></div></div>
-    <div class="tsec" data-for="path groove" hidden><div class="srow"><label for="tg">Wheel spacing</label><input id="tg" type="range" min="8" max="26" step="0.25" value="16"><span id="tgv">16″</span></div></div>
+    <div class="tsec" data-for="path" hidden><div class="srow"><label for="tg">Wheel spacing</label><input id="tg" type="range" min="8" max="26" step="0.25" value="16"><span id="tgv">16″</span></div></div>
     <div class="tsec" data-for="mark" hidden><div class="row"><button id="tcopy" hidden>Copy imprint list</button></div>
       <textarea id="tcopytxt" hidden rows="3" style="width:100%;font:11px var(--mono);background:#0c101a;color:var(--fg);border:1px solid var(--line);border-radius:6px"></textarea></div>
     <div class="row tedit"><button id="tundo">Undo point</button><button id="tclear">Clear all</button></div>
@@ -208,8 +207,8 @@ function buildFig(){ fig.clear(); const H=FIG_IN*0.0254;
   fig.add(body,head); fig.traverse(o=>{if(o.isMesh)o.castShadow=true}); }
 buildFig(); const FOOT=[4.85,1.5]; fig.position.copy(W(FOOT[0],FOOT[1],0)); scene.add(fig);
 let floors=[];
-window.MOON=await (await fetch('moon.json?v=63')).json();
-new GLTFLoader().load('porch.glb?v=63',g=>{
+window.MOON=await (await fetch('moon.json?v=64')).json();
+new GLTFLoader().load('porch.glb?v=64',g=>{
   g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=!/porch_floor|gravel|walkway|yard|ground|doormat|B6_C6|tile_edge|drive|road|stepstone|stone_path/.test(o.name);o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
     if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=/hires/.test(o.name)?3:2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
@@ -451,7 +450,7 @@ const bm=document.getElementById('tmeas'), bp=document.getElementById('tpath'), 
 function setTool(t){ tool=(tool===t)?'none':t; bm.setAttribute('aria-pressed',tool==='measure'); bp.setAttribute('aria-pressed',tool==='path'); bk.setAttribute('aria-pressed',tool==='mark'); bg.setAttribute('aria-pressed',tool==='groove');
   document.querySelectorAll('#tools .tsec[data-for]').forEach(el=>{ el.hidden=!el.dataset.for.split(' ').includes(tool); });
   if(tool!=='none'&&placing){ document.getElementById('place').click(); } }
-const bg=document.getElementById('tgroove');
+const bg=document.getElementById('tgroove')||document.createElement('button');   // groove-line tool hidden for now
 bm.onclick=()=>setTool('measure'); bp.onclick=()=>setTool('path'); bk.onclick=()=>setTool('mark'); bg.onclick=()=>setTool('groove');
 document.getElementById('taxle').onclick=()=>{ const P=paths[active]; if(!P){ return; } P.axle=!P.axle?-1:P.axle<0?1:0; rebuildPath(P); };
 document.getElementById('tg').addEventListener('input',e=>{ gauge=+e.target.value; document.getElementById('tgv').textContent=gauge+'″'; paths.forEach(P=>{ if(P.axle) rebuildPath(P); }); grooves.forEach(grooveGeom); updateOut(); render(); });
