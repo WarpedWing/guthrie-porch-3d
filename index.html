@@ -93,10 +93,12 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
   <div class="thead"><span class="ttitle">Measure &amp; path</span><button id="ttog" aria-expanded="false" aria-label="Measure and path tools" title="Measure and path tools"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16.5 16.5 3l4.5 4.5L7.5 21z"/><path d="M7 12.5l1.8 1.8M9.8 9.7l2.6 2.6M12.6 6.9l1.8 1.8M15.4 4.1l2.6 2.6"/></svg></button></div>
   <div class="tbody"><div class="row">
     <button id="tmeas" aria-pressed="false">Measure</button><button id="tpath" aria-pressed="false">Wheel path</button><button id="tnew">New path</button><button id="tmark" aria-pressed="false">Mark imprint</button></div>
+    <div class="row" style="margin-top:6px"><button id="taxle">Second wheel: off</button><button id="tgroove" aria-pressed="false">Groove line</button></div>
     <div class="row" style="margin-top:6px"><button id="tundo">Undo point</button><button id="tclear">Clear all</button><button id="tcopy" hidden>Copy imprint list</button></div>
     <textarea id="tcopytxt" hidden rows="3" style="width:100%;font:11px var(--mono);background:#0c101a;color:var(--fg);border:1px solid var(--line);border-radius:6px"></textarea>
     <div class="row" style="align-items:center;gap:10px;margin-top:8px"><label for="tw" style="font-size:12px;color:var(--muted);width:76px">Tire width</label><input id="tw" type="range" min="0.5" max="4" step="0.25" value="1.5" style="flex:1"><span id="twv" style="font:500 13px var(--mono);width:44px;text-align:right">1.5″</span></div>
-    <p class="note" id="thelp" style="margin:6px 0 0">Measure: tap two points; drag an end to adjust. Wheel path: tap to add points, then drag a point or the line itself. New path starts another one. Mark imprint: tap each imprint, then copy the list.</p>
+    <div class="row" style="align-items:center;gap:10px;margin-top:4px"><label for="tg" style="font-size:12px;color:var(--muted);width:76px">Wheel spacing</label><input id="tg" type="range" min="8" max="26" step="0.25" value="16" style="flex:1"><span id="tgv" style="font:500 13px var(--mono);width:44px;text-align:right">16″</span></div>
+    <p class="note" id="thelp" style="margin:6px 0 0">Measure: tap two points; drag an end to adjust. Wheel path: tap to add points, then drag a point or the line itself. New path starts another one. Mark imprint: tap each imprint, then copy the list. Second wheel: draws where the other wheel of an axle would run, on the left or right of the active path (as seen walking from its first point); red means it would hit a wall or bed, or roll backward. Groove line: tap two points along the gap in an imprint; it draws the axle across it. Double-tap any point or pin to delete it.</p>
     <dl id="tout" style="margin-top:6px"></dl></div>
 </aside>
 <aside id="panel">
@@ -174,10 +176,10 @@ function buildFig(){ fig.clear(); const H=FIG_IN*0.0254;
   fig.add(body,head); fig.traverse(o=>{if(o.isMesh)o.castShadow=true}); }
 buildFig(); const FOOT=[4.85,1.5]; fig.position.copy(W(FOOT[0],FOOT[1],0)); scene.add(fig);
 let floors=[];
-window.MOON=await (await fetch('moon.json?v=54')).json();
-new GLTFLoader().load('porch.glb?v=54',g=>{
+window.MOON=await (await fetch('moon.json?v=60')).json();
+new GLTFLoader().load('porch.glb?v=60',g=>{
   g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=!/porch_floor|gravel|walkway|yard|ground|doormat|B6_C6|tile_edge|drive|road|stepstone|stone_path/.test(o.name);o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
-    if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=2;}}});
+    if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=/hires/.test(o.name)?3:2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
   scene.add(g.scene); document.getElementById('loading').hidden=true; setView('yard'); setCut(false); render();
 },undefined,e=>{document.getElementById('loading').textContent='The model could not be loaded: '+(e.message||e)});
@@ -307,12 +309,15 @@ function placeLabels(){ for(const L of labels){ const s=toScreen(L.p); if(!s){L.
 const _r0=render; render=function(){ _r0(); requestAnimationFrame(placeLabels); };
 ctl.addEventListener('change',()=>requestAnimationFrame(placeLabels)); addEventListener('resize',()=>requestAnimationFrame(placeLabels));
 const fmtIn=m=>{const i=m/IN; return i.toFixed(1)+'″ · '+(i/TILE_IN).toFixed(2)+' sp';};
-const dotMat=new THREE.MeshBasicMaterial({color:0xffd166,depthTest:false,transparent:true}); const lineMat=new THREE.LineBasicMaterial({color:0xffd166,depthTest:false,transparent:true});
-const dotGeo=new THREE.SphereGeometry(0.024,14,10);
+const dotMat=new THREE.MeshBasicMaterial({color:0xffd166,depthTest:false,transparent:true,opacity:0.35,depthWrite:false});
+const pinGeo=new THREE.SphereGeometry(0.0028,10,8), pinMats={};
+function addPin(o,c){ const m=pinMats[c]||(pinMats[c]=new THREE.MeshBasicMaterial({color:c,depthTest:false,transparent:true})); const d=new THREE.Mesh(pinGeo,m); d.renderOrder=13; o.add(d); return o; } const lineMat=new THREE.LineBasicMaterial({color:0xffd166,depthTest:false,transparent:true});
+const dotGeo=new THREE.SphereGeometry(0.014,16,12);
 let tool='none';
 // --- measure
 let mPend=null; const meas=[];
-function addMeasPoint(p){ const d=new THREE.Mesh(dotGeo,dotMat); d.position.copy(p); d.renderOrder=10; toolG.add(d);
+const hist=[];
+function addMeasPoint(p){ const d=addPin(new THREE.Mesh(dotGeo,dotMat),0xffd166); hist.push({t:'m',d}); d.position.copy(p); d.renderOrder=10; toolG.add(d);
   if(!mPend){ mPend={p:p.clone(),d}; render(); return; }
   const g=new THREE.BufferGeometry().setFromPoints([mPend.p,p]); const ln=new THREE.Line(g,lineMat); ln.renderOrder=10; toolG.add(ln);
   const dist=mPend.p.distanceTo(p); const L=addLabel(mPend.p.clone().add(p).multiplyScalar(0.5),fmtIn(dist));
@@ -320,18 +325,22 @@ function addMeasPoint(p){ const d=new THREE.Mesh(dotGeo,dotMat); d.position.copy
 function delLabel(L){ L.el.remove(); const i=labels.indexOf(L); if(i>=0) labels.splice(i,1); }
 // --- wheel paths (several)
 const COLORS=[0x4cc9f0,0xf72585,0x80ed99,0xffb703,0xb388ff,0xff7b54]; let tireIn=1.5;
-const hGeo=new THREE.SphereGeometry(0.035,16,12);
+const hGeo=new THREE.SphereGeometry(0.014,16,12);
 const down_=new THREE.Raycaster();
 function surfaceY(x,z,yHint){ down_.set(new THREE.Vector3(x,yHint+0.6,z),new THREE.Vector3(0,-1,0));
   const h=down_.intersectObjects(scene.children,true).find(h=>h.object.isMesh&&h.object.visible&&!noPick(h.object)&&!(h.object.material&&h.object.material.colorWrite===false));
   return h?h.point.y:yHint; }
-const paths=[]; let active=-1;
+const paths=[]; let active=-1; const axMat=new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:0.6,side:THREE.DoubleSide,depthWrite:false,depthTest:false});
 function newPath(){ const c=COLORS[paths.length%COLORS.length]; const P={pts:[],handles:[],ribbon:null,samples:[],segLabels:[],stats:null,color:c,
-  hMat:new THREE.MeshBasicMaterial({color:c,depthTest:false,transparent:true}),
+  hMat:new THREE.MeshBasicMaterial({color:c,depthTest:false,transparent:true,opacity:0.35,depthWrite:false}),
   ribMat:new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.75,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-4})};
   paths.push(P); active=paths.length-1; updateOut(); return P; }
 function cur(){ if(active<0||!paths[active]) newPath(); return paths[active]; }
-function rebuildPath(P){ if(P.ribbon){toolG.remove(P.ribbon); P.ribbon.geometry.dispose(); P.ribbon=null;} P.stats=null; P.samples=[];
+let gauge=16;
+function minRadius(Q){ const k=4; let m=Infinity; for(let i=k;i<Q.length-k;i++){ const A=Q[i-k],B=Q[i],C=Q[i+k];
+  const a=Math.hypot(B.x-C.x,B.z-C.z), b=Math.hypot(A.x-C.x,A.z-C.z), c=Math.hypot(A.x-B.x,A.z-B.z), ar=Math.abs((B.x-A.x)*(C.z-A.z)-(C.x-A.x)*(B.z-A.z))/2;
+  if(a<1e-4||c<1e-4){ m=0; continue; } if(ar>1e-12){ const r_=a*b*c/(4*ar); if(r_<m) m=r_; } } return m; }
+function rebuildPath(P){ if(P.ribbon){toolG.remove(P.ribbon); P.ribbon.geometry.dispose(); P.ribbon=null;} if(P.ax){ P.ax.forEach(o=>{toolG.remove(o); o.geometry.dispose();}); } P.ax=[]; P.stats=null; P.samples=[];
   P.segLabels.forEach(delLabel); P.segLabels.length=0;
   if(P.pts.length<2){ updateOut(); render(); return; }
   const curve=new THREE.CatmullRomCurve3(P.pts.map(p=>p.clone()),false,'centripetal');
@@ -352,12 +361,48 @@ function rebuildPath(P){ if(P.ribbon){toolG.remove(P.ribbon); P.ribbon.geometry.
     for(let j=1;j<=M;j++){ const q=curve.getPoint((k+j/M)/(n-1)); L+=q.distanceTo(prev); prev=q; }
     segs.push(L);
     if(n>2){ const mid=curve.getPoint((k+0.5)/(n-1)); mid.y=surfaceY(mid.x,mid.z,mid.y)+0.01; const lb=addLabel(mid,(L/IN).toFixed(1)+'″'); lb.el.classList.add('seg'); lb.el.style.color='#'+P.color.toString(16).padStart(6,'0'); P.segLabels.push(lb); } }
-  P.stats={len,minR,tiles:[...tiles],segs}; updateOut(); render(); }
-function addHandle(P,p,at){ const h=new THREE.Mesh(hGeo,P.hMat); h.position.copy(p); h.renderOrder=11; toolG.add(h); if(at==null){P.pts.push(p.clone()); P.handles.push(h);} else {P.pts.splice(at,0,p.clone()); P.handles.splice(at,0,h);} }
+  minR=minRadius(Q); P.stats={len,minR,tiles:[...tiles],segs};
+  if(P.axle){ const sg=P.axle>0?1:-1, G=gauge*IN, Q2=[], T=[], col=[], p2=[], ix=[]; let len2=0, minR2=Infinity, back=0, blocked=0;
+    for(let i=0;i<=N;i++){ const p=Q[i], a=Q[Math.max(0,i-1)], b=Q[Math.min(N,i+1)]; const t=new THREE.Vector3(b.x-a.x,0,b.z-a.z).normalize(), n=new THREE.Vector3(-t.z,0,t.x);
+      const q=p.clone().addScaledVector(n,sg*G); q.y=surfaceY(q.x,q.z,p.y); Q2.push(q); T.push(t); }
+    const base=new THREE.Color(P.color).lerp(new THREE.Color(0xffffff),0.35), bad=new THREE.Color(0xff3030);
+    for(let i=0;i<=N;i++){ const q=Q2[i], a=Q2[Math.max(0,i-1)], b=Q2[Math.min(N,i+1)];
+      let t2=new THREE.Vector3(b.x-a.x,0,b.z-a.z); const rev=t2.dot(T[i])<0; if(t2.lengthSq()<1e-12) t2.copy(T[i]); t2.normalize(); const n2=new THREE.Vector3(-t2.z,0,t2.x);
+      const A=q.z/S, B=-q.x/S, off=A<-1||(A<3.8&&(B<-0.93||B>6.09))||(A>=3.8&&A<5.16&&(B<-0.2||B>5.36)); if(rev) back++; if(off) blocked++;
+      const c=(rev||off)?bad:base;
+      for(const s2 of [-1,1]){ const v=q.clone().addScaledVector(n2,s2*hw); v.y=q.y+0.004; p2.push(v.x,v.y,v.z); col.push(c.r,c.g,c.b); }
+      if(i>0) len2+=q.distanceTo(Q2[i-1]);
+      if(i>0&&i<N){ const v1=new THREE.Vector2(q.x-a.x,q.z-a.z), v2=new THREE.Vector2(b.x-q.x,b.z-q.z); const ang=Math.abs(Math.atan2(v1.x*v2.y-v1.y*v2.x,v1.dot(v2))); if(ang>1e-4){ const R_=((v1.length()+v2.length())/2)/ang; if(R_<minR2) minR2=R_; } }
+      if(i<N){ const k=2*i; ix.push(k,k+1,k+3,k,k+3,k+2); } }
+    const g2=new THREE.BufferGeometry(); g2.setAttribute('position',new THREE.Float32BufferAttribute(p2,3)); g2.setAttribute('color',new THREE.Float32BufferAttribute(col,3)); g2.setIndex(ix);
+    const m2=new THREE.Mesh(g2,axMat); m2.renderOrder=9; toolG.add(m2); P.ax.push(m2);
+    const rp=[]; for(let k=0;k<n;k++){ const u=k/(n-1); const p=curve.getPoint(u); const t=curve.getTangent(u); t.y=0; t.normalize(); const nn=new THREE.Vector3(-t.z,0,t.x);
+      const q=p.clone().addScaledVector(nn,sg*G); q.y=surfaceY(q.x,q.z,p.y)+0.006; rp.push(p.x,p.y+0.006,p.z,q.x,q.y,q.z); }
+    const gr=new THREE.BufferGeometry(); gr.setAttribute('position',new THREE.Float32BufferAttribute(rp,3)); const rl=new THREE.LineSegments(gr,new THREE.LineBasicMaterial({color:P.color,depthTest:false,transparent:true,opacity:0.55})); rl.renderOrder=10; toolG.add(rl); P.ax.push(rl);
+    P.stats.ax={side:sg>0?'right':'left',len:len2,minR:minRadius(Q2),back,blocked,N}; }
+  updateOut(); render(); }
+function addHandle(P,p,at){ const h=addPin(new THREE.Mesh(hGeo,P.hMat),P.color); hist.push({t:'p',P,h}); h.position.copy(p); h.renderOrder=11; toolG.add(h); if(at==null){P.pts.push(p.clone()); P.handles.push(h);} else {P.pts.splice(at,0,p.clone()); P.handles.splice(at,0,h);} }
+function removeMeas(m){ const i=meas.indexOf(m); if(i<0) return false; meas.splice(i,1); m.objs.forEach(o=>toolG.remove(o)); delLabel(m.label); updateOut(); render(); return true; }
+function removeHandle(P,h){ const i=P.handles.indexOf(h); if(i<0) return false; P.handles.splice(i,1); P.pts.splice(i,1); toolG.remove(h); rebuildPath(P); return true; }
+function removeMark(m){ const i=marks.indexOf(m); if(i<0) return false; marks.splice(i,1); toolG.remove(m.d); delLabel(m.L); marks.forEach((q,j)=>q.L.el.textContent=String(j+1)); updateOut(); render(); return true; }
 function addPathPoint(p){ const P=cur(); addHandle(P,p); rebuildPath(P); }
 // --- imprint marks
-const marks=[]; const markMat=new THREE.MeshBasicMaterial({color:0xff4d6d,depthTest:false,transparent:true}); const markGeo=new THREE.SphereGeometry(0.022,14,10);
-function addMark(p){ const d=new THREE.Mesh(markGeo,markMat); d.position.copy(p); d.renderOrder=12; toolG.add(d); const L=addLabel(p,String(marks.length+1)); L.el.classList.add('mk'); marks.push({d,L}); updateOut(); render(); }
+const marks=[]; const markMat=new THREE.MeshBasicMaterial({color:0xff4d6d,depthTest:false,transparent:true}); const markGeo=new THREE.SphereGeometry(0.011,14,10);
+function addMark(p){ const d=new THREE.Mesh(markGeo,markMat); d.position.copy(p); d.renderOrder=12; toolG.add(d); const L=addLabel(p,String(marks.length+1)); L.el.classList.add('mk'); const m={d,L}; marks.push(m); hist.push({t:'k',m}); updateOut(); render(); }
+// --- groove lines (direction of rolling from the gap in an imprint) and the axle across it
+const grooves=[]; let gPend=null; const gMat=new THREE.MeshBasicMaterial({color:0xffffff,depthTest:false,transparent:true,opacity:0.35,depthWrite:false});
+const gLine=new THREE.LineBasicMaterial({color:0xffffff,depthTest:false,transparent:true}), aLine=new THREE.LineDashedMaterial({color:0xffffff,depthTest:false,transparent:true,dashSize:0.02,gapSize:0.012});
+function grooveGeom(G){ const a=G.objs[0].position,b=G.objs[1].position; G.ln.geometry.setFromPoints([a,b]);
+  const M=a.clone().add(b).multiplyScalar(0.5), d=new THREE.Vector3(b.x-a.x,0,b.z-a.z).normalize(), n=new THREE.Vector3(-d.z,0,d.x), Gm=gauge*IN;
+  const e1=M.clone().addScaledVector(n,Gm), e2=M.clone().addScaledVector(n,-Gm); e1.y=surfaceY(e1.x,e1.z,M.y)+0.004; e2.y=surfaceY(e2.x,e2.z,M.y)+0.004;
+  G.ax.geometry.setFromPoints([e2,M,e1]); G.ax.computeLineDistances(); G.objs[3].position.copy(e1); G.objs[4].position.copy(e2); G.L1.p.copy(e1); G.L2.p.copy(e2); G.L1.el.textContent=G.L2.el.textContent=gauge+'″'; }
+function addGroovePoint(p){ const d=addPin(new THREE.Mesh(dotGeo,gMat),0xffffff); d.position.copy(p); d.renderOrder=10; toolG.add(d); hist.push({t:'g',d});
+  if(!gPend){ gPend=d; render(); return; }
+  const ln=new THREE.Line(new THREE.BufferGeometry(),gLine); ln.renderOrder=10; const ax=new THREE.Line(new THREE.BufferGeometry(),aLine); ax.renderOrder=10;
+  const t1=addPin(new THREE.Mesh(dotGeo,gMat),0xffffff), t2=addPin(new THREE.Mesh(dotGeo,gMat),0xffffff); [ln,ax,t1,t2].forEach(o=>toolG.add(o));
+  const G={objs:[gPend,d,ln,t1,t2,ax],ln,ax,L1:addLabel(p,''),L2:addLabel(p,'')}; G.L1.el.classList.add('seg'); G.L2.el.classList.add('seg'); gPend=null;
+  grooveGeom(G); grooves.push(G); updateOut(); render(); }
+function removeGroove(G){ const i=grooves.indexOf(G); if(i<0) return false; grooves.splice(i,1); G.objs.forEach(o=>toolG.remove(o)); delLabel(G.L1); delLabel(G.L2); updateOut(); render(); return true; }
 // --- output
 const out=document.getElementById('tout');
 const hex=c=>'#'+c.toString(16).padStart(6,'0');
@@ -365,20 +410,27 @@ function updateOut(){ let h='';
   meas.forEach((m,i)=>{ h+=`<dt>Measure ${i+1}</dt><dd>${fmtIn(m.dist)}</dd>`; });
   paths.forEach((P,i)=>{ if(!P.pts.length) return; const sw=`<span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${hex(P.color)};margin-right:6px"></span>`;
     if(!P.stats){ h+=`<dt>${sw}Path ${i+1}${i===active?' (active)':''}</dt><dd>1 point</dd>`; return; }
-    h+=`<dt>${sw}Path ${i+1}${i===active?' (active)':''}</dt><dd>${fmtIn(P.stats.len)}</dd>${P.stats.segs.length>1?`<dt>Segments</dt><dd style="white-space:normal">${P.stats.segs.map(v=>(v/IN).toFixed(1)+'″').join(' · ')}</dd>`:''}<dt>Tightest turn</dt><dd>${isFinite(P.stats.minR)?(P.stats.minR/IN).toFixed(1)+'″':'straight'}</dd><dt>Tiles</dt><dd style="white-space:normal">${P.stats.tiles.join(', ')||'none'}</dd>`; });
+    h+=`<dt>${sw}Path ${i+1}${i===active?' (active)':''}</dt><dd>${fmtIn(P.stats.len)}</dd>${P.stats.segs.length>1?`<dt>Segments</dt><dd style="white-space:normal">${P.stats.segs.map(v=>(v/IN).toFixed(1)+'″').join(' · ')}</dd>`:''}<dt>Tightest turn</dt><dd>${isFinite(P.stats.minR)?(P.stats.minR/IN).toFixed(1)+'″':'straight'}</dd><dt>Tiles</dt><dd style="white-space:normal">${P.stats.tiles.join(', ')||'none'}</dd>${P.stats.ax?`<dt>Second wheel (${P.stats.ax.side}, ${gauge}″)</dt><dd>${(P.stats.ax.len/IN).toFixed(1)}″</dd><dt>Its tightest turn</dt><dd>${isFinite(P.stats.ax.minR)?(P.stats.ax.minR/IN).toFixed(1)+'″':'straight'}</dd>${P.stats.ax.back?`<dt style="color:#ff6b6b">Rolls backward</dt><dd style="color:#ff6b6b">${Math.round(P.stats.ax.back/P.stats.ax.N*100)}% of path</dd>`:''}${P.stats.ax.blocked?`<dt style="color:#ff6b6b">Hits wall or bed</dt><dd style="color:#ff6b6b">${Math.round(P.stats.ax.blocked/P.stats.ax.N*100)}% of path</dd>`:''}`:''}`; });
+  if(grooves.length) h+=`<dt>Groove lines</dt><dd>${grooves.length}</dd>`;
   if(marks.length) h+=`<dt>Imprints marked</dt><dd>${marks.length}</dd>`;
-  out.innerHTML=h; document.getElementById('tcopy').hidden=!marks.length; }
+  out.innerHTML=h; const ap=paths[active]; document.getElementById('taxle').textContent='Second wheel: '+(!ap||!ap.axle?'off':ap.axle>0?'right':'left'); document.getElementById('tcopy').hidden=!marks.length; }
 // --- buttons
 const bm=document.getElementById('tmeas'), bp=document.getElementById('tpath'), bk=document.getElementById('tmark');
-function setTool(t){ tool=(tool===t)?'none':t; bm.setAttribute('aria-pressed',tool==='measure'); bp.setAttribute('aria-pressed',tool==='path'); bk.setAttribute('aria-pressed',tool==='mark');
+function setTool(t){ tool=(tool===t)?'none':t; bm.setAttribute('aria-pressed',tool==='measure'); bp.setAttribute('aria-pressed',tool==='path'); bk.setAttribute('aria-pressed',tool==='mark'); bg.setAttribute('aria-pressed',tool==='groove');
   if(tool!=='none'&&placing){ document.getElementById('place').click(); } }
-bm.onclick=()=>setTool('measure'); bp.onclick=()=>setTool('path'); bk.onclick=()=>setTool('mark');
+const bg=document.getElementById('tgroove');
+bm.onclick=()=>setTool('measure'); bp.onclick=()=>setTool('path'); bk.onclick=()=>setTool('mark'); bg.onclick=()=>setTool('groove');
+document.getElementById('taxle').onclick=()=>{ const P=paths[active]; if(!P){ return; } P.axle=!P.axle?-1:P.axle<0?1:0; rebuildPath(P); };
+document.getElementById('tg').addEventListener('input',e=>{ gauge=+e.target.value; document.getElementById('tgv').textContent=gauge+'″'; paths.forEach(P=>{ if(P.axle) rebuildPath(P); }); grooves.forEach(grooveGeom); updateOut(); render(); });
 document.getElementById('tnew').onclick=()=>{ newPath(); if(tool!=='path') setTool('path'); };
-document.getElementById('tclear').onclick=()=>{ toolG.clear(); labels.forEach(l=>l.el.remove()); labels.length=0; meas.length=0; mPend=null; paths.length=0; active=-1; marks.length=0; updateOut(); render(); };
+document.getElementById('tclear').onclick=()=>{ toolG.clear(); labels.forEach(l=>l.el.remove()); labels.length=0; meas.length=0; mPend=null; paths.length=0; active=-1; marks.length=0; hist.length=0; grooves.length=0; gPend=null; updateOut(); render(); };
 document.getElementById('tundo').onclick=()=>{
-  if(tool==='mark'&&marks.length){ const m=marks.pop(); toolG.remove(m.d); delLabel(m.L); updateOut(); render(); return; }
-  if(tool==='path'&&active>=0&&paths[active]&&paths[active].pts.length){ const P=paths[active]; P.pts.pop(); toolG.remove(P.handles.pop()); rebuildPath(P); return; }
-  if(mPend){toolG.remove(mPend.d); mPend=null;} else if(meas.length){ const m=meas.pop(); m.objs.forEach(o=>toolG.remove(o)); delLabel(m.label);} updateOut(); render(); };
+  while(hist.length){ const e=hist.pop();
+    if(e.t==='p'){ if(paths.includes(e.P)&&removeHandle(e.P,e.h)){ active=paths.indexOf(e.P); updateOut(); return; } }
+    else if(e.t==='k'){ if(removeMark(e.m)) return; }
+    else if(e.t==='g'){ if(gPend===e.d){ toolG.remove(gPend); gPend=null; render(); return; } const G=grooves.find(G=>G.objs[1]===e.d); if(G){ removeGroove(G); if(!gPend){ gPend=G.objs[0]; toolG.add(gPend); } render(); return; } }
+    else { if(mPend&&mPend.d===e.d){ toolG.remove(mPend.d); mPend=null; updateOut(); render(); return; }
+      const m=meas.find(m=>m.objs[1]===e.d); if(m){ removeMeas(m); if(!mPend){ toolG.add(m.objs[0]); mPend={p:m.objs[0].position.clone(),d:m.objs[0]}; } render(); return; } } } };
 document.getElementById('tw').addEventListener('input',e=>{ tireIn=+e.target.value; document.getElementById('twv').textContent=tireIn+'″'; paths.forEach(rebuildPath); });
 document.getElementById('tcopy').onclick=async()=>{ const S_=S; const rows=marks.map((m,i)=>({n:i+1,row_a:+(m.d.position.z/S_).toFixed(3),col_b:+(-m.d.position.x/S_).toFixed(3),
     x_in:+(-m.d.position.x/IN).toFixed(2),y_in:+(m.d.position.z/IN).toFixed(2)}));
@@ -386,7 +438,7 @@ document.getElementById('tcopy').onclick=async()=>{ const S_=S; const rows=marks
   try{ await navigator.clipboard.writeText(txt); b.textContent='Copied'; }catch(_){ const ta=document.getElementById('tcopytxt'); ta.hidden=false; ta.value=txt; ta.select(); b.textContent='Select and copy below'; }
   setTimeout(()=>b.textContent='Copy imprint list',2000); };
 // --- pointer handling
-let drag=null, dn=null;
+let drag=null, dn=null, lastTap=null;
 function nearest(list,e,T){ let best=null,bd=T; list.forEach(o=>{ const sp=toScreen(o.pos); if(!sp) return; const d=Math.hypot(sp[0]-e.clientX,sp[1]-e.clientY); if(d<bd){bd=d;best=o;} }); return best; }
 function grab(e){ drag=null; const T=e.pointerType==='touch'?34:15;
   if(tool==='path'){
@@ -398,6 +450,7 @@ function grab(e){ drag=null; const T=e.pointerType==='touch'?34:15;
     let k=0,inc=Infinity; for(let i=0;i<P.pts.length-1;i++){ const a=P.pts[i],b=P.pts[i+1]; const c=a.distanceTo(bs)+bs.distanceTo(b)-a.distanceTo(b); if(c<inc){inc=c;k=i;} }
     addHandle(P,bs,k+1); drag={kind:'h',pi:bp,k:k+1}; rebuildPath(P); return true; }
   if(tool==='mark'){ const g=nearest(marks.map((m,i)=>({pos:m.d.position,kind:'k',i})),e,T); if(g){drag=g; return true;} return false; }
+  if(tool==='groove'){ const c=[]; grooves.forEach(G=>[0,1].forEach(j=>c.push({pos:G.objs[j].position,kind:'g',G,j}))); const g=nearest(c,e,T); if(g){drag=g; return true;} return false; }
   const cands=[]; meas.forEach(m=>[0,1].forEach(j=>cands.push({pos:m.objs[j].position,kind:'m',m,j})));
   const g=nearest(cands,e,T); if(g){drag=g; return true;} return false; }
 r.domElement.addEventListener('pointerdown',e=>{ dn=[e.clientX,e.clientY];
@@ -405,14 +458,20 @@ r.domElement.addEventListener('pointerdown',e=>{ dn=[e.clientX,e.clientY];
 function moveMeas(m,j,p){ m.objs[j].position.copy(p); const a=m.objs[0].position,b=m.objs[1].position; m.ln.geometry.setFromPoints([a,b]); m.dist=a.distanceTo(b); m.label.p.copy(a).add(b).multiplyScalar(0.5); m.label.el.textContent=fmtIn(m.dist); updateOut(); render(); }
 r.domElement.addEventListener('pointermove',e=>{ if(!drag) return; const hit=pick(e); if(!hit) return;
   if(drag.kind==='m') moveMeas(drag.m,drag.j,hit.point);
+  else if(drag.kind==='g'){ drag.G.objs[drag.j].position.copy(hit.point); grooveGeom(drag.G); render(); }
   else if(drag.kind==='k'){ const m=marks[drag.i]; m.d.position.copy(hit.point); m.L.p.copy(hit.point); render(); }
   else { const P=paths[drag.pi]; P.pts[drag.k].copy(hit.point); P.handles[drag.k].position.copy(hit.point); rebuildPath(P); } });
 r.domElement.addEventListener('pointerup',e=>{
-  if(drag){ drag=null; ctl.enabled=!fish; return; }
+  if(drag){ const g=drag; drag=null; ctl.enabled=!fish;
+    if(dn&&Math.hypot(e.clientX-dn[0],e.clientY-dn[1])<=8&&(g.kind==='h'||g.kind==='k'||g.kind==='m'||g.kind==='g')){
+      const o=g.kind==='h'?paths[g.pi].handles[g.k]:g.kind==='k'?marks[g.i]:g.kind==='g'?g.G:g.m, now=performance.now();
+      if(lastTap&&lastTap.o===o&&now-lastTap.t<450){ lastTap=null; if(g.kind==='h') removeHandle(paths[g.pi],o); else if(g.kind==='k') removeMark(o); else if(g.kind==='g') removeGroove(o); else removeMeas(o); }
+      else lastTap={o,t:now}; }
+    return; }
   if(tool==='none'||!dn||Math.hypot(e.clientX-dn[0],e.clientY-dn[1])>6) return;
   const hit=pick(e); if(!hit) return;
-  if(tool==='measure') addMeasPoint(hit.point); else if(tool==='mark') addMark(hit.point); else addPathPoint(hit.point); });
-window.__tool={setTool,addPathPoint,addMeasPoint,addMark,newPath,marks,paths};
+  if(tool==='groove') addGroovePoint(hit.point); else if(tool==='measure') addMeasPoint(hit.point); else if(tool==='mark') addMark(hit.point); else addPathPoint(hit.point); });
+window.__tool={grooves,setTool,addPathPoint,addMeasPoint,addMark,newPath,marks,paths};
 }
 
 { const pn=document.getElementById('panel'), tab=document.getElementById('sidetab'), hb=document.getElementById('sidehide');
