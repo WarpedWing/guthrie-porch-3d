@@ -107,6 +107,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 <dialog id="help" aria-labelledby="helpt"><button class="x" aria-label="Close help">Close</button><h2 id="helpt">PBATT help</h2>
 <h3>Getting around</h3>
 <p>Drag to orbit, right-drag or two-finger drag to pan, scroll or pinch to zoom. The model is to scale: one tile spacing (tile plus grout) is about 12.6 in.</p>
+<p>In moonlight, the cut-away roof and arch still cast their shadows, so the moonlit edge stays accurate. In daylight with the cutaway on, the sun is placed straight overhead so the whole floor is evenly lit for close inspection.</p>
 <h3 id="help-tools">Measure &amp; path tools</h3>
 <ul>
 <li><b>Measure:</b> tap two points. Drag an end to adjust it.</li>
@@ -152,8 +153,8 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
     <button id="lm" aria-pressed="true">Moonlight</button><button id="ld" aria-pressed="false">Daylight</button></div>
     <div class="row" style="align-items:center;gap:10px;margin-top:8px"><label for="cloud" style="font-size:12px;color:var(--muted);width:76px">Brightness</label><input id="cloud" type="range" min="10" max="100" step="5" value="10" aria-label="Moonlight brightness" style="flex:1"><span id="cloudv" style="font:500 13px var(--mono);width:44px;text-align:right">10%</span></div></div>
   <div><div class="lbl">View</div><div class="row">
-    <button data-v="door">Doorbell</button><button data-v="edge">Moonlit edge</button><button data-v="top">Top-down</button><button data-v="walk">Walk-up</button><button data-v="yard">Front yard</button><button data-v="corner">Gravel corner</button></div></div>
-  <div><div class="lbl">View options</div><div class="row"><button id="cut" aria-pressed="false">Cut away roof and arch top</button></div></div>
+    <button data-v="door">Doorbell</button><button data-v="edge">Moonlit edge</button><button data-v="top">Top-down</button><button data-v="walk">Walk-up</button><button data-v="yard">Front yard</button><button data-v="corner">Gravel corner</button><button data-v="moon">Look at moon</button></div></div>
+  <div><div class="lbl">View options</div><div class="row"><button id="cut" aria-pressed="false">Cut away roof and arch top</button><button id="mpath" aria-pressed="true">Moon path</button></div></div>
   <div><div class="lbl">Figure</div><div class="row">
     <button id="fig" aria-pressed="true">Show figure</button><button id="home">Footage position</button><button id="place" aria-pressed="false">Tap floor to place</button></div>
     <div class="row" style="align-items:center;gap:10px;margin-top:8px"><label for="hgt" style="font-size:12px;color:var(--muted);width:56px">Height</label><input id="hgt" type="range" min="64" max="74" step="1" value="69" style="flex:1"><span id="hgtv" style="font:500 13px var(--mono);width:52px;text-align:right">5′9″</span></div>
@@ -190,7 +191,22 @@ const skyMat=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,fog:
   vertexShader:'varying vec3 vP; void main(){vP=normalize(position); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
   fragmentShader:'uniform vec3 top,hor; varying vec3 vP; void main(){float t=pow(clamp(vP.y,0.,1.),0.45); gl_FragColor=vec4(mix(hor,top,t),1.);\n#include <colorspace_fragment>\n}'});
 const sky=new THREE.Mesh(new THREE.SphereGeometry(57,32,16),skyMat); sky.renderOrder=-1; scene.add(sky);
-const moonDisk=new THREE.Mesh(new THREE.SphereGeometry(0.45,24,16),new THREE.MeshBasicMaterial({color:0xf4f1e6})); night.add(moonDisk);
+// sky moon: true angular size (0.52 deg at 50 m = 0.454 m across), 99.6% lit that night (full at 3:09 pm MST Feb 1)
+function moonTex(){ const c=document.createElement('canvas'); c.width=c.height=256; const g=c.getContext('2d'), R0=126;
+  g.save(); g.beginPath(); g.arc(128,128,R0,0,7); g.clip();
+  g.fillStyle='#ece7da'; g.fillRect(0,0,256,256);
+  // maria, roughly as seen from the northern hemisphere (illustrative)
+  g.fillStyle='rgba(120,118,112,0.55)';
+  [[92,78,30,24],[138,74,18,16],[150,104,22,18],[186,96,13,12],[72,128,34,46],[110,150,20,16],[96,182,18,14],[140,140,12,10],[168,132,14,12]].forEach(([x,y,rx,ry])=>{ g.beginPath(); g.ellipse(x,y,rx,ry,0.3,0,7); g.fill(); });
+  g.fillStyle='rgba(255,255,255,0.5)'; g.beginPath(); g.arc(118,210,6,0,7); g.fill();
+  const ld=g.createRadialGradient(128,128,R0*0.55,128,128,R0); ld.addColorStop(0,'rgba(0,0,0,0)'); ld.addColorStop(1,'rgba(40,36,30,0.45)'); g.fillStyle=ld; g.fillRect(0,0,256,256);
+  g.restore(); const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; }
+function glowTex(){ const c=document.createElement('canvas'); c.width=c.height=128; const g=c.getContext('2d'); const r=g.createRadialGradient(64,64,0,64,64,64);
+  r.addColorStop(0,'rgba(220,230,255,0.55)'); r.addColorStop(0.12,'rgba(200,215,255,0.22)'); r.addColorStop(0.4,'rgba(170,190,240,0.06)'); r.addColorStop(1,'rgba(150,170,230,0)'); g.fillStyle=r; g.fillRect(0,0,128,128); return new THREE.CanvasTexture(c); }
+const moonDisk=new THREE.Group(); night.add(moonDisk);
+{ const d=new THREE.Sprite(new THREE.SpriteMaterial({map:moonTex(),depthWrite:false,fog:false,toneMapped:false})); d.scale.set(0.454,0.454,1); d.renderOrder=1;
+  const h=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex(),depthWrite:false,fog:false,transparent:true,blending:THREE.AdditiveBlending,toneMapped:false})); h.scale.set(7,7,1); h.renderOrder=0; moonDisk.add(h,d); }
+const moonPath=new THREE.Group(); night.add(moonPath);
 { const N=96, pts=[]; for(let k=0;k<=N;k++){const t=k/N*Math.PI*2, h=0.6+1.6*Math.abs(Math.sin(t*3.1))+0.9*Math.abs(Math.sin(t*7.3+1)); pts.push(t,h);}
   const pos=[],idx=[]; for(let k=0;k<=N;k++){const [t,h]=[pts[2*k],pts[2*k+1]]; pos.push(Math.cos(t)*45,-1,Math.sin(t)*45, Math.cos(t)*45,h,Math.sin(t)*45);}
   for(let k=0;k<N;k++){const a=2*k; idx.push(a,a+1,a+2, a+1,a+3,a+2);}
@@ -207,8 +223,8 @@ function buildFig(){ fig.clear(); const H=FIG_IN*0.0254;
   fig.add(body,head); fig.traverse(o=>{if(o.isMesh)o.castShadow=true}); }
 buildFig(); const FOOT=[4.85,1.5]; fig.position.copy(W(FOOT[0],FOOT[1],0)); scene.add(fig);
 let floors=[];
-window.MOON=await (await fetch('moon.json?v=64')).json();
-new GLTFLoader().load('porch.glb?v=64',g=>{
+window.MOON=await (await fetch('moon.json?v=69')).json();
+new GLTFLoader().load('porch.glb?v=69',g=>{
   g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=!/porch_floor|gravel|walkway|yard|ground|doormat|B6_C6|tile_edge|drive|road|stepstone|stone_path/.test(o.name);o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
     if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=/hires/.test(o.name)?3:2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
@@ -226,23 +242,38 @@ function update(){const k=+slider.value,[alt,az]=M[k];
   const L=FIG_IN/Math.tan(alt*Math.PI/180); document.getElementById('sh').textContent=L.toFixed(1)+' in · '+(L/12.6).toFixed(2)+' sp'; document.getElementById('shl').textContent='Shadow ('+FIG_IN+' in tall)';
   moon.position.copy(moon.target.position).addScaledVector(moonDir(alt,az),18); moonDisk.position.copy(moon.target.position).addScaledVector(moonDir(alt,az),50); render();}
 slider.addEventListener('input',update);
+// the moon's track across the sky for the slider's range, hour marks and the footage window
+{ const base=new THREE.Vector3().copy(W(2,2.5,0)), pts=[], fw=[];
+  M.forEach(([alt,az],k)=>{ const p=base.clone().addScaledVector(moonDir(alt,az),49.5); pts.push(p); if(k>=102&&k<=118) fw.push(p); });
+  const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineDashedMaterial({color:0xcfdcff,transparent:true,opacity:0.45,dashSize:0.35,gapSize:0.3,fog:false})); ln.computeLineDistances(); moonPath.add(ln);
+  const hl=new THREE.Line(new THREE.BufferGeometry().setFromPoints(fw),new THREE.LineBasicMaterial({color:0xcfdcff,transparent:true,opacity:0.9,fog:false})); moonPath.add(hl);
+  const lab=t=>{ const c=document.createElement('canvas'); c.width=128; c.height=48; const g=c.getContext('2d'); g.font='600 26px IBM Plex Mono, monospace'; g.fillStyle='rgba(207,220,255,0.85)'; g.textAlign='center'; g.textBaseline='middle'; g.fillText(t,64,24);
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthWrite:false,fog:false,transparent:true,toneMapped:false})); s.scale.set(3.8,1.42,1); return s; };
+  [[30,'1:00'],[90,'2:00'],[150,'3:00'],[210,'4:00']].forEach(([k,t])=>{ if(!M[k]) return; const p=pts[k];
+    const dot=new THREE.Mesh(new THREE.SphereGeometry(0.12,10,8),new THREE.MeshBasicMaterial({color:0xcfdcff,fog:false})); dot.position.copy(p); moonPath.add(dot);
+    const s=lab(t); s.position.copy(p).add(new THREE.Vector3(0,-1.3,0)); moonPath.add(s); }); }
+document.getElementById('mpath').addEventListener('click',e=>{ moonPath.visible=!moonPath.visible; e.currentTarget.setAttribute('aria-pressed',moonPath.visible); render(); });
 
 // light mode
 let day=false; const lm=document.getElementById('lm'), ld=document.getElementById('ld');
 function setLight(d){day=d; if(typeof applyIR==='function') try{applyIR();}catch(e){} lm.setAttribute('aria-pressed',!d); ld.setAttribute('aria-pressed',d);
   moon.visible=!d; sun.visible=d; night.visible=!d; skyMat.uniforms.top.value.set(d?0x5f8fc6:0x04060d); skyMat.uniforms.hor.value.set(d?0xcfdbe6:0x1f2a40); if(window.__hills) window.__hills.material.color.set(d?0x8a7f74:0x0b0d14); hemi.intensity=d?1.1:0.14; hemi.color.set(d?0xcfe0ff:0x9fb3d9); hemi.groundColor.set(d?0x8a6a50:0x2a2018);
-  scene.background=new THREE.Color(d?0x9cb7d6:0x070a12); r.toneMappingExposure=d?1.0:1.8; render();}
+  scene.background=new THREE.Color(d?0x9cb7d6:0x070a12); r.toneMappingExposure=d?1.0:1.8; try{ setCut(cut); }catch(_){} render();}
 lm.onclick=()=>setLight(false); ld.onclick=()=>setLight(true);
 // views
 const V={sattop:[[21.2,4,250],[22,4,0],50],yard:[[24,-2.0,6.5],[3.0,2.6,3.0],50],edge:[[3.4,2.9,9.5],[4.6,2.9,0],40],walk:[[11,2.6,2.2],[2,2.6,3.0],55],door:[[-1.2,0.65,4.4],[4,1.8,0],90],top:[[2.06,2.2,20],[2.0,2.2,0],45],corner:[[5.5,3.5,5.5],[0.5,-1.0,0],55]};
-function setView(k){ if(k==='perp'){ const hp=fig.position.clone(); hp.y+=(FIG_IN*0.0254)-0.1; V.perp=[[hp.z/S,-hp.x/S,hp.y/S],[-1.24,0.67,4.30],60]; bellG.visible=true; bb_.setAttribute('aria-pressed',true);} fish=(k==='door'); if(window.__hills) window.__hills.visible=(k!=='sattop'); ctl.enabled=!fish; applyIR(); if(fish){render(); return;} const [p,t,f]=V[k]; cam.fov=f; cam.up.set(0,1,0); 
-  const P=W(...p),Tt=W(...t); if(cam.aspect<0.8&&k!=='door'){P.sub(Tt).multiplyScalar(k==='top'?1.9:1.7).add(Tt);} cam.position.copy(P); ctl.target.copy(Tt); cam.updateProjectionMatrix(); ctl.update(); render();}
+function setView(k){ ctl.maxPolarAngle=k==='moon'?Math.PI*0.98:Math.PI*0.495;
+  if(k==='moon'){ const [alt,az]=M[+slider.value]; const T=W(2,2.5,1.0), d=moonDir(alt,az); const el=Math.min(alt,40)*Math.PI/180;
+    const h=new THREE.Vector3(d.x,0,d.z).normalize(); const look=h.clone().multiplyScalar(Math.cos(el)).add(new THREE.Vector3(0,Math.sin(el),0));
+    const P=W(13,2.4,5.0); const Tg=P.clone().addScaledVector(look,10); V.moon=[[P.z/S,-P.x/S,P.y/S],[Tg.z/S,-Tg.x/S,Tg.y/S],75]; }
+  if(k==='perp'){ const hp=fig.position.clone(); hp.y+=(FIG_IN*0.0254)-0.1; V.perp=[[hp.z/S,-hp.x/S,hp.y/S],[-1.24,0.67,4.30],60]; bellG.visible=true; bb_.setAttribute('aria-pressed',true);} fish=(k==='door'); if(window.__hills) window.__hills.visible=(k!=='sattop'); ctl.enabled=!fish; applyIR(); if(fish){render(); return;} const [p,t,f]=V[k]; cam.fov=f; cam.up.set(0,1,0); 
+  const P=W(...p),Tt=W(...t); if(cam.aspect<0.8&&k!=='door'&&k!=='moon'){P.sub(Tt).multiplyScalar(k==='top'?1.9:1.7).add(Tt);} cam.position.copy(P); ctl.target.copy(Tt); cam.updateProjectionMatrix(); ctl.update(); render();}
 document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{setView(b.dataset.v); setCut(b.dataset.v==='edge'||b.dataset.v==='top');});
 // cutaway: hide ceiling, beams and the arch mass from the camera; they still cast shadows
 let cut=false; const cutb=document.getElementById('cut');
 function setCut(c){cut=c; cutb.setAttribute('aria-pressed',cut); scene.traverse(o=>{ if(o.isMesh&&/ceiling|beam|door_wall_top|arch_upper|lantern|porch_roof/.test(o.name)){
   if(!o.userData.m0){o.userData.m0=o.material; const m=o.material.clone(); m.colorWrite=false; m.depthWrite=false; o.userData.m1=m;}
-  o.material=cut?o.userData.m1:o.userData.m0; }}); render();}
+  o.material=cut?o.userData.m1:o.userData.m0; if(o.userData.cs0===undefined) o.userData.cs0=o.castShadow; o.castShadow=o.userData.cs0&&!(cut&&day); }}); sun.position.copy(cut&&day?W(2.6,2.5,90):W(40,-10,70)); r.shadowMap.needsUpdate=true; render();}   // cutaway in daylight: sun overhead so walls and roof leave the floor evenly lit
 cutb.onclick=()=>setCut(!cut);
 // figure controls
 const fb=document.getElementById('fig'), pb=document.getElementById('place'); let placing=false;
