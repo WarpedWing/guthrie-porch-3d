@@ -107,13 +107,13 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 <div id="stage"></div>
 <dialog id="help" aria-labelledby="helpt"><button class="x" aria-label="Close help">Close</button><h2 id="helpt">PBATT help</h2>
 <h3>Getting around</h3>
-<p>Drag to orbit, right-drag or two-finger drag to pan, scroll or pinch to zoom. The model is to scale: one tile spacing (tile plus grout) is about 12.6 in.</p>
+<p>Drag to orbit, right-drag or two-finger drag to pan, scroll or pinch to zoom. The model is to scale: its scale is set by the tile spacing (tile plus grout), 12.2 in by default; the Tile spacing slider adjusts it, and every inch reading updates.</p>
 <p>In moonlight, the cut-away roof and arch still cast their shadows, so the moonlit edge stays accurate. In daylight with the cutaway on, the sun is placed straight overhead so the whole floor is evenly lit for close inspection.</p>
 <h3 id="help-tools">Measure &amp; path tools</h3>
 <ul>
 <li><b>Measure:</b> tap two points. Drag an end to adjust it.</li>
 <li><b>Wheel path:</b> tap to add points, then drag a point, or drag the line itself to bend it. <b>New path</b> starts another path in a new colour. <b>Tire width</b> sets the band width.</li>
-<li><b>Second wheel:</b> shows where the other wheel on the same axle would run, on the left or right of the active path as seen walking from its first point. <b>Wheel spacing</b> sets the distance between the wheel centres. Where the path turns more tightly than the wheel spacing, the other wheel has to roll backward while the axle pivots; that part is shown in amber. That's normal for a hand truck, which can spin in place, but a pivot usually scuffs or smears rather than rolling cleanly. Red means that wheel would hit a wall, pillar or bed.</li>
+<li><b>Second wheel:</b> shows where the other wheel on the same axle would run, on the left or right of the active path as seen walking from its first point. <b>Wheel spacing</b> sets the distance between the wheel centres. Wherever the drawn path bends more tightly than the wheel spacing (a radius under, say, 16″ for a 16″ axle), the other wheel must briefly roll backward; that stretch is amber. This is geometry, not an error: a hand truck does it whenever it turns that sharply. Pale yellow is the sweep at a pivot point. Hand-placed bends are often sharper than the real route, so smoothing a bend usually clears the amber. Red means that wheel would hit a wall, pillar or bed.</li>
 <li><b>Pivot point:</b> tap a path point (a white ring shows it's selected), then <b>Make pivot</b>. The path turns in place there instead of curving, and the second wheel swings around that point (shown in amber), as when a hand truck spins on one wheel. Use it where a smear suggests the bloody wheel twisted on the spot. Stamps don't advance during the pivot, because the wheel turns without rolling forward.</li>
 <li><b>Wheel stamps:</b> marks where a tire of the set <b>Wheel diameter</b> touches the floor as it rolls along the active path, starting from its first point (put that where the wheel stood, under the axle). Half turns (½, 1½, …) show where a spot that started on top of the tire lands; whole turns (1, 2, …) show where the spot that started on the floor lands again.</li>
 <li><b>Mark imprint:</b> tap each imprint to drop a numbered pin, then <b>Copy imprint list</b> to copy their positions.</li>
@@ -163,6 +163,8 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
     <div class="row" style="align-items:center;gap:10px;margin-top:8px"><label for="hgt" style="font-size:12px;color:var(--muted);width:56px">Height</label><input id="hgt" type="range" min="64" max="74" step="1" value="69" style="flex:1"><span id="hgtv" style="font:500 13px var(--mono);width:52px;text-align:right">5′9″</span></div>
     <div class="row" style="align-items:center;gap:10px"><label for="cr" style="font-size:12px;color:var(--muted);width:56px">Crouch</label><input id="cr" type="range" min="0" max="10" step="0.5" value="4" style="flex:1"><span id="crv" style="font:500 13px var(--mono);width:52px;text-align:right">4 in</span></div></div>
   <div><div class="lbl">Doorbell camera</div><div class="row"><button id="bell" aria-pressed="true">Show doorbell</button><button id="glow" aria-pressed="false">Person detected (glow)</button><button data-v="perp">Suspect's eye view</button><button id="irb" aria-pressed="true">IR night vision (doorbell view)</button></div></div>
+  <div><div class="lbl">Scale</div>
+    <div class="row" style="align-items:center;gap:10px"><label for="tsc" style="font-size:12px;color:var(--muted);width:76px">Tile spacing</label><input id="tsc" type="range" min="11.8" max="12.8" step="0.05" value="12.2" style="flex:1"><span id="tscv" style="font:500 13px var(--mono);width:52px;text-align:right">12.20″</span></div></div>
   <div><div class="lbl">Security door</div>
     <div class="row" style="align-items:center;gap:10px"><input id="door" type="range" min="0" max="90" step="1" value="0" aria-label="Security door angle" style="flex:1"><span id="doorv" style="font:500 13px var(--mono);width:52px;text-align:right">0°</span></div></div>
   <p class="note"><b>Images:</b> NewsNation, Fox News Digital, BBC News, Just Jared (justjared.com). Used for non-commercial analysis; images remain the property of their owners. Model: WarpedWing Labs.</p>
@@ -172,7 +174,8 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-const S=0.32004; const HEAD=334; let H_IN=69, CR_IN=4, FIG_IN=65;
+const S=0.32004; let TILE_IN=12.2, IN=S/TILE_IN;   // model is built in tile units; inches come from the tile spacing (12.2″ fits a 42×80″ door and the doorbell bracket)
+const HEAD=334; let H_IN=69, CR_IN=4, FIG_IN=65;
 const W=(a,b,h)=>new THREE.Vector3(-b*S,h*S,a*S);
 const stage=document.getElementById('stage');
 const r=new THREE.WebGLRenderer({antialias:true}); r.setPixelRatio(Math.min(devicePixelRatio,2));
@@ -220,14 +223,14 @@ const moonPath=new THREE.Group(); night.add(moonPath);
   night.add(new THREE.Points(lg,new THREE.PointsMaterial({color:0xffd9a0,size:3,sizeAttenuation:false}))); }
 // figure (5'8" standing, 5'4" crouched)
 const fig=new THREE.Group(); const fm=new THREE.MeshStandardMaterial({color:0x2b3140,roughness:0.9});
-function buildFig(){ fig.clear(); const H=FIG_IN*0.0254;
+function buildFig(){ fig.clear(); const H=FIG_IN*IN;
   const body=new THREE.Mesh(new THREE.CapsuleGeometry(0.15,H-0.30-0.24,6,16),fm); body.position.y=(H-0.24)/2; body.scale.set(1,1,0.55);
   const head=new THREE.Mesh(new THREE.SphereGeometry(0.1,20,14),fm); head.position.y=H-0.12;
   fig.add(body,head); fig.traverse(o=>{if(o.isMesh)o.castShadow=true}); }
 buildFig(); const FOOT=[4.85,1.5]; fig.position.copy(W(FOOT[0],FOOT[1],0)); scene.add(fig);
 let floors=[];
-window.MOON=await (await fetch('moon.json?v=73')).json();
-new GLTFLoader().load('porch.glb?v=73',g=>{
+window.MOON=await (await fetch('moon.json?v=84')).json();
+new GLTFLoader().load('porch.glb?v=84',g=>{
   g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=!/porch_floor|gravel|walkway|yard|ground|doormat|B6_C6|tile_edge|drive|road|stepstone|stone_path/.test(o.name);o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
     if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=/hires/.test(o.name)?3:2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
@@ -242,7 +245,7 @@ function update(){const k=+slider.value,[alt,az]=M[k];
   document.getElementById('t').textContent=fmt(k);
   document.getElementById('alt').textContent=alt.toFixed(1)+'°';
   document.getElementById('az').textContent=az.toFixed(1)+'°';
-  const L=FIG_IN/Math.tan(alt*Math.PI/180); document.getElementById('sh').textContent=L.toFixed(1)+' in · '+(L/12.6).toFixed(2)+' sp'; document.getElementById('shl').textContent='Shadow ('+FIG_IN+' in tall)';
+  const L=FIG_IN/Math.tan(alt*Math.PI/180); document.getElementById('sh').textContent=L.toFixed(1)+' in · '+(L/TILE_IN).toFixed(2)+' sp'; document.getElementById('shl').textContent='Shadow ('+FIG_IN+' in tall)';
   moon.position.copy(moon.target.position).addScaledVector(moonDir(alt,az),18); moonDisk.position.copy(moon.target.position).addScaledVector(moonDir(alt,az),50); render();}
 slider.addEventListener('input',update);
 // the moon's track across the sky for the slider's range, hour marks and the footage window
@@ -270,7 +273,7 @@ function setView(k){ ctl.maxPolarAngle=k==='moon'?Math.PI*0.98:Math.PI*0.495;
   if(k==='moon'){ const [alt,az]=M[+slider.value]; const T=W(2,2.5,1.0), d=moonDir(alt,az); const el=Math.min(alt,40)*Math.PI/180;
     const h=new THREE.Vector3(d.x,0,d.z).normalize(); const look=h.clone().multiplyScalar(Math.cos(el)).add(new THREE.Vector3(0,Math.sin(el),0));
     const P=W(13,2.4,5.0); const Tg=P.clone().addScaledVector(look,10); V.moon=[[P.z/S,-P.x/S,P.y/S],[Tg.z/S,-Tg.x/S,Tg.y/S],75]; }
-  if(k==='perp'){ const hp=fig.position.clone(); hp.y+=(FIG_IN*0.0254)-0.1; V.perp=[[hp.z/S,-hp.x/S,hp.y/S],[-1.24,0.67,4.30],60]; bellG.visible=true; bb_.setAttribute('aria-pressed',true);} fish=(k==='door'); if(window.__hills) window.__hills.visible=(k!=='sattop'); ctl.enabled=!fish; applyIR(); if(fish){render(); return;} const [p,t,f]=V[k]; cam.fov=f; cam.up.set(0,1,0); 
+  if(k==='perp'){ const hp=fig.position.clone(); hp.y+=(FIG_IN*IN)-0.1; V.perp=[[hp.z/S,-hp.x/S,hp.y/S],[-1.24,0.67,4.30],60]; bellG.visible=true; bb_.setAttribute('aria-pressed',true);} fish=(k==='door'); if(window.__hills) window.__hills.visible=(k!=='sattop'); ctl.enabled=!fish; applyIR(); if(fish){render(); return;} const [p,t,f]=V[k]; cam.fov=f; cam.up.set(0,1,0); 
   const P=W(...p),Tt=W(...t); if(cam.aspect<0.8&&k!=='door'&&k!=='moon'){P.sub(Tt).multiplyScalar(k==='top'?1.9:1.7).add(Tt);} cam.position.copy(P); ctl.target.copy(Tt); cam.updateProjectionMatrix(); ctl.update(); render();}
 document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{setView(b.dataset.v); setCut(b.dataset.v==='edge'||b.dataset.v==='top');});
 // cutaway: hide ceiling, beams and the arch mass from the camera; they still cast shadows
@@ -287,6 +290,7 @@ const fmtH=i=>Math.floor(i/12)+'′'+(i%12)+'″';
 function setFig(){FIG_IN=H_IN-CR_IN; document.getElementById('hgtv').textContent=fmtH(H_IN); document.getElementById('crv').textContent=CR_IN+' in'; buildFig(); update();}
 document.getElementById('hgt').addEventListener('input',e=>{H_IN=+e.target.value; setFig();});
 document.getElementById('cr').addEventListener('input',e=>{CR_IN=+e.target.value; setFig();});
+document.getElementById('tsc').addEventListener('input',e=>{ TILE_IN=+e.target.value; IN=S/TILE_IN; document.getElementById('tscv').textContent=TILE_IN.toFixed(2)+'″'; setFig(); if(window.__rescale) window.__rescale(); });
 document.getElementById('home').onclick=()=>{fig.position.copy(W(FOOT[0],FOOT[1],0)); fig.visible=true; fb.setAttribute('aria-pressed',true); render();};
 const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(); let down=null;
 r.domElement.addEventListener('pointerdown',e=>down=[e.clientX,e.clientY]);
@@ -348,7 +352,7 @@ window.__ready=()=>floors.length>0;
   b.onclick=()=>{ const c=T.classList.toggle('tcollapsed'); b.setAttribute('aria-expanded',!c); b.setAttribute('aria-pressed',!c); }; }
 // ===== Analysis tools: measure + wheel path =====
 {
-const IN=0.0254, TILE_IN=12.6;
+
 const toolG=new THREE.Group(); scene.add(toolG);
 const noPick=o=>{ for(let p=o;p;p=p.parent){ if(p===fig||p===toolG||p===bellG||p===night||p===sky||p===window.__hills) return true; } return false; };
 function pickRay(e){ const rc=r.domElement.getBoundingClientRect(); const R=new THREE.Raycaster();
@@ -432,22 +436,25 @@ function rebuildPath(P){ if(P.ribbon){toolG.remove(P.ribbon); P.ribbon.geometry.
       segs.push(L);
       if(n>2&&!P.stamps){ const mid=sg_.c.getPoint((k+0.5)/m); mid.y=surfaceY(mid.x,mid.z,mid.y)+0.01; const lb=addLabel(mid,(L/IN).toFixed(1)+'″'); lb.el.classList.add('seg'); lb.el.style.color='#'+P.color.toString(16).padStart(6,'0'); P.segLabels.push(lb); } } });
   P.stats={len,minR,tiles:[...tiles],segs,pivots:cuts.length-2};
-  if(P.axle){ const sg=P.axle>0?1:-1, G=gauge*IN, Q2=[], kind=[], col=[], p2=[], ix=[]; let back=0, blocked=0;
-    const base=new THREE.Color(P.color).lerp(new THREE.Color(0xffffff),0.35), bad=new THREE.Color(0xff3030), piv=new THREE.Color(0xffb020);
+  if(P.axle){ const sg=P.axle>0?1:-1, G=gauge*IN, Q2=[], kind=[], col=[], p2=[], ix=[]; let back=0, blocked=0, sweep=0;
+    const base=new THREE.Color(P.color).lerp(new THREE.Color(0xffffff),0.35), bad=new THREE.Color(0xff3030), piv=new THREE.Color(0xffb020), swc=new THREE.Color(0xffe08a);
     const nrm=t=>new THREE.Vector3(-t.z,0,t.x);
     SEG.forEach((sg_,si)=>{ const Qs=sg_.Q, Ns=Qs.length-1, Ts=[]; for(let i=0;i<=Ns;i++){ const a=Qs[Math.max(0,i-1)], b=Qs[Math.min(Ns,i+1)]; Ts.push(new THREE.Vector3(b.x-a.x,0,b.z-a.z).normalize()); }
       if(si>0){ // swing the other wheel around the pivot (the bloody wheel stays put)
         const c0=SEG[si-1].Q[SEG[si-1].Q.length-1], tp=SEG[si-1].Tend, n0=nrm(tp).multiplyScalar(sg), n1=nrm(Ts[0]).multiplyScalar(sg);
         let a0=Math.atan2(n0.z,n0.x), a1=Math.atan2(n1.z,n1.x), da=a1-a0; while(da>Math.PI) da-=2*Math.PI; while(da<-Math.PI) da+=2*Math.PI;
-        for(let j=1;j<24;j++){ const an=a0+da*j/24; const q=new THREE.Vector3(c0.x+Math.cos(an)*G,0,c0.z+Math.sin(an)*G); q.y=surfaceY(q.x,q.z,c0.y); Q2.push(q); kind.push('p'); } }
+        let prevq=new THREE.Vector3(c0.x+Math.cos(a0)*G,0,c0.z+Math.sin(a0)*G);
+        for(let j=1;j<24;j++){ const an=a0+da*j/24; const q=new THREE.Vector3(c0.x+Math.cos(an)*G,0,c0.z+Math.sin(an)*G); q.y=surfaceY(q.x,q.z,c0.y);
+          const ux=Math.cos(an)*sg, uz=Math.sin(an)*sg, th=new THREE.Vector3(uz,0,-ux);   // heading for this axle angle
+          const v=new THREE.Vector3(q.x-prevq.x,0,q.z-prevq.z); Q2.push(q); kind.push(v.dot(th)<0?'p':'s'); prevq=q; } }
       const Q2s=Qs.map((p,i)=>{ const q=p.clone().addScaledVector(nrm(Ts[i]),sg*G); q.y=surfaceY(q.x,q.z,p.y); return q; });
       Q2s.forEach((q,i)=>{ const a=Q2s[Math.max(0,i-1)], b=Q2s[Math.min(Ns,i+1)]; const rev=new THREE.Vector3(b.x-a.x,0,b.z-a.z).dot(Ts[i])<0; Q2.push(q); kind.push(rev?'p':'r'); });
       sg_.Tend=Ts[Ns]; });
     const M2=Q2.length-1; let len2=0;
     for(let i=0;i<=M2;i++){ const q=Q2[i], a=Q2[Math.max(0,i-1)], b=Q2[Math.min(M2,i+1)];
       let t2=new THREE.Vector3(b.x-a.x,0,b.z-a.z); if(t2.lengthSq()<1e-12) t2.set(1,0,0); t2.normalize(); const n2=nrm(t2);
-      const A=q.z/S, B=-q.x/S, off=A<-1||(A<3.8&&(B<-0.93||B>6.09))||(A>=3.8&&A<5.16&&(B<-0.2||B>5.36)); if(kind[i]==='p') back++; if(off) blocked++;
-      const c=off?bad:kind[i]==='p'?piv:base;
+      const A=q.z/S, B=-q.x/S, off=A<-1||(A<3.8&&(B<-0.93||B>6.09))||(A>=3.8&&A<5.16&&(B<-0.2||B>5.36)); if(kind[i]==='p') back++; if(kind[i]==='s') sweep++; if(off) blocked++;
+      const c=off?bad:kind[i]==='p'?piv:kind[i]==='s'?swc:base;
       for(const s2 of [-1,1]){ const v=q.clone().addScaledVector(n2,s2*hw); v.y=q.y+0.004; p2.push(v.x,v.y,v.z); col.push(c.r,c.g,c.b); }
       if(i>0) len2+=q.distanceTo(Q2[i-1]);
       if(i<M2){ const k=2*i; ix.push(k,k+1,k+3,k,k+3,k+2); } }
@@ -456,7 +463,7 @@ function rebuildPath(P){ if(P.ribbon){toolG.remove(P.ribbon); P.ribbon.geometry.
     const rp=[]; SEG.forEach(sg_=>{ const m=sg_.a1-sg_.a0; for(let k=0;k<=m;k++){ const u=k/m; const p=sg_.c.getPoint(u); const t=sg_.c.getTangent(u); t.y=0; t.normalize();
       const q=p.clone().addScaledVector(nrm(t),sg*G); q.y=surfaceY(q.x,q.z,p.y)+0.006; rp.push(p.x,p.y+0.006,p.z,q.x,q.y,q.z); } });
     const gr=new THREE.BufferGeometry(); gr.setAttribute('position',new THREE.Float32BufferAttribute(rp,3)); const rl=new THREE.LineSegments(gr,new THREE.LineBasicMaterial({color:P.color,depthTest:false,transparent:true,opacity:0.55})); rl.renderOrder=10; toolG.add(rl); P.ax.push(rl);
-    P.stats.ax={side:sg>0?'right':'left',len:len2,minR:minRadius(Q2.filter((q,i)=>kind[i]==='r')),back,blocked,N:M2}; }
+    P.stats.ax={side:sg>0?'right':'left',len:len2,minR:minRadius(Q2.filter((q,i)=>kind[i]==='r')),back,blocked,sweep,N:M2}; }
   if(P.stamps){ const C=Math.PI*wheelD*IN, half=C/2, sp=[], cl=[], cA=new THREE.Color(0xffd166), cB=new THREE.Color(0xffffff), L_=tireIn*IN*1.6+0.02;
     let acc=[0]; for(let i=1;i<=N;i++) acc.push(acc[i-1]+Q[i].distanceTo(Q[i-1]));
     let i=0; for(let k=1;k*half<=len+1e-6;k++){ const d=k*half; while(i<N&&acc[i+1]<d) i++; const f=i<N?(d-acc[i])/Math.max(1e-9,acc[i+1]-acc[i]):0;
@@ -503,7 +510,7 @@ function updateOut(){ let h='';
   meas.forEach((m,i)=>{ h+=`<dt>Measure ${i+1}</dt><dd>${fmtIn(m.dist)}</dd>`; });
   paths.forEach((P,i)=>{ if(!P.pts.length) return; const sw=`<span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${hex(P.color)};margin-right:6px"></span>`;
     if(!P.stats){ h+=`<dt>${sw}Path ${i+1}${i===active?' (active)':''}</dt><dd>1 point</dd>`; return; }
-    h+=`<dt>${sw}Path ${i+1}${i===active?' (active)':''}</dt><dd>${fmtIn(P.stats.len)}</dd>${P.stats.segs.length>1?`<dt>Segments</dt><dd style="white-space:normal">${P.stats.segs.map(v=>(v/IN).toFixed(1)+'″').join(' · ')}</dd>`:''}<dt>Tightest turn</dt><dd>${isFinite(P.stats.minR)?(P.stats.minR/IN).toFixed(1)+'″':'straight'}</dd><dt>Tiles</dt><dd style="white-space:normal">${P.stats.tiles.join(', ')||'none'}</dd>${P.stats.pivots?`<dt>Pivot points</dt><dd>${P.stats.pivots}</dd>`:''}${P.stats.st?`<dt>Stamps (${wheelD}″ wheel)</dt><dd>every ${(P.stats.st.C/2/IN).toFixed(1)}″ (½ turn)</dd>`:''}${P.stats.ax?`<dt>Second wheel (${P.stats.ax.side}, ${gauge}″)</dt><dd>${(P.stats.ax.len/IN).toFixed(1)}″</dd><dt>Its tightest turn</dt><dd>${isFinite(P.stats.ax.minR)?(P.stats.ax.minR/IN).toFixed(1)+'″':'straight'}</dd>${P.stats.ax.back?`<dt style="color:#ffb020">Pivoting (rolls backward)</dt><dd style="color:#ffb020">${Math.round(P.stats.ax.back/P.stats.ax.N*100)}% of path</dd>`:''}${P.stats.ax.blocked?`<dt style="color:#ff6b6b">Hits wall or bed</dt><dd style="color:#ff6b6b">${Math.round(P.stats.ax.blocked/P.stats.ax.N*100)}% of path</dd>`:''}`:''}`; });
+    h+=`<dt>${sw}Path ${i+1}${i===active?' (active)':''}</dt><dd>${fmtIn(P.stats.len)}</dd>${P.stats.segs.length>1?`<dt>Segments</dt><dd style="white-space:normal">${P.stats.segs.map(v=>(v/IN).toFixed(1)+'″').join(' · ')}</dd>`:''}<dt>Tightest turn</dt><dd>${isFinite(P.stats.minR)?(P.stats.minR/IN).toFixed(1)+'″':'straight'}</dd><dt>Tiles</dt><dd style="white-space:normal">${P.stats.tiles.join(', ')||'none'}</dd>${P.stats.pivots?`<dt>Pivot points</dt><dd>${P.stats.pivots}</dd>`:''}${P.stats.st?`<dt>Stamps (${wheelD}″ wheel)</dt><dd>every ${(P.stats.st.C/2/IN).toFixed(1)}″ (½ turn)</dd>`:''}${P.stats.ax?`<dt>Second wheel (${P.stats.ax.side}, ${gauge}″)</dt><dd>${(P.stats.ax.len/IN).toFixed(1)}″</dd><dt>Its tightest turn</dt><dd>${isFinite(P.stats.ax.minR)?(P.stats.ax.minR/IN).toFixed(1)+'″':'straight'}</dd>${P.stats.ax.back?`<dt style="color:#ffb020">Other wheel reverses</dt><dd style="color:#ffb020">${Math.round(P.stats.ax.back/P.stats.ax.N*100)}% of path</dd>`:''}<dt>Bend limit</dt><dd>${P.stats.minR*1/IN<gauge?`tightest bend ${(P.stats.minR/IN).toFixed(1)}″ < spacing ${gauge}″`:'none'}</dd>${P.stats.ax.blocked?`<dt style="color:#ff6b6b">Hits wall or bed</dt><dd style="color:#ff6b6b">${Math.round(P.stats.ax.blocked/P.stats.ax.N*100)}% of path</dd>`:''}`:''}`; });
   if(grooves.length) h+=`<dt>Groove lines</dt><dd>${grooves.length}</dd>`;
   if(marks.length) h+=`<dt>Imprints marked</dt><dd>${marks.length}</dd>`;
   out.innerHTML=h; const ap=paths[active]; document.getElementById('taxle').textContent='Second wheel: '+(!ap||!ap.axle?'off':ap.axle>0?'right':'left'); document.getElementById('tstamp').textContent='Wheel stamps: '+(ap&&ap.stamps?'on':'off'); document.getElementById('tstamp').setAttribute('aria-pressed',!!(ap&&ap.stamps)); pivBtn(); document.getElementById('tcopy').hidden=!marks.length; }
@@ -569,6 +576,7 @@ r.domElement.addEventListener('pointerup',e=>{
   if(tool==='none'||!dn||Math.hypot(e.clientX-dn[0],e.clientY-dn[1])>6) return;
   const hit=pick(e); if(!hit) return;
   if(tool==='groove') addGroovePoint(hit.point); else if(tool==='measure') addMeasPoint(hit.point); else if(tool==='mark') addMark(hit.point); else addPathPoint(hit.point); });
+window.__rescale=()=>{ paths.forEach(rebuildPath); meas.forEach(m=>{ m.label.el.textContent=fmtIn(m.dist); }); grooves.forEach(grooveGeom); updateOut(); render(); };
 window.__tool={pivotIdx:(k)=>{ const P=paths[active]; select(P,P.handles[k]); document.getElementById('tpivot').click(); },addAB:(a,b)=>{ const v=new THREE.Vector3(-b*S,0,a*S); v.y=surfaceY(v.x,v.z,0.05); addPathPoint(v); },grooves,setTool,addPathPoint,addMeasPoint,addMark,newPath,marks,paths};
 }
 
