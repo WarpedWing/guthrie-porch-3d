@@ -72,6 +72,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 }
 
 .mlabel.seg{color:#7fdcf7}
+.mlabel.stp{font-size:11px;padding:1px 4px;transform:translate(-50%,-50%)}
 .mlabel.mk{color:#ff8fa3;transform:translate(-50%,-160%)}
 .mlabel{position:fixed;pointer-events:none;transform:translate(-50%,-130%);background:rgba(10,14,22,.85);color:#ffd166;font:600 12px var(--mono);padding:2px 6px;border-radius:4px;white-space:nowrap;z-index:4}
 @media (max-width:640px){
@@ -112,7 +113,9 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 <ul>
 <li><b>Measure:</b> tap two points. Drag an end to adjust it.</li>
 <li><b>Wheel path:</b> tap to add points, then drag a point, or drag the line itself to bend it. <b>New path</b> starts another path in a new colour. <b>Tire width</b> sets the band width.</li>
-<li><b>Second wheel:</b> shows where the other wheel on the same axle would run, on the left or right of the active path as seen walking from its first point. <b>Wheel spacing</b> sets the distance between the wheel centres. Red means that wheel would hit a wall, pillar or bed, or would have to roll backward.</li>
+<li><b>Second wheel:</b> shows where the other wheel on the same axle would run, on the left or right of the active path as seen walking from its first point. <b>Wheel spacing</b> sets the distance between the wheel centres. Where the path turns more tightly than the wheel spacing, the other wheel has to roll backward while the axle pivots; that part is shown in amber. That's normal for a hand truck, which can spin in place, but a pivot usually scuffs or smears rather than rolling cleanly. Red means that wheel would hit a wall, pillar or bed.</li>
+<li><b>Pivot point:</b> tap a path point (a white ring shows it's selected), then <b>Make pivot</b>. The path turns in place there instead of curving, and the second wheel swings around that point (shown in amber), as when a hand truck spins on one wheel. Use it where a smear suggests the bloody wheel twisted on the spot. Stamps don't advance during the pivot, because the wheel turns without rolling forward.</li>
+<li><b>Wheel stamps:</b> marks where a tire of the set <b>Wheel diameter</b> touches the floor as it rolls along the active path, starting from its first point (put that where the wheel stood, under the axle). Half turns (½, 1½, …) show where a spot that started on top of the tire lands; whole turns (1, 2, …) show where the spot that started on the floor lands again.</li>
 <li><b>Mark imprint:</b> tap each imprint to drop a numbered pin, then <b>Copy imprint list</b> to copy their positions.</li>
 <li><b>Editing:</b> double-tap any point or pin to delete it; a measure end deletes the whole measurement. <b>Undo point</b> removes the last thing you added.</li>
 </ul>
@@ -126,9 +129,9 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
   <div class="tbody">
     <div class="tsec"><div class="lbl">Tool</div><div class="row">
       <button id="tmeas" aria-pressed="false">Measure</button><button id="tpath" aria-pressed="false">Wheel path</button><button id="tmark" aria-pressed="false">Mark imprint</button></div></div>
-    <div class="tsec" data-for="path" hidden><div class="lbl">Wheel path</div><div class="row"><button id="tnew">New path</button><button id="taxle">Second wheel: off</button></div>
+    <div class="tsec" data-for="path" hidden><div class="lbl">Wheel path</div><div class="row"><button id="tnew">New path</button><button id="taxle">Second wheel: off</button><button id="tstamp">Wheel stamps: off</button><button id="tpivot" disabled>Make pivot</button></div>
       <div class="srow"><label for="tw">Tire width</label><input id="tw" type="range" min="0.5" max="4" step="0.25" value="1.5"><span id="twv">1.5″</span></div></div>
-    <div class="tsec" data-for="path" hidden><div class="srow"><label for="tg">Wheel spacing</label><input id="tg" type="range" min="8" max="26" step="0.25" value="16"><span id="tgv">16″</span></div></div>
+    <div class="tsec" data-for="path" hidden><div class="srow"><label for="td">Wheel diameter</label><input id="td" type="range" min="3" max="12" step="0.05" value="6.1"><span id="tdv">6.1″</span></div><div class="srow"><label for="tg">Wheel spacing</label><input id="tg" type="range" min="8" max="26" step="0.25" value="16"><span id="tgv">16″</span></div></div>
     <div class="tsec" data-for="mark" hidden><div class="row"><button id="tcopy" hidden>Copy imprint list</button></div>
       <textarea id="tcopytxt" hidden rows="3" style="width:100%;font:11px var(--mono);background:#0c101a;color:var(--fg);border:1px solid var(--line);border-radius:6px"></textarea></div>
     <div class="row tedit"><button id="tundo">Undo point</button><button id="tclear">Clear all</button></div>
@@ -223,8 +226,8 @@ function buildFig(){ fig.clear(); const H=FIG_IN*0.0254;
   fig.add(body,head); fig.traverse(o=>{if(o.isMesh)o.castShadow=true}); }
 buildFig(); const FOOT=[4.85,1.5]; fig.position.copy(W(FOOT[0],FOOT[1],0)); scene.add(fig);
 let floors=[];
-window.MOON=await (await fetch('moon.json?v=69')).json();
-new GLTFLoader().load('porch.glb?v=69',g=>{
+window.MOON=await (await fetch('moon.json?v=73')).json();
+new GLTFLoader().load('porch.glb?v=73',g=>{
   g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=!/porch_floor|gravel|walkway|yard|ground|doormat|B6_C6|tile_edge|drive|road|stepstone|stone_path/.test(o.name);o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
     if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=/hires/.test(o.name)?3:2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
@@ -252,6 +255,7 @@ slider.addEventListener('input',update);
   [[30,'1:00'],[90,'2:00'],[150,'3:00'],[210,'4:00']].forEach(([k,t])=>{ if(!M[k]) return; const p=pts[k];
     const dot=new THREE.Mesh(new THREE.SphereGeometry(0.12,10,8),new THREE.MeshBasicMaterial({color:0xcfdcff,fog:false})); dot.position.copy(p); moonPath.add(dot);
     const s=lab(t); s.position.copy(p).add(new THREE.Vector3(0,-1.3,0)); moonPath.add(s); }); }
+[moonDisk,moonPath].forEach(G=>G.traverse(o=>{ o.raycast=()=>{}; }));   // sky objects never take part in picking (sprites need a camera to raycast)
 document.getElementById('mpath').addEventListener('click',e=>{ moonPath.visible=!moonPath.visible; e.currentTarget.setAttribute('aria-pressed',moonPath.visible); render(); });
 
 // light mode
@@ -394,60 +398,87 @@ function surfaceY(x,z,yHint){ down_.set(new THREE.Vector3(x,yHint+0.6,z),new THR
   return h?h.point.y:yHint; }
 const paths=[]; let active=-1; const axMat=new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:0.6,side:THREE.DoubleSide,depthWrite:false,depthTest:false});
 function newPath(){ const c=COLORS[paths.length%COLORS.length]; const P={pts:[],handles:[],ribbon:null,samples:[],segLabels:[],stats:null,color:c,
-  hMat:new THREE.MeshBasicMaterial({color:c,depthTest:false,transparent:true,opacity:0.35,depthWrite:false}),
-  ribMat:new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.75,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-4})};
+  hMat:new THREE.MeshBasicMaterial({color:new THREE.Color(c).lerp(new THREE.Color(0xffffff),0.5),depthTest:false,transparent:true,opacity:0.55,depthWrite:false}),
+  ribMat:new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.4,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-4})};
   paths.push(P); active=paths.length-1; updateOut(); return P; }
 function cur(){ if(active<0||!paths[active]) newPath(); return paths[active]; }
-let gauge=16;
+let gauge=16, wheelD=6.1;
 function minRadius(Q){ const k=4; let m=Infinity; for(let i=k;i<Q.length-k;i++){ const A=Q[i-k],B=Q[i],C=Q[i+k];
   const a=Math.hypot(B.x-C.x,B.z-C.z), b=Math.hypot(A.x-C.x,A.z-C.z), c=Math.hypot(A.x-B.x,A.z-B.z), ar=Math.abs((B.x-A.x)*(C.z-A.z)-(C.x-A.x)*(B.z-A.z))/2;
   if(a<1e-4||c<1e-4){ m=0; continue; } if(ar>1e-12){ const r_=a*b*c/(4*ar); if(r_<m) m=r_; } } return m; }
-function rebuildPath(P){ if(P.ribbon){toolG.remove(P.ribbon); P.ribbon.geometry.dispose(); P.ribbon=null;} if(P.ax){ P.ax.forEach(o=>{toolG.remove(o); o.geometry.dispose();}); } P.ax=[]; P.stats=null; P.samples=[];
+function rebuildPath(P){ if(P.ribbon){toolG.remove(P.ribbon); P.ribbon.geometry.dispose(); P.ribbon=null;} if(P.ax){ P.ax.forEach(o=>{toolG.remove(o); o.geometry.dispose();}); } P.ax=[]; if(P.stL){ P.stL.forEach(delLabel); } P.stL=[]; P.stats=null; P.samples=[];
   P.segLabels.forEach(delLabel); P.segLabels.length=0;
   if(P.pts.length<2){ updateOut(); render(); return; }
-  const curve=new THREE.CatmullRomCurve3(P.pts.map(p=>p.clone()),false,'centripetal');
-  const N=Math.max(40,Math.round(curve.getLength()/0.01)); const Q=curve.getSpacedPoints(N); P.samples=Q;
-  const hw=tireIn*IN/2, pos=[], idx=[]; let len=0, minR=Infinity; const tiles=new Set();
-  for(let i=0;i<=N;i++){ const p=Q[i], a=Q[Math.max(0,i-1)], b=Q[Math.min(N,i+1)];
-    const t=new THREE.Vector3(b.x-a.x,0,b.z-a.z).normalize(), n=new THREE.Vector3(-t.z,0,t.x);
-    for(const sg of [-1,1]){ const q=p.clone().addScaledVector(n,sg*hw); q.y=surfaceY(q.x,q.z,p.y)+0.003; pos.push(q.x,q.y,q.z); }
+  const n=P.pts.length;
+  // split into segments at pivot points (the path turns in place there)
+  const cuts=[0]; for(let k=1;k<n-1;k++) if(P.handles[k].userData.pivot) cuts.push(k); cuts.push(n-1);
+  const SEG=[]; for(let s=0;s<cuts.length-1;s++){ const a0=cuts[s], a1=cuts[s+1]; const c=new THREE.CatmullRomCurve3(P.pts.slice(a0,a1+1).map(p=>p.clone()),false,'centripetal'); SEG.push({a0,a1,c}); }
+  const Q=[], T=[], junc=[]; 
+  SEG.forEach((sg_,si)=>{ const Ns=Math.max(10,Math.round(sg_.c.getLength()/0.01)); const Qs=sg_.c.getSpacedPoints(Ns); sg_.Q=Qs;
+    for(let i=0;i<=Ns;i++){ const a=Qs[Math.max(0,i-1)], b=Qs[Math.min(Ns,i+1)]; const t=new THREE.Vector3(b.x-a.x,0,b.z-a.z).normalize(); if(si>0&&i===0) junc.push(Q.length); Q.push(Qs[i]); T.push(t); } });
+  const N=Q.length-1; P.samples=Q;
+  const hw=tireIn*IN/2, pos=[], idx=[]; let len=0; const tiles=new Set();
+  for(let i=0;i<=N;i++){ const p=Q[i], t=T[i], nv=new THREE.Vector3(-t.z,0,t.x);
+    for(const sg of [-1,1]){ const q=p.clone().addScaledVector(nv,sg*hw); q.y=surfaceY(q.x,q.z,p.y)+0.003; pos.push(q.x,q.y,q.z); }
     if(i>0) len+=p.distanceTo(Q[i-1]);
-    if(i>0&&i<N){ const v1=new THREE.Vector2(p.x-a.x,p.z-a.z), v2=new THREE.Vector2(b.x-p.x,b.z-p.z); const ang=Math.abs(Math.atan2(v1.x*v2.y-v1.y*v2.x,v1.dot(v2)));
-      if(ang>1e-4){ const R_=((v1.length()+v2.length())/2)/ang; if(R_<minR) minR=R_; } }
     const A=p.z/S, B=-p.x/S; if(A>=-1&&A<5&&B>=-0.93&&B<6.09){ tiles.add('ABCDEF'[Math.floor(A)+1]+(6-Math.floor(B))); }
     if(i<N){ const k=2*i; idx.push(k,k+1,k+3,k,k+3,k+2); } }
   const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); g.setIndex(idx);
   P.ribbon=new THREE.Mesh(g,P.ribMat); P.ribbon.renderOrder=9; toolG.add(P.ribbon);
-  const segs=[]; const n=P.pts.length;
-  for(let k=0;k<n-1;k++){ let L=0, prev=curve.getPoint(k/(n-1)); const M=60;
-    for(let j=1;j<=M;j++){ const q=curve.getPoint((k+j/M)/(n-1)); L+=q.distanceTo(prev); prev=q; }
-    segs.push(L);
-    if(n>2){ const mid=curve.getPoint((k+0.5)/(n-1)); mid.y=surfaceY(mid.x,mid.z,mid.y)+0.01; const lb=addLabel(mid,(L/IN).toFixed(1)+'″'); lb.el.classList.add('seg'); lb.el.style.color='#'+P.color.toString(16).padStart(6,'0'); P.segLabels.push(lb); } }
-  minR=minRadius(Q); P.stats={len,minR,tiles:[...tiles],segs};
-  if(P.axle){ const sg=P.axle>0?1:-1, G=gauge*IN, Q2=[], T=[], col=[], p2=[], ix=[]; let len2=0, minR2=Infinity, back=0, blocked=0;
-    for(let i=0;i<=N;i++){ const p=Q[i], a=Q[Math.max(0,i-1)], b=Q[Math.min(N,i+1)]; const t=new THREE.Vector3(b.x-a.x,0,b.z-a.z).normalize(), n=new THREE.Vector3(-t.z,0,t.x);
-      const q=p.clone().addScaledVector(n,sg*G); q.y=surfaceY(q.x,q.z,p.y); Q2.push(q); T.push(t); }
-    const base=new THREE.Color(P.color).lerp(new THREE.Color(0xffffff),0.35), bad=new THREE.Color(0xff3030);
-    for(let i=0;i<=N;i++){ const q=Q2[i], a=Q2[Math.max(0,i-1)], b=Q2[Math.min(N,i+1)];
-      let t2=new THREE.Vector3(b.x-a.x,0,b.z-a.z); const rev=t2.dot(T[i])<0; if(t2.lengthSq()<1e-12) t2.copy(T[i]); t2.normalize(); const n2=new THREE.Vector3(-t2.z,0,t2.x);
-      const A=q.z/S, B=-q.x/S, off=A<-1||(A<3.8&&(B<-0.93||B>6.09))||(A>=3.8&&A<5.16&&(B<-0.2||B>5.36)); if(rev) back++; if(off) blocked++;
-      const c=(rev||off)?bad:base;
+  const segs=[]; let minR=Infinity;
+  SEG.forEach(sg_=>{ const m=sg_.a1-sg_.a0; minR=Math.min(minR,minRadius(sg_.Q));
+    for(let k=0;k<m;k++){ let L=0, prev=sg_.c.getPoint(k/m); const M=60;
+      for(let j=1;j<=M;j++){ const q=sg_.c.getPoint((k+j/M)/m); L+=q.distanceTo(prev); prev=q; }
+      segs.push(L);
+      if(n>2&&!P.stamps){ const mid=sg_.c.getPoint((k+0.5)/m); mid.y=surfaceY(mid.x,mid.z,mid.y)+0.01; const lb=addLabel(mid,(L/IN).toFixed(1)+'″'); lb.el.classList.add('seg'); lb.el.style.color='#'+P.color.toString(16).padStart(6,'0'); P.segLabels.push(lb); } } });
+  P.stats={len,minR,tiles:[...tiles],segs,pivots:cuts.length-2};
+  if(P.axle){ const sg=P.axle>0?1:-1, G=gauge*IN, Q2=[], kind=[], col=[], p2=[], ix=[]; let back=0, blocked=0;
+    const base=new THREE.Color(P.color).lerp(new THREE.Color(0xffffff),0.35), bad=new THREE.Color(0xff3030), piv=new THREE.Color(0xffb020);
+    const nrm=t=>new THREE.Vector3(-t.z,0,t.x);
+    SEG.forEach((sg_,si)=>{ const Qs=sg_.Q, Ns=Qs.length-1, Ts=[]; for(let i=0;i<=Ns;i++){ const a=Qs[Math.max(0,i-1)], b=Qs[Math.min(Ns,i+1)]; Ts.push(new THREE.Vector3(b.x-a.x,0,b.z-a.z).normalize()); }
+      if(si>0){ // swing the other wheel around the pivot (the bloody wheel stays put)
+        const c0=SEG[si-1].Q[SEG[si-1].Q.length-1], tp=SEG[si-1].Tend, n0=nrm(tp).multiplyScalar(sg), n1=nrm(Ts[0]).multiplyScalar(sg);
+        let a0=Math.atan2(n0.z,n0.x), a1=Math.atan2(n1.z,n1.x), da=a1-a0; while(da>Math.PI) da-=2*Math.PI; while(da<-Math.PI) da+=2*Math.PI;
+        for(let j=1;j<24;j++){ const an=a0+da*j/24; const q=new THREE.Vector3(c0.x+Math.cos(an)*G,0,c0.z+Math.sin(an)*G); q.y=surfaceY(q.x,q.z,c0.y); Q2.push(q); kind.push('p'); } }
+      const Q2s=Qs.map((p,i)=>{ const q=p.clone().addScaledVector(nrm(Ts[i]),sg*G); q.y=surfaceY(q.x,q.z,p.y); return q; });
+      Q2s.forEach((q,i)=>{ const a=Q2s[Math.max(0,i-1)], b=Q2s[Math.min(Ns,i+1)]; const rev=new THREE.Vector3(b.x-a.x,0,b.z-a.z).dot(Ts[i])<0; Q2.push(q); kind.push(rev?'p':'r'); });
+      sg_.Tend=Ts[Ns]; });
+    const M2=Q2.length-1; let len2=0;
+    for(let i=0;i<=M2;i++){ const q=Q2[i], a=Q2[Math.max(0,i-1)], b=Q2[Math.min(M2,i+1)];
+      let t2=new THREE.Vector3(b.x-a.x,0,b.z-a.z); if(t2.lengthSq()<1e-12) t2.set(1,0,0); t2.normalize(); const n2=nrm(t2);
+      const A=q.z/S, B=-q.x/S, off=A<-1||(A<3.8&&(B<-0.93||B>6.09))||(A>=3.8&&A<5.16&&(B<-0.2||B>5.36)); if(kind[i]==='p') back++; if(off) blocked++;
+      const c=off?bad:kind[i]==='p'?piv:base;
       for(const s2 of [-1,1]){ const v=q.clone().addScaledVector(n2,s2*hw); v.y=q.y+0.004; p2.push(v.x,v.y,v.z); col.push(c.r,c.g,c.b); }
       if(i>0) len2+=q.distanceTo(Q2[i-1]);
-      if(i>0&&i<N){ const v1=new THREE.Vector2(q.x-a.x,q.z-a.z), v2=new THREE.Vector2(b.x-q.x,b.z-q.z); const ang=Math.abs(Math.atan2(v1.x*v2.y-v1.y*v2.x,v1.dot(v2))); if(ang>1e-4){ const R_=((v1.length()+v2.length())/2)/ang; if(R_<minR2) minR2=R_; } }
-      if(i<N){ const k=2*i; ix.push(k,k+1,k+3,k,k+3,k+2); } }
+      if(i<M2){ const k=2*i; ix.push(k,k+1,k+3,k,k+3,k+2); } }
     const g2=new THREE.BufferGeometry(); g2.setAttribute('position',new THREE.Float32BufferAttribute(p2,3)); g2.setAttribute('color',new THREE.Float32BufferAttribute(col,3)); g2.setIndex(ix);
     const m2=new THREE.Mesh(g2,axMat); m2.renderOrder=9; toolG.add(m2); P.ax.push(m2);
-    const rp=[]; for(let k=0;k<n;k++){ const u=k/(n-1); const p=curve.getPoint(u); const t=curve.getTangent(u); t.y=0; t.normalize(); const nn=new THREE.Vector3(-t.z,0,t.x);
-      const q=p.clone().addScaledVector(nn,sg*G); q.y=surfaceY(q.x,q.z,p.y)+0.006; rp.push(p.x,p.y+0.006,p.z,q.x,q.y,q.z); }
+    const rp=[]; SEG.forEach(sg_=>{ const m=sg_.a1-sg_.a0; for(let k=0;k<=m;k++){ const u=k/m; const p=sg_.c.getPoint(u); const t=sg_.c.getTangent(u); t.y=0; t.normalize();
+      const q=p.clone().addScaledVector(nrm(t),sg*G); q.y=surfaceY(q.x,q.z,p.y)+0.006; rp.push(p.x,p.y+0.006,p.z,q.x,q.y,q.z); } });
     const gr=new THREE.BufferGeometry(); gr.setAttribute('position',new THREE.Float32BufferAttribute(rp,3)); const rl=new THREE.LineSegments(gr,new THREE.LineBasicMaterial({color:P.color,depthTest:false,transparent:true,opacity:0.55})); rl.renderOrder=10; toolG.add(rl); P.ax.push(rl);
-    P.stats.ax={side:sg>0?'right':'left',len:len2,minR:minRadius(Q2),back,blocked,N}; }
+    P.stats.ax={side:sg>0?'right':'left',len:len2,minR:minRadius(Q2.filter((q,i)=>kind[i]==='r')),back,blocked,N:M2}; }
+  if(P.stamps){ const C=Math.PI*wheelD*IN, half=C/2, sp=[], cl=[], cA=new THREE.Color(0xffd166), cB=new THREE.Color(0xffffff), L_=tireIn*IN*1.6+0.02;
+    let acc=[0]; for(let i=1;i<=N;i++) acc.push(acc[i-1]+Q[i].distanceTo(Q[i-1]));
+    let i=0; for(let k=1;k*half<=len+1e-6;k++){ const d=k*half; while(i<N&&acc[i+1]<d) i++; const f=i<N?(d-acc[i])/Math.max(1e-9,acc[i+1]-acc[i]):0;
+      const p=Q[i].clone().lerp(Q[Math.min(N,i+1)],f), t=T[i], nn=new THREE.Vector3(-t.z,0,t.x);
+      p.y=surfaceY(p.x,p.z,p.y)+0.006; const e1=p.clone().addScaledVector(nn,L_/2), e2=p.clone().addScaledVector(nn,-L_/2); sp.push(e1.x,e1.y,e1.z,e2.x,e2.y,e2.z);
+      const c=k%2?cA:cB; cl.push(c.r,c.g,c.b,c.r,c.g,c.b);
+      const lb=addLabel(e1,(k%2?(k>1?((k-1)/2)+'½':'½'):String(k/2))); lb.el.classList.add('stp'); lb.el.style.color=k%2?'#ffd166':'#ffffff'; P.stL.push(lb); }
+    const g3=new THREE.BufferGeometry(); g3.setAttribute('position',new THREE.Float32BufferAttribute(sp,3)); g3.setAttribute('color',new THREE.Float32BufferAttribute(cl,3));
+    const ls=new THREE.LineSegments(g3,new THREE.LineBasicMaterial({vertexColors:true,depthTest:false,transparent:true})); ls.renderOrder=12; toolG.add(ls); P.ax.push(ls);
+    P.stats.st={C}; }
   updateOut(); render(); }
-function addHandle(P,p,at){ const h=addPin(new THREE.Mesh(hGeo,P.hMat),P.color); hist.push({t:'p',P,h}); h.position.copy(p); h.renderOrder=11; toolG.add(h); if(at==null){P.pts.push(p.clone()); P.handles.push(h);} else {P.pts.splice(at,0,p.clone()); P.handles.splice(at,0,h);} }
+function addHandle(P,p,at){ const h=addPin(new THREE.Mesh(hGeo,P.hMat),0xffffff); hist.push({t:'p',P,h}); h.position.copy(p); h.renderOrder=11; toolG.add(h); if(at==null){P.pts.push(p.clone()); P.handles.push(h);} else {P.pts.splice(at,0,p.clone()); P.handles.splice(at,0,h);} }
 function removeMeas(m){ const i=meas.indexOf(m); if(i<0) return false; meas.splice(i,1); m.objs.forEach(o=>toolG.remove(o)); delLabel(m.label); updateOut(); render(); return true; }
-function removeHandle(P,h){ const i=P.handles.indexOf(h); if(i<0) return false; P.handles.splice(i,1); P.pts.splice(i,1); toolG.remove(h); rebuildPath(P); return true; }
+let selH=null, selP=null; const ringGeo=new THREE.TorusGeometry(0.024,0.004,8,32), ringMat=new THREE.MeshBasicMaterial({color:0xffb020,depthTest:false,transparent:true});
+function setPivot(h,on){ h.userData.pivot=on; if(on&&!h.userData.ring){ const r_=new THREE.Mesh(ringGeo,ringMat); r_.rotation.x=Math.PI/2; r_.renderOrder=13; h.add(r_); h.userData.ring=r_; } if(!on&&h.userData.ring){ h.remove(h.userData.ring); h.userData.ring=null; } }
+const selRing=new THREE.Mesh(new THREE.TorusGeometry(0.03,0.0045,8,40),new THREE.MeshBasicMaterial({color:0xffffff,depthTest:false,transparent:true})); selRing.rotation.x=Math.PI/2; selRing.renderOrder=14;
+function select(P,h){ if(selRing.parent) selRing.parent.remove(selRing); selH=h; selP=P; if(h) h.add(selRing); pivBtn(); render(); }
+function pivBtn(){ const b=document.getElementById('tpivot'); if(!b) return; const ok=selH&&selP&&paths.includes(selP)&&selP.handles.includes(selH)&&selP.handles.indexOf(selH)>0&&selP.handles.indexOf(selH)<selP.handles.length-1;
+  b.disabled=!ok; b.textContent=ok&&selH.userData.pivot?'Remove pivot':'Make pivot'; b.setAttribute('aria-pressed',!!(ok&&selH.userData.pivot)); }
+function removeHandle(P,h){ const i=P.handles.indexOf(h); if(i<0) return false; if(selH===h){ selH=null; } P.handles.splice(i,1); P.pts.splice(i,1); toolG.remove(h); rebuildPath(P); return true; }
 function removeMark(m){ const i=marks.indexOf(m); if(i<0) return false; marks.splice(i,1); toolG.remove(m.d); delLabel(m.L); marks.forEach((q,j)=>q.L.el.textContent=String(j+1)); updateOut(); render(); return true; }
-function addPathPoint(p){ const P=cur(); addHandle(P,p); rebuildPath(P); }
+function addPathPoint(p){ const P=cur(); addHandle(P,p); select(P,P.handles[P.handles.length-1]); rebuildPath(P); }
 // --- imprint marks
 const marks=[]; const markMat=new THREE.MeshBasicMaterial({color:0xff4d6d,depthTest:false,transparent:true}); const markGeo=new THREE.SphereGeometry(0.011,14,10);
 function addMark(p){ const d=new THREE.Mesh(markGeo,markMat); d.position.copy(p); d.renderOrder=12; toolG.add(d); const L=addLabel(p,String(marks.length+1)); L.el.classList.add('mk'); const m={d,L}; marks.push(m); hist.push({t:'k',m}); updateOut(); render(); }
@@ -472,10 +503,10 @@ function updateOut(){ let h='';
   meas.forEach((m,i)=>{ h+=`<dt>Measure ${i+1}</dt><dd>${fmtIn(m.dist)}</dd>`; });
   paths.forEach((P,i)=>{ if(!P.pts.length) return; const sw=`<span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${hex(P.color)};margin-right:6px"></span>`;
     if(!P.stats){ h+=`<dt>${sw}Path ${i+1}${i===active?' (active)':''}</dt><dd>1 point</dd>`; return; }
-    h+=`<dt>${sw}Path ${i+1}${i===active?' (active)':''}</dt><dd>${fmtIn(P.stats.len)}</dd>${P.stats.segs.length>1?`<dt>Segments</dt><dd style="white-space:normal">${P.stats.segs.map(v=>(v/IN).toFixed(1)+'″').join(' · ')}</dd>`:''}<dt>Tightest turn</dt><dd>${isFinite(P.stats.minR)?(P.stats.minR/IN).toFixed(1)+'″':'straight'}</dd><dt>Tiles</dt><dd style="white-space:normal">${P.stats.tiles.join(', ')||'none'}</dd>${P.stats.ax?`<dt>Second wheel (${P.stats.ax.side}, ${gauge}″)</dt><dd>${(P.stats.ax.len/IN).toFixed(1)}″</dd><dt>Its tightest turn</dt><dd>${isFinite(P.stats.ax.minR)?(P.stats.ax.minR/IN).toFixed(1)+'″':'straight'}</dd>${P.stats.ax.back?`<dt style="color:#ff6b6b">Rolls backward</dt><dd style="color:#ff6b6b">${Math.round(P.stats.ax.back/P.stats.ax.N*100)}% of path</dd>`:''}${P.stats.ax.blocked?`<dt style="color:#ff6b6b">Hits wall or bed</dt><dd style="color:#ff6b6b">${Math.round(P.stats.ax.blocked/P.stats.ax.N*100)}% of path</dd>`:''}`:''}`; });
+    h+=`<dt>${sw}Path ${i+1}${i===active?' (active)':''}</dt><dd>${fmtIn(P.stats.len)}</dd>${P.stats.segs.length>1?`<dt>Segments</dt><dd style="white-space:normal">${P.stats.segs.map(v=>(v/IN).toFixed(1)+'″').join(' · ')}</dd>`:''}<dt>Tightest turn</dt><dd>${isFinite(P.stats.minR)?(P.stats.minR/IN).toFixed(1)+'″':'straight'}</dd><dt>Tiles</dt><dd style="white-space:normal">${P.stats.tiles.join(', ')||'none'}</dd>${P.stats.pivots?`<dt>Pivot points</dt><dd>${P.stats.pivots}</dd>`:''}${P.stats.st?`<dt>Stamps (${wheelD}″ wheel)</dt><dd>every ${(P.stats.st.C/2/IN).toFixed(1)}″ (½ turn)</dd>`:''}${P.stats.ax?`<dt>Second wheel (${P.stats.ax.side}, ${gauge}″)</dt><dd>${(P.stats.ax.len/IN).toFixed(1)}″</dd><dt>Its tightest turn</dt><dd>${isFinite(P.stats.ax.minR)?(P.stats.ax.minR/IN).toFixed(1)+'″':'straight'}</dd>${P.stats.ax.back?`<dt style="color:#ffb020">Pivoting (rolls backward)</dt><dd style="color:#ffb020">${Math.round(P.stats.ax.back/P.stats.ax.N*100)}% of path</dd>`:''}${P.stats.ax.blocked?`<dt style="color:#ff6b6b">Hits wall or bed</dt><dd style="color:#ff6b6b">${Math.round(P.stats.ax.blocked/P.stats.ax.N*100)}% of path</dd>`:''}`:''}`; });
   if(grooves.length) h+=`<dt>Groove lines</dt><dd>${grooves.length}</dd>`;
   if(marks.length) h+=`<dt>Imprints marked</dt><dd>${marks.length}</dd>`;
-  out.innerHTML=h; const ap=paths[active]; document.getElementById('taxle').textContent='Second wheel: '+(!ap||!ap.axle?'off':ap.axle>0?'right':'left'); document.getElementById('tcopy').hidden=!marks.length; }
+  out.innerHTML=h; const ap=paths[active]; document.getElementById('taxle').textContent='Second wheel: '+(!ap||!ap.axle?'off':ap.axle>0?'right':'left'); document.getElementById('tstamp').textContent='Wheel stamps: '+(ap&&ap.stamps?'on':'off'); document.getElementById('tstamp').setAttribute('aria-pressed',!!(ap&&ap.stamps)); pivBtn(); document.getElementById('tcopy').hidden=!marks.length; }
 // --- buttons
 const bm=document.getElementById('tmeas'), bp=document.getElementById('tpath'), bk=document.getElementById('tmark');
 function setTool(t){ tool=(tool===t)?'none':t; bm.setAttribute('aria-pressed',tool==='measure'); bp.setAttribute('aria-pressed',tool==='path'); bk.setAttribute('aria-pressed',tool==='mark'); bg.setAttribute('aria-pressed',tool==='groove');
@@ -484,10 +515,13 @@ function setTool(t){ tool=(tool===t)?'none':t; bm.setAttribute('aria-pressed',to
 const bg=document.getElementById('tgroove')||document.createElement('button');   // groove-line tool hidden for now
 bm.onclick=()=>setTool('measure'); bp.onclick=()=>setTool('path'); bk.onclick=()=>setTool('mark'); bg.onclick=()=>setTool('groove');
 document.getElementById('taxle').onclick=()=>{ const P=paths[active]; if(!P){ return; } P.axle=!P.axle?-1:P.axle<0?1:0; rebuildPath(P); };
+document.getElementById('tpivot').onclick=()=>{ if(!selH||!selP) return; setPivot(selH,!selH.userData.pivot); rebuildPath(selP); pivBtn(); };
+document.getElementById('tstamp').onclick=()=>{ const P=paths[active]; if(!P) return; P.stamps=!P.stamps; rebuildPath(P); };
+document.getElementById('td').addEventListener('input',e=>{ wheelD=+e.target.value; document.getElementById('tdv').textContent=wheelD+'″'; paths.forEach(P=>{ if(P.stamps) rebuildPath(P); }); });
 document.getElementById('tg').addEventListener('input',e=>{ gauge=+e.target.value; document.getElementById('tgv').textContent=gauge+'″'; paths.forEach(P=>{ if(P.axle) rebuildPath(P); }); grooves.forEach(grooveGeom); updateOut(); render(); });
 { const dlg=document.getElementById('help'); document.querySelectorAll('.helpb').forEach(b=>b.onclick=()=>{ dlg.showModal(); if(b.dataset.sec) document.getElementById('help-'+b.dataset.sec).scrollIntoView({block:'start'}); else dlg.scrollTop=0; }); dlg.querySelector('.x').onclick=()=>dlg.close(); dlg.addEventListener('click',e=>{ if(e.target===dlg) dlg.close(); }); }
 document.getElementById('tnew').onclick=()=>{ newPath(); if(tool!=='path') setTool('path'); };
-document.getElementById('tclear').onclick=()=>{ toolG.clear(); labels.forEach(l=>l.el.remove()); labels.length=0; meas.length=0; mPend=null; paths.length=0; active=-1; marks.length=0; hist.length=0; grooves.length=0; gPend=null; updateOut(); render(); };
+document.getElementById('tclear').onclick=()=>{ selH=null; selP=null; setTimeout(pivBtn,0); toolG.clear(); labels.forEach(l=>l.el.remove()); labels.length=0; meas.length=0; mPend=null; paths.length=0; active=-1; marks.length=0; hist.length=0; grooves.length=0; gPend=null; updateOut(); render(); };
 document.getElementById('tundo').onclick=()=>{
   while(hist.length){ const e=hist.pop();
     if(e.t==='p'){ if(paths.includes(e.P)&&removeHandle(e.P,e.h)){ active=paths.indexOf(e.P); updateOut(); return; } }
@@ -507,7 +541,7 @@ function nearest(list,e,T){ let best=null,bd=T; list.forEach(o=>{ const sp=toScr
 function grab(e){ drag=null; const T=e.pointerType==='touch'?34:15;
   if(tool==='path'){
     const cands=[]; paths.forEach((P,pi)=>P.handles.forEach((h,k)=>cands.push({pos:h.position,kind:'h',pi,k})));
-    let g=nearest(cands,e,T); if(g){ active=g.pi; drag=g; updateOut(); return true; }
+    let g=nearest(cands,e,T); if(g){ active=g.pi; drag=g; select(paths[g.pi],paths[g.pi].handles[g.k]); updateOut(); return true; }
     let bs=null,bp=-1,bd=e.pointerType==='touch'?30:14;
     paths.forEach((P,pi)=>P.samples.forEach(p=>{ const sp=toScreen(p); if(!sp) return; const d=Math.hypot(sp[0]-e.clientX,sp[1]-e.clientY); if(d<bd){bd=d;bs=p;bp=pi;} }));
     if(!bs) return false; const P=paths[bp]; active=bp;
@@ -535,7 +569,7 @@ r.domElement.addEventListener('pointerup',e=>{
   if(tool==='none'||!dn||Math.hypot(e.clientX-dn[0],e.clientY-dn[1])>6) return;
   const hit=pick(e); if(!hit) return;
   if(tool==='groove') addGroovePoint(hit.point); else if(tool==='measure') addMeasPoint(hit.point); else if(tool==='mark') addMark(hit.point); else addPathPoint(hit.point); });
-window.__tool={grooves,setTool,addPathPoint,addMeasPoint,addMark,newPath,marks,paths};
+window.__tool={pivotIdx:(k)=>{ const P=paths[active]; select(P,P.handles[k]); document.getElementById('tpivot').click(); },addAB:(a,b)=>{ const v=new THREE.Vector3(-b*S,0,a*S); v.y=surfaceY(v.x,v.z,0.05); addPathPoint(v); },grooves,setTool,addPathPoint,addMeasPoint,addMark,newPath,marks,paths};
 }
 
 { const pn=document.getElementById('panel'), tab=document.getElementById('sidetab'), hb=document.getElementById('sidehide');
