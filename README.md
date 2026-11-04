@@ -11,7 +11,7 @@ Interactive, photo-textured, to-scale 3D model of the Guthrie front porch, with 
 
 ## Model notes
 
-- Scale: 1 tile spacing ≈ 12.6 in (brick courses on the door wall; consistent with 12.25–13 in from other measurements).
+- Scale: 1 tile spacing ≈ 12.2 in.
 - Porch heading 334° (door faces outward, NNW), measured from a map view; adjustable in the page.
 - Ceiling height (8.6 tile spacings) and beams estimated from the doorbell view.
 - Estimated: pillar depth, vase position, doorbell camera position.
