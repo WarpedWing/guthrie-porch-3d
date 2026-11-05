@@ -115,6 +115,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 <li><b>Wheel path:</b> tap to add points, then drag a point, or drag the line itself to bend it. <b>New path</b> starts another path in a new colour. <b>Tire width</b> sets the band width.</li>
 <li><b>Second wheel:</b> shows where the other wheel on the same axle would run, on the left or right of the active path as seen walking from its first point. <b>Wheel spacing</b> sets the distance between the wheel centres. Wherever the drawn path bends more tightly than the wheel spacing (a radius under, say, 16″ for a 16″ axle), the other wheel must briefly roll backward; that stretch is amber. This is geometry, not an error: a hand truck does it whenever it turns that sharply. Pale yellow is the sweep at a pivot point. Hand-placed bends are often sharper than the real route, so smoothing a bend usually clears the amber. Red means that wheel would hit a wall, pillar or bed.</li>
 <li><b>Pivot point:</b> tap a path point (a white ring shows it's selected), then <b>Make pivot</b>. The path turns in place there instead of curving, and the second wheel swings around that point (shown in amber), as when a hand truck spins on one wheel. Use it where a smear suggests the bloody wheel twisted on the spot. Stamps don't advance during the pivot, because the wheel turns without rolling forward.</li>
+<li><b>Second wheel stamps:</b> with Second wheel and Wheel stamps both on, the other wheel gets its own stamps in pink, counted from the distance it actually rolls. Where it rolls backward the count unwinds (shown with −), so it can print the same patch twice.</li>
 <li><b>Wheel stamps:</b> marks where a tire of the set <b>Wheel diameter</b> touches the floor as it rolls along the active path, starting from its first point (put that where the wheel stood, under the axle). Half turns (½, 1½, …) show where a spot that started on top of the tire lands; whole turns (1, 2, …) show where the spot that started on the floor lands again.</li>
 <li><b>Mark imprint:</b> tap each imprint to drop a numbered pin, then <b>Copy imprint list</b> to copy their positions.</li>
 <li><b>Editing:</b> double-tap any point or pin to delete it; a measure end deletes the whole measurement. <b>Undo point</b> removes the last thing you added.</li>
@@ -229,8 +230,8 @@ function buildFig(){ fig.clear(); const H=FIG_IN*IN;
   fig.add(body,head); fig.traverse(o=>{if(o.isMesh)o.castShadow=true}); }
 buildFig(); const FOOT=[4.85,1.5]; fig.position.copy(W(FOOT[0],FOOT[1],0)); scene.add(fig);
 let floors=[];
-window.MOON=await (await fetch('moon.json?v=84')).json();
-new GLTFLoader().load('porch.glb?v=84',g=>{
+window.MOON=await (await fetch('moon.json?v=85')).json();
+new GLTFLoader().load('porch.glb?v=85',g=>{
   g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=!/porch_floor|gravel|walkway|yard|ground|doormat|B6_C6|tile_edge|drive|road|stepstone|stone_path/.test(o.name);o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
     if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=/hires/.test(o.name)?3:2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
@@ -410,7 +411,7 @@ let gauge=16, wheelD=6.1;
 function minRadius(Q){ const k=4; let m=Infinity; for(let i=k;i<Q.length-k;i++){ const A=Q[i-k],B=Q[i],C=Q[i+k];
   const a=Math.hypot(B.x-C.x,B.z-C.z), b=Math.hypot(A.x-C.x,A.z-C.z), c=Math.hypot(A.x-B.x,A.z-B.z), ar=Math.abs((B.x-A.x)*(C.z-A.z)-(C.x-A.x)*(B.z-A.z))/2;
   if(a<1e-4||c<1e-4){ m=0; continue; } if(ar>1e-12){ const r_=a*b*c/(4*ar); if(r_<m) m=r_; } } return m; }
-function rebuildPath(P){ if(P.ribbon){toolG.remove(P.ribbon); P.ribbon.geometry.dispose(); P.ribbon=null;} if(P.ax){ P.ax.forEach(o=>{toolG.remove(o); o.geometry.dispose();}); } P.ax=[]; if(P.stL){ P.stL.forEach(delLabel); } P.stL=[]; P.stats=null; P.samples=[];
+function rebuildPath(P){ if(P.ribbon){toolG.remove(P.ribbon); P.ribbon.geometry.dispose(); P.ribbon=null;} if(P.ax){ P.ax.forEach(o=>{toolG.remove(o); o.geometry.dispose();}); } P.ax=[]; if(P.stL){ P.stL.forEach(delLabel); } P.stL=[]; P.stats=null; P.samples=[]; P._Q2=null;
   P.segLabels.forEach(delLabel); P.segLabels.length=0;
   if(P.pts.length<2){ updateOut(); render(); return; }
   const n=P.pts.length;
@@ -463,6 +464,7 @@ function rebuildPath(P){ if(P.ribbon){toolG.remove(P.ribbon); P.ribbon.geometry.
     const rp=[]; SEG.forEach(sg_=>{ const m=sg_.a1-sg_.a0; for(let k=0;k<=m;k++){ const u=k/m; const p=sg_.c.getPoint(u); const t=sg_.c.getTangent(u); t.y=0; t.normalize();
       const q=p.clone().addScaledVector(nrm(t),sg*G); q.y=surfaceY(q.x,q.z,p.y)+0.006; rp.push(p.x,p.y+0.006,p.z,q.x,q.y,q.z); } });
     const gr=new THREE.BufferGeometry(); gr.setAttribute('position',new THREE.Float32BufferAttribute(rp,3)); const rl=new THREE.LineSegments(gr,new THREE.LineBasicMaterial({color:P.color,depthTest:false,transparent:true,opacity:0.55})); rl.renderOrder=10; toolG.add(rl); P.ax.push(rl);
+    P._Q2=Q2; P._kind=kind;
     P.stats.ax={side:sg>0?'right':'left',len:len2,minR:minRadius(Q2.filter((q,i)=>kind[i]==='r')),back,blocked,sweep,N:M2}; }
   if(P.stamps){ const C=Math.PI*wheelD*IN, half=C/2, sp=[], cl=[], cA=new THREE.Color(0xffd166), cB=new THREE.Color(0xffffff), L_=tireIn*IN*1.6+0.02;
     let acc=[0]; for(let i=1;i<=N;i++) acc.push(acc[i-1]+Q[i].distanceTo(Q[i-1]));
@@ -471,6 +473,17 @@ function rebuildPath(P){ if(P.ribbon){toolG.remove(P.ribbon); P.ribbon.geometry.
       p.y=surfaceY(p.x,p.z,p.y)+0.006; const e1=p.clone().addScaledVector(nn,L_/2), e2=p.clone().addScaledVector(nn,-L_/2); sp.push(e1.x,e1.y,e1.z,e2.x,e2.y,e2.z);
       const c=k%2?cA:cB; cl.push(c.r,c.g,c.b,c.r,c.g,c.b);
       const lb=addLabel(e1,(k%2?(k>1?((k-1)/2)+'½':'½'):String(k/2))); lb.el.classList.add('stp'); lb.el.style.color=k%2?'#ffd166':'#ffffff'; P.stL.push(lb); }
+    // second wheel: its own stamps from the distance it actually rolls (backward rolling unwinds; it can print the same patch twice)
+    if(P._Q2){ const Q2=P._Q2, kd=P._kind, M2=Q2.length-1, cC=new THREE.Color(0xf9a8d4), cD=new THREE.Color(0xfce7f3); let s0=0, n2=0;
+      for(let j=1;j<=M2;j++){ const a=Q2[j-1], b=Q2[j], ds=a.distanceTo(b)*(kd[j]==='p'?-1:1), s1=s0+ds;
+        const k0=Math.floor(s0/half+1e-9), k1=Math.floor(s1/half+1e-9);
+        const ks=[]; if(k1>k0) for(let k=k0+1;k<=k1;k++) ks.push(k); else if(k1<k0) for(let k=k0;k>k1;k--) ks.push(k);
+        for(const k of ks){ if(k===0) continue; const f=(k*half-s0)/(s1-s0); const p=a.clone().lerp(b,f); const t=new THREE.Vector3(b.x-a.x,0,b.z-a.z); if(t.lengthSq()<1e-12) continue; t.normalize(); const nn=new THREE.Vector3(-t.z,0,t.x);
+          p.y=surfaceY(p.x,p.z,p.y)+0.006; const e1=p.clone().addScaledVector(nn,L_/2), e2=p.clone().addScaledVector(nn,-L_/2); sp.push(e1.x,e1.y,e1.z,e2.x,e2.y,e2.z);
+          const c=k%2?cC:cD; cl.push(c.r,c.g,c.b,c.r,c.g,c.b); const ak=Math.abs(k);
+          const lb=addLabel(e1,(k<0?'−':'')+(ak%2?(ak>1?((ak-1)/2)+'½':'½'):String(ak/2))); lb.el.classList.add('stp'); lb.el.style.color=k%2?'#f9a8d4':'#fce7f3'; P.stL.push(lb); n2++; }
+        s0=s1; }
+      P.stats.st2={net:s0,n:n2}; }
     const g3=new THREE.BufferGeometry(); g3.setAttribute('position',new THREE.Float32BufferAttribute(sp,3)); g3.setAttribute('color',new THREE.Float32BufferAttribute(cl,3));
     const ls=new THREE.LineSegments(g3,new THREE.LineBasicMaterial({vertexColors:true,depthTest:false,transparent:true})); ls.renderOrder=12; toolG.add(ls); P.ax.push(ls);
     P.stats.st={C}; }
@@ -510,7 +523,7 @@ function updateOut(){ let h='';
   meas.forEach((m,i)=>{ h+=`<dt>Measure ${i+1}</dt><dd>${fmtIn(m.dist)}</dd>`; });
   paths.forEach((P,i)=>{ if(!P.pts.length) return; const sw=`<span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${hex(P.color)};margin-right:6px"></span>`;
     if(!P.stats){ h+=`<dt>${sw}Path ${i+1}${i===active?' (active)':''}</dt><dd>1 point</dd>`; return; }
-    h+=`<dt>${sw}Path ${i+1}${i===active?' (active)':''}</dt><dd>${fmtIn(P.stats.len)}</dd>${P.stats.segs.length>1?`<dt>Segments</dt><dd style="white-space:normal">${P.stats.segs.map(v=>(v/IN).toFixed(1)+'″').join(' · ')}</dd>`:''}<dt>Tightest turn</dt><dd>${isFinite(P.stats.minR)?(P.stats.minR/IN).toFixed(1)+'″':'straight'}</dd><dt>Tiles</dt><dd style="white-space:normal">${P.stats.tiles.join(', ')||'none'}</dd>${P.stats.pivots?`<dt>Pivot points</dt><dd>${P.stats.pivots}</dd>`:''}${P.stats.st?`<dt>Stamps (${wheelD}″ wheel)</dt><dd>every ${(P.stats.st.C/2/IN).toFixed(1)}″ (½ turn)</dd>`:''}${P.stats.ax?`<dt>Second wheel (${P.stats.ax.side}, ${gauge}″)</dt><dd>${(P.stats.ax.len/IN).toFixed(1)}″</dd><dt>Its tightest turn</dt><dd>${isFinite(P.stats.ax.minR)?(P.stats.ax.minR/IN).toFixed(1)+'″':'straight'}</dd>${P.stats.ax.back?`<dt style="color:#ffb020">Other wheel reverses</dt><dd style="color:#ffb020">${Math.round(P.stats.ax.back/P.stats.ax.N*100)}% of path</dd>`:''}<dt>Bend limit</dt><dd>${P.stats.minR*1/IN<gauge?`tightest bend ${(P.stats.minR/IN).toFixed(1)}″ < spacing ${gauge}″`:'none'}</dd>${P.stats.ax.blocked?`<dt style="color:#ff6b6b">Hits wall or bed</dt><dd style="color:#ff6b6b">${Math.round(P.stats.ax.blocked/P.stats.ax.N*100)}% of path</dd>`:''}`:''}`; });
+    h+=`<dt>${sw}Path ${i+1}${i===active?' (active)':''}</dt><dd>${fmtIn(P.stats.len)}</dd>${P.stats.segs.length>1?`<dt>Segments</dt><dd style="white-space:normal">${P.stats.segs.map(v=>(v/IN).toFixed(1)+'″').join(' · ')}</dd>`:''}<dt>Tightest turn</dt><dd>${isFinite(P.stats.minR)?(P.stats.minR/IN).toFixed(1)+'″':'straight'}</dd><dt>Tiles</dt><dd style="white-space:normal">${P.stats.tiles.join(', ')||'none'}</dd>${P.stats.pivots?`<dt>Pivot points</dt><dd>${P.stats.pivots}</dd>`:''}${P.stats.st?`<dt>Stamps (${wheelD}″ wheel)</dt><dd>every ${(P.stats.st.C/2/IN).toFixed(1)}″ (½ turn)</dd>${P.stats.st2?`<dt>Second wheel stamps</dt><dd>${P.stats.st2.n} · net ${(P.stats.st2.net/P.stats.st.C).toFixed(2)} turns</dd>`:''}`:''}${P.stats.ax?`<dt>Second wheel (${P.stats.ax.side}, ${gauge}″)</dt><dd>${(P.stats.ax.len/IN).toFixed(1)}″</dd><dt>Its tightest turn</dt><dd>${isFinite(P.stats.ax.minR)?(P.stats.ax.minR/IN).toFixed(1)+'″':'straight'}</dd>${P.stats.ax.back?`<dt style="color:#ffb020">Other wheel reverses</dt><dd style="color:#ffb020">${Math.round(P.stats.ax.back/P.stats.ax.N*100)}% of path</dd>`:''}<dt>Bend limit</dt><dd>${P.stats.minR*1/IN<gauge?`tightest bend ${(P.stats.minR/IN).toFixed(1)}″ < spacing ${gauge}″`:'none'}</dd>${P.stats.ax.blocked?`<dt style="color:#ff6b6b">Hits wall or bed</dt><dd style="color:#ff6b6b">${Math.round(P.stats.ax.blocked/P.stats.ax.N*100)}% of path</dd>`:''}`:''}`; });
   if(grooves.length) h+=`<dt>Groove lines</dt><dd>${grooves.length}</dd>`;
   if(marks.length) h+=`<dt>Imprints marked</dt><dd>${marks.length}</dd>`;
   out.innerHTML=h; const ap=paths[active]; document.getElementById('taxle').textContent='Second wheel: '+(!ap||!ap.axle?'off':ap.axle>0?'right':'left'); document.getElementById('tstamp').textContent='Wheel stamps: '+(ap&&ap.stamps?'on':'off'); document.getElementById('tstamp').setAttribute('aria-pressed',!!(ap&&ap.stamps)); pivBtn(); document.getElementById('tcopy').hidden=!marks.length; }
