@@ -50,7 +50,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 .note b{color:var(--fg);font-weight:500}
 #loading{position:fixed;inset:0;display:grid;place-items:center;color:var(--muted);font-size:13px;pointer-events:none}
 #toggle{display:none}
-#panel{transition:transform .25s ease}
+#panel{transition:transform .25s ease;z-index:5}
 #panel.side-hidden{transform:translateX(calc(-100% - 24px))}
 #sidetab{position:fixed;left:calc(8px + env(safe-area-inset-left,0px));top:calc(16px + env(safe-area-inset-top,0px));z-index:5;background:var(--panel);border:1px solid var(--line);color:var(--fg);border-radius:8px;padding:8px 10px;font:600 13px var(--sans);cursor:pointer}
 #sidehide{font-size:13px;padding:4px 9px;line-height:1}
@@ -93,6 +93,13 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 .srow label{font-size:12px;color:var(--muted);width:90px}
 .srow input{flex:1} .srow span{font:500 13px var(--mono);width:44px;text-align:right}
 .tedit{border-top:1px solid var(--line);padding-top:8px}
+#tout dl{margin:0 0 3px} #tout details{margin:0 0 8px} #tout summary{cursor:pointer;font-size:11.5px;color:var(--muted);margin:1px 0 4px;list-style-position:inside} #tout details dl{padding-left:10px;border-left:1px solid var(--line)}
+.stepw{display:flex;align-items:center;gap:4px;flex:1;min-width:0}
+.stepw input{flex:1;min-width:0}
+.stepb{padding:2px 0;width:24px;font:500 14px var(--sans);line-height:1.1;flex:none}
+.valed{cursor:text;border-bottom:1px dotted var(--muted)}
+.valin{width:56px;font:500 13px var(--mono);background:#0c101a;color:var(--fg);border:1px solid var(--line);border-radius:4px;padding:1px 3px}
+.mlabel.grid{color:#99f6e4;background:rgba(6,30,30,.6);font:600 11px var(--mono);padding:0 4px;transform:translate(-50%,-50%);opacity:.9}
 .tsec[data-for="path"]:not([hidden]) + .tsec{border-top:0;padding-top:0;margin-top:-4px}
 #tout{margin-top:2px}
 #help{max-width:min(560px,calc(100% - 32px));max-height:calc(100% - 48px);overflow:auto;background:#0c101a;color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:18px 20px;font-size:13px;line-height:1.5}
@@ -114,9 +121,15 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 <li><b>Measure:</b> tap two points. Drag an end to adjust it.</li>
 <li><b>Wheel path:</b> tap to add points, then drag a point, or drag the line itself to bend it. <b>New path</b> starts another path in a new colour. <b>Tire width</b> sets the band width.</li>
 <li><b>Second wheel:</b> shows where the other wheel on the same axle would run, on the left or right of the active path as seen walking from its first point. <b>Wheel spacing</b> sets the distance between the wheel centres. Wherever the drawn path bends more tightly than the wheel spacing (a radius under, say, 16″ for a 16″ axle), the other wheel must briefly roll backward; that stretch is amber. This is geometry, not an error: a hand truck does it whenever it turns that sharply. Pale yellow is the sweep at a pivot point. Hand-placed bends are often sharper than the real route, so smoothing a bend usually clears the amber. Red means that wheel would hit a wall, pillar or bed.</li>
-<li><b>Pivot point:</b> tap a path point (a white ring shows it's selected), then <b>Make pivot</b>. The path turns in place there instead of curving, and the second wheel swings around that point (shown in amber), as when a hand truck spins on one wheel. Use it where a smear suggests the bloody wheel twisted on the spot. Stamps don't advance during the pivot, because the wheel turns without rolling forward.</li>
+<li><b>Pivot and Reverse:</b> tap a path point (a white ring shows it's selected). <b>Pivot</b> cycles how the truck turns there: <b>on wheel 1</b> (the wheel whose path you drew stays put, amber ring), <b>on wheel 2</b> (the other wheel stays put and wheel 1 swings round it, orange ring), or <b>spin</b> (the truck twists about the middle of its axle and the wheels roll opposite ways, purple ring). <b>Reverse</b> (cyan ring) makes the truck back up from that point without turning: draw the next points back the way it came. Each wheel's stamps count its actual rolling, so they run backward while it rolls backward and a patch can print twice. Pivots on wheel 2 and spins need a wheel spacing and side, so set <b>Second wheel</b> first (it assumes left if off). Paler stretches are pivots; amber means that wheel is rolling backward.</li>
 <li><b>Second wheel stamps:</b> with Second wheel and Wheel stamps both on, the other wheel gets its own stamps in pink, counted from the distance it actually rolls. Where it rolls backward the count unwinds (shown with −), so it can print the same patch twice.</li>
-<li><b>Wheel stamps:</b> marks where a tire of the set <b>Wheel diameter</b> touches the floor as it rolls along the active path, starting from its first point (put that where the wheel stood, under the axle). Half turns (½, 1½, …) show where a spot that started on top of the tire lands; whole turns (1, 2, …) show where the spot that started on the floor lands again.</li>
+<li><b>Play</b> rolls a wheel (two with Second wheel on) along the active path at about 2 ft/s, at the set diameter and tire width; the red mark on the tire shows it turning, including backward on reverses and pivots. Drag <b>Position</b> to scrub.</li>
+<li><b>Path details</b> (segments, tiles, stamps and so on) are folded under each path's <b>Details</b>.</li>
+<li><b>Wheel stamps:</b> 0 marks the start, and reappears if the wheel rolls back past it. Stamps mark where a tire of the set <b>Wheel diameter</b> touches the floor as it rolls along the active path, starting from its first point (put that where the wheel stood, under the axle). Half turns (½, 1½, …) show where a spot that started on top of the tire lands; whole turns (1, 2, …) show where the spot that started on the floor lands again.</li>
+<li><b>Blood path:</b> a thin line for tracing blood trails, with a dot at the start and an arrow at the end. Tap open ground twice to draw a new line (first tap is the start, second the end). Tap or drag the line itself to add a bend; drag a point to move it; double-tap a point to delete it. Shift-tap extends the current line instead of starting a new one.</li>
+<li><b>Arrows</b> along wheel tracks show which way the truck faces: white when that wheel is rolling forward, amber when it's rolling backward.</li>
+<li><b>Show</b> buttons hide or show each layer. <b>Save</b> downloads a session file (all paths, pins, measurements and settings); <b>Load</b> restores one.</li>
+<li><b>Sliders:</b> use the ‹ › buttons (hold to repeat), the mouse wheel, or the arrow keys for single steps; click the value to type an exact number.</li>
 <li><b>Mark imprint:</b> tap each imprint to drop a numbered pin, then <b>Copy imprint list</b> to copy their positions.</li>
 <li><b>Editing:</b> double-tap any point or pin to delete it; a measure end deletes the whole measurement. <b>Undo point</b> removes the last thing you added.</li>
 </ul>
@@ -129,14 +142,16 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
   <div class="thead"><span class="ttitle">Measure &amp; path</span><span style="display:flex;gap:6px"><button class="helpb" data-sec="tools" aria-label="Help with measuring tools" title="Help">?</button><button id="ttog" aria-expanded="false" aria-label="Measure and path tools" title="Measure and path tools"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16.5 16.5 3l4.5 4.5L7.5 21z"/><path d="M7 12.5l1.8 1.8M9.8 9.7l2.6 2.6M12.6 6.9l1.8 1.8M15.4 4.1l2.6 2.6"/></svg></button></span></div>
   <div class="tbody">
     <div class="tsec"><div class="lbl">Tool</div><div class="row">
-      <button id="tmeas" aria-pressed="false">Measure</button><button id="tpath" aria-pressed="false">Wheel path</button><button id="tmark" aria-pressed="false">Mark imprint</button></div></div>
-    <div class="tsec" data-for="path" hidden><div class="lbl">Wheel path</div><div class="row"><button id="tnew">New path</button><button id="taxle">Second wheel: off</button><button id="tstamp">Wheel stamps: off</button><button id="tpivot" disabled>Make pivot</button></div>
+      <button id="tmeas" aria-pressed="false">Measure</button><button id="tpath" aria-pressed="false">Wheel path</button><button id="tmark" aria-pressed="false">Mark imprint</button><button id="tblood" aria-pressed="false">Blood path</button></div></div>
+    <div class="tsec" data-for="path" hidden><div class="lbl">Wheel path</div><div class="row"><button id="tnew">New path</button><button id="taxle">Second wheel: off</button><button id="tstamp">Wheel stamps: off</button><button id="tpivot" disabled>Pivot: off</button><button id="trev" disabled>Reverse: off</button></div>
       <div class="srow"><label for="tw">Tire width</label><input id="tw" type="range" min="0.5" max="4" step="0.25" value="1.5"><span id="twv">1.5″</span></div></div>
-    <div class="tsec" data-for="path" hidden><div class="srow"><label for="td">Wheel diameter</label><input id="td" type="range" min="3" max="12" step="0.05" value="6.1"><span id="tdv">6.1″</span></div><div class="srow"><label for="tg">Wheel spacing</label><input id="tg" type="range" min="8" max="26" step="0.25" value="16"><span id="tgv">16″</span></div></div>
+    <div class="tsec" data-for="path" hidden><div class="srow"><label for="td">Wheel diameter</label><input id="td" type="range" min="3" max="12" step="0.05" value="6.1"><span id="tdv">6.1″</span></div><div class="srow"><label for="tg">Wheel spacing</label><input id="tg" type="range" min="8" max="26" step="0.25" value="16"><span id="tgv">16″</span></div><div class="row" style="margin-top:8px;align-items:center"><button id="tplayb" disabled>▶ Play</button><span style="font-size:12px;color:var(--muted)">wheels along the active path</span></div><div class="srow"><label for="tplay">Position</label><input id="tplay" type="range" min="0" max="1000" step="1" value="0" disabled></div></div>
     <div class="tsec" data-for="mark" hidden><div class="row"><button id="tcopy" hidden>Copy imprint list</button></div>
       <textarea id="tcopytxt" hidden rows="3" style="width:100%;font:11px var(--mono);background:#0c101a;color:var(--fg);border:1px solid var(--line);border-radius:6px"></textarea></div>
-    <div class="row tedit"><button id="tundo">Undo point</button><button id="tclear">Clear all</button></div>
-    <dl id="tout"></dl></div>
+    <div class="tsec" data-for="blood" hidden><div class="lbl">Blood path</div><div class="row"><button id="tbnew">New blood path</button></div></div>
+    <div class="row tedit"><button id="tundo">Undo point</button><button id="tclear">Clear all</button><button id="tsave">Save</button><button id="tload">Load</button><input id="tfile" type="file" accept=".json,application/json" hidden></div>
+    <div class="tsec"><div class="lbl">Show</div><div class="row" id="tlayers"><button data-l="m" aria-pressed="true">Measure</button><button data-l="p" aria-pressed="true">Wheel paths</button><button data-l="k" aria-pressed="true">Imprints</button><button data-l="b" aria-pressed="true">Blood paths</button></div></div>
+    <div id="tout"></div></div>
 </aside>
 <aside id="panel">
   <div class="head"><div><h1>PBATT</h1><div class="sub">Porch Blood Analysis and Timing Tool</div></div><button class="helpb" aria-label="Help" title="Help">?</button><button id="toggle" aria-expanded="true">Hide</button><button id="sidehide" aria-label="Collapse panel" title="Collapse panel">«</button></div>
@@ -158,7 +173,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
     <div class="row" style="align-items:center;gap:10px;margin-top:8px"><label for="cloud" style="font-size:12px;color:var(--muted);width:76px">Brightness</label><input id="cloud" type="range" min="10" max="100" step="5" value="10" aria-label="Moonlight brightness" style="flex:1"><span id="cloudv" style="font:500 13px var(--mono);width:44px;text-align:right">10%</span></div></div>
   <div><div class="lbl">View</div><div class="row">
     <button data-v="door">Doorbell</button><button data-v="edge">Moonlit edge</button><button data-v="top">Top-down</button><button data-v="walk">Walk-up</button><button data-v="yard">Front yard</button><button data-v="corner">Gravel corner</button><button data-v="moon">Look at moon</button></div></div>
-  <div><div class="lbl">View options</div><div class="row"><button id="cut" aria-pressed="false">Cut away roof and arch top</button><button id="mpath" aria-pressed="true">Moon path</button></div></div>
+  <div><div class="lbl">View options</div><div class="row"><button id="cut" aria-pressed="false">Cut away roof and arch top</button><button id="mpath" aria-pressed="true">Moon path</button><button id="grid" aria-pressed="false">Tile labels</button><button id="refs" aria-pressed="false">Point labels</button><button id="cams" aria-pressed="true">Casita cameras</button></div></div>
   <div><div class="lbl">Figure</div><div class="row">
     <button id="fig" aria-pressed="true">Show figure</button><button id="home">Footage position</button><button id="place" aria-pressed="false">Tap floor to place</button></div>
     <div class="row" style="align-items:center;gap:10px;margin-top:8px"><label for="hgt" style="font-size:12px;color:var(--muted);width:56px">Height</label><input id="hgt" type="range" min="64" max="74" step="1" value="69" style="flex:1"><span id="hgtv" style="font:500 13px var(--mono);width:52px;text-align:right">5′9″</span></div>
@@ -230,8 +245,8 @@ function buildFig(){ fig.clear(); const H=FIG_IN*IN;
   fig.add(body,head); fig.traverse(o=>{if(o.isMesh)o.castShadow=true}); }
 buildFig(); const FOOT=[4.85,1.5]; fig.position.copy(W(FOOT[0],FOOT[1],0)); scene.add(fig);
 let floors=[];
-window.MOON=await (await fetch('moon.json?v=85')).json();
-new GLTFLoader().load('porch.glb?v=85',g=>{
+window.MOON=await (await fetch('moon.json?v=105')).json();
+new GLTFLoader().load('porch.glb?v=105',g=>{
   g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=!/porch_floor|gravel|walkway|yard|ground|doormat|B6_C6|tile_edge|drive|road|stepstone|stone_path/.test(o.name);o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
     if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=/hires/.test(o.name)?3:2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
@@ -355,6 +370,8 @@ window.__ready=()=>floors.length>0;
 {
 
 const toolG=new THREE.Group(); scene.add(toolG);
+let curLayer='m'; const layerVis={m:1,p:1,k:1,b:1,grid:0}; const _tgAdd=toolG.add.bind(toolG);
+toolG.add=(...o)=>{ o.forEach(x=>{ if(!x.userData.layer) x.userData.layer=curLayer; }); return _tgAdd(...o); };
 const noPick=o=>{ for(let p=o;p;p=p.parent){ if(p===fig||p===toolG||p===bellG||p===night||p===sky||p===window.__hills) return true; } return false; };
 function pickRay(e){ const rc=r.domElement.getBoundingClientRect(); const R=new THREE.Raycaster();
   if(fish){ const va=rc.width/rc.height, fa=0.75; let qx=(e.clientX-rc.left)/rc.width, qy=1-(e.clientY-rc.top)/rc.height;
@@ -375,9 +392,9 @@ function toScreen(p){ const rc=r.domElement.getBoundingClientRect();
   const px=rr*Math.cos(ph), py=rr*Math.sin(ph); let qx=(px+300)/600, qy=1-(py+400)/800;
   const va=rc.width/rc.height, fa=0.75; if(va>fa) qx=(qx-0.5)*fa/va+0.5; else qy=(qy-0.5)*va/fa+0.5;
   if(qx<0||qx>1||qy<0||qy>1) return null; return [rc.left+qx*rc.width, rc.top+(1-qy)*rc.height]; }
-const labels=[]; function addLabel(p,t){ const el=document.createElement('div'); el.className='mlabel'; el.textContent=t; document.body.appendChild(el); labels.push({el,p:p.clone()}); return labels[labels.length-1]; }
-function placeLabels(){ for(const L of labels){ const s=toScreen(L.p); if(!s){L.el.hidden=true;continue;} L.el.hidden=false; L.el.style.left=s[0]+'px'; L.el.style.top=s[1]+'px'; } }
-const _r0=render; render=function(){ _r0(); requestAnimationFrame(placeLabels); };
+const labels=[]; function addLabel(p,t){ const el=document.createElement('div'); el.className='mlabel'; el.textContent=t; document.body.appendChild(el); labels.push({el,p:p.clone(),layer:curLayer}); return labels[labels.length-1]; }
+function placeLabels(){ for(const L of labels){ if(L.layer&&layerVis[L.layer]===0){L.el.hidden=true;continue;} const s=toScreen(L.p); if(!s){L.el.hidden=true;continue;} L.el.hidden=false; L.el.style.left=s[0]+'px'; L.el.style.top=s[1]+'px'; } }
+const _r0=render; render=function(){ toolG.children.forEach(o=>{ o.visible=layerVis[o.userData.layer]!==0; }); _r0(); requestAnimationFrame(placeLabels); };
 ctl.addEventListener('change',()=>requestAnimationFrame(placeLabels)); addEventListener('resize',()=>requestAnimationFrame(placeLabels));
 const fmtIn=m=>{const i=m/IN; return i.toFixed(1)+'″ · '+(i/TILE_IN).toFixed(2)+' sp';};
 const dotMat=new THREE.MeshBasicMaterial({color:0xffd166,depthTest:false,transparent:true,opacity:0.35,depthWrite:false});
@@ -388,7 +405,7 @@ let tool='none';
 // --- measure
 let mPend=null; const meas=[];
 const hist=[];
-function addMeasPoint(p){ const d=addPin(new THREE.Mesh(dotGeo,dotMat),0xffd166); hist.push({t:'m',d}); d.position.copy(p); d.renderOrder=10; toolG.add(d);
+function addMeasPoint(p){ curLayer='m'; const d=addPin(new THREE.Mesh(dotGeo,dotMat),0xffd166); hist.push({t:'m',d}); d.position.copy(p); d.renderOrder=10; toolG.add(d);
   if(!mPend){ mPend={p:p.clone(),d}; render(); return; }
   const g=new THREE.BufferGeometry().setFromPoints([mPend.p,p]); const ln=new THREE.Line(g,lineMat); ln.renderOrder=10; toolG.add(ln);
   const dist=mPend.p.distanceTo(p); const L=addLabel(mPend.p.clone().add(p).multiplyScalar(0.5),fmtIn(dist));
@@ -401,7 +418,7 @@ const down_=new THREE.Raycaster();
 function surfaceY(x,z,yHint){ down_.set(new THREE.Vector3(x,yHint+0.6,z),new THREE.Vector3(0,-1,0));
   const h=down_.intersectObjects(scene.children,true).find(h=>h.object.isMesh&&h.object.visible&&!noPick(h.object)&&!(h.object.material&&h.object.material.colorWrite===false));
   return h?h.point.y:yHint; }
-const paths=[]; let active=-1; const axMat=new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:0.6,side:THREE.DoubleSide,depthWrite:false,depthTest:false});
+const paths=[]; let active=-1; const arrowMat=new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.DoubleSide,depthTest:false,transparent:true,opacity:0.9}); const axMat=new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:0.6,side:THREE.DoubleSide,depthWrite:false,depthTest:false});
 function newPath(){ const c=COLORS[paths.length%COLORS.length]; const P={pts:[],handles:[],ribbon:null,samples:[],segLabels:[],stats:null,color:c,
   hMat:new THREE.MeshBasicMaterial({color:new THREE.Color(c).lerp(new THREE.Color(0xffffff),0.5),depthTest:false,transparent:true,opacity:0.55,depthWrite:false}),
   ribMat:new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.4,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-4})};
@@ -411,97 +428,105 @@ let gauge=16, wheelD=6.1;
 function minRadius(Q){ const k=4; let m=Infinity; for(let i=k;i<Q.length-k;i++){ const A=Q[i-k],B=Q[i],C=Q[i+k];
   const a=Math.hypot(B.x-C.x,B.z-C.z), b=Math.hypot(A.x-C.x,A.z-C.z), c=Math.hypot(A.x-B.x,A.z-B.z), ar=Math.abs((B.x-A.x)*(C.z-A.z)-(C.x-A.x)*(B.z-A.z))/2;
   if(a<1e-4||c<1e-4){ m=0; continue; } if(ar>1e-12){ const r_=a*b*c/(4*ar); if(r_<m) m=r_; } } return m; }
-function rebuildPath(P){ if(P.ribbon){toolG.remove(P.ribbon); P.ribbon.geometry.dispose(); P.ribbon=null;} if(P.ax){ P.ax.forEach(o=>{toolG.remove(o); o.geometry.dispose();}); } P.ax=[]; if(P.stL){ P.stL.forEach(delLabel); } P.stL=[]; P.stats=null; P.samples=[]; P._Q2=null;
+function rebuildPath(P){ curLayer='p'; if(P.ribbon){toolG.remove(P.ribbon); P.ribbon.geometry.dispose(); P.ribbon=null;} if(P.ax){ P.ax.forEach(o=>{toolG.remove(o); o.geometry.dispose();}); } P.ax=[]; if(P.stL){ P.stL.forEach(delLabel); } P.stL=[]; P.stats=null; P.samples=[];
   P.segLabels.forEach(delLabel); P.segLabels.length=0;
   if(P.pts.length<2){ updateOut(); render(); return; }
-  const n=P.pts.length;
-  // split into segments at pivot points (the path turns in place there)
-  const cuts=[0]; for(let k=1;k<n-1;k++) if(P.handles[k].userData.pivot) cuts.push(k); cuts.push(n-1);
-  const SEG=[]; for(let s=0;s<cuts.length-1;s++){ const a0=cuts[s], a1=cuts[s+1]; const c=new THREE.CatmullRomCurve3(P.pts.slice(a0,a1+1).map(p=>p.clone()),false,'centripetal'); SEG.push({a0,a1,c}); }
-  const Q=[], T=[], junc=[]; 
-  SEG.forEach((sg_,si)=>{ const Ns=Math.max(10,Math.round(sg_.c.getLength()/0.01)); const Qs=sg_.c.getSpacedPoints(Ns); sg_.Q=Qs;
-    for(let i=0;i<=Ns;i++){ const a=Qs[Math.max(0,i-1)], b=Qs[Math.min(Ns,i+1)]; const t=new THREE.Vector3(b.x-a.x,0,b.z-a.z).normalize(); if(si>0&&i===0) junc.push(Q.length); Q.push(Qs[i]); T.push(t); } });
-  const N=Q.length-1; P.samples=Q;
-  const hw=tireIn*IN/2, pos=[], idx=[]; let len=0; const tiles=new Set();
-  for(let i=0;i<=N;i++){ const p=Q[i], t=T[i], nv=new THREE.Vector3(-t.z,0,t.x);
-    for(const sg of [-1,1]){ const q=p.clone().addScaledVector(nv,sg*hw); q.y=surfaceY(q.x,q.z,p.y)+0.003; pos.push(q.x,q.y,q.z); }
-    if(i>0) len+=p.distanceTo(Q[i-1]);
-    const A=p.z/S, B=-p.x/S; if(A>=-1&&A<5&&B>=-0.93&&B<6.09){ tiles.add('ABCDEF'[Math.floor(A)+1]+(6-Math.floor(B))); }
-    if(i<N){ const k=2*i; idx.push(k,k+1,k+3,k,k+3,k+2); } }
-  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); g.setIndex(idx);
-  P.ribbon=new THREE.Mesh(g,P.ribMat); P.ribbon.renderOrder=9; toolG.add(P.ribbon);
-  const segs=[]; let minR=Infinity;
-  SEG.forEach(sg_=>{ const m=sg_.a1-sg_.a0; minR=Math.min(minR,minRadius(sg_.Q));
-    for(let k=0;k<m;k++){ let L=0, prev=sg_.c.getPoint(k/m); const M=60;
-      for(let j=1;j<=M;j++){ const q=sg_.c.getPoint((k+j/M)/m); L+=q.distanceTo(prev); prev=q; }
-      segs.push(L);
-      if(n>2&&!P.stamps){ const mid=sg_.c.getPoint((k+0.5)/m); mid.y=surfaceY(mid.x,mid.z,mid.y)+0.01; const lb=addLabel(mid,(L/IN).toFixed(1)+'″'); lb.el.classList.add('seg'); lb.el.style.color='#'+P.color.toString(16).padStart(6,'0'); P.segLabels.push(lb); } } });
-  P.stats={len,minR,tiles:[...tiles],segs,pivots:cuts.length-2};
-  if(P.axle){ const sg=P.axle>0?1:-1, G=gauge*IN, Q2=[], kind=[], col=[], p2=[], ix=[]; let back=0, blocked=0, sweep=0;
-    const base=new THREE.Color(P.color).lerp(new THREE.Color(0xffffff),0.35), bad=new THREE.Color(0xff3030), piv=new THREE.Color(0xffb020), swc=new THREE.Color(0xffe08a);
-    const nrm=t=>new THREE.Vector3(-t.z,0,t.x);
-    SEG.forEach((sg_,si)=>{ const Qs=sg_.Q, Ns=Qs.length-1, Ts=[]; for(let i=0;i<=Ns;i++){ const a=Qs[Math.max(0,i-1)], b=Qs[Math.min(Ns,i+1)]; Ts.push(new THREE.Vector3(b.x-a.x,0,b.z-a.z).normalize()); }
-      if(si>0){ // swing the other wheel around the pivot (the bloody wheel stays put)
-        const c0=SEG[si-1].Q[SEG[si-1].Q.length-1], tp=SEG[si-1].Tend, n0=nrm(tp).multiplyScalar(sg), n1=nrm(Ts[0]).multiplyScalar(sg);
-        let a0=Math.atan2(n0.z,n0.x), a1=Math.atan2(n1.z,n1.x), da=a1-a0; while(da>Math.PI) da-=2*Math.PI; while(da<-Math.PI) da+=2*Math.PI;
-        let prevq=new THREE.Vector3(c0.x+Math.cos(a0)*G,0,c0.z+Math.sin(a0)*G);
-        for(let j=1;j<24;j++){ const an=a0+da*j/24; const q=new THREE.Vector3(c0.x+Math.cos(an)*G,0,c0.z+Math.sin(an)*G); q.y=surfaceY(q.x,q.z,c0.y);
-          const ux=Math.cos(an)*sg, uz=Math.sin(an)*sg, th=new THREE.Vector3(uz,0,-ux);   // heading for this axle angle
-          const v=new THREE.Vector3(q.x-prevq.x,0,q.z-prevq.z); Q2.push(q); kind.push(v.dot(th)<0?'p':'s'); prevq=q; } }
-      const Q2s=Qs.map((p,i)=>{ const q=p.clone().addScaledVector(nrm(Ts[i]),sg*G); q.y=surfaceY(q.x,q.z,p.y); return q; });
-      Q2s.forEach((q,i)=>{ const a=Q2s[Math.max(0,i-1)], b=Q2s[Math.min(Ns,i+1)]; const rev=new THREE.Vector3(b.x-a.x,0,b.z-a.z).dot(Ts[i])<0; Q2.push(q); kind.push(rev?'p':'r'); });
-      sg_.Tend=Ts[Ns]; });
-    const M2=Q2.length-1; let len2=0;
-    for(let i=0;i<=M2;i++){ const q=Q2[i], a=Q2[Math.max(0,i-1)], b=Q2[Math.min(M2,i+1)];
-      let t2=new THREE.Vector3(b.x-a.x,0,b.z-a.z); if(t2.lengthSq()<1e-12) t2.set(1,0,0); t2.normalize(); const n2=nrm(t2);
-      const A=q.z/S, B=-q.x/S, off=A<-1||(A<3.8&&(B<-0.93||B>6.09))||(A>=3.8&&A<5.16&&(B<-0.2||B>5.36)); if(kind[i]==='p') back++; if(kind[i]==='s') sweep++; if(off) blocked++;
-      const c=off?bad:kind[i]==='p'?piv:kind[i]==='s'?swc:base;
-      for(const s2 of [-1,1]){ const v=q.clone().addScaledVector(n2,s2*hw); v.y=q.y+0.004; p2.push(v.x,v.y,v.z); col.push(c.r,c.g,c.b); }
-      if(i>0) len2+=q.distanceTo(Q2[i-1]);
-      if(i<M2){ const k=2*i; ix.push(k,k+1,k+3,k,k+3,k+2); } }
-    const g2=new THREE.BufferGeometry(); g2.setAttribute('position',new THREE.Float32BufferAttribute(p2,3)); g2.setAttribute('color',new THREE.Float32BufferAttribute(col,3)); g2.setIndex(ix);
-    const m2=new THREE.Mesh(g2,axMat); m2.renderOrder=9; toolG.add(m2); P.ax.push(m2);
-    const rp=[]; SEG.forEach(sg_=>{ const m=sg_.a1-sg_.a0; for(let k=0;k<=m;k++){ const u=k/m; const p=sg_.c.getPoint(u); const t=sg_.c.getTangent(u); t.y=0; t.normalize();
-      const q=p.clone().addScaledVector(nrm(t),sg*G); q.y=surfaceY(q.x,q.z,p.y)+0.006; rp.push(p.x,p.y+0.006,p.z,q.x,q.y,q.z); } });
+  // ---- kinematic simulation: the path points are where the (bloody) wheel 1 touches the floor.
+  // The truck has a heading h; wheel 2 sits at the axle spacing to one side of h. Each wheel's rolling
+  // distance is its displacement projected on h, so reversing, pivots and spins all come out signed.
+  const n=P.pts.length, sg=P.axle>0?1:-1, G=gauge*IN, nrm=t=>new THREE.Vector3(-t.z,0,t.x), up=new THREE.Vector3(0,1,0);
+  const flat=v=>{ const w=new THREE.Vector3(v.x,0,v.z); return w.lengthSq()>1e-12?w.normalize():w; };
+  const sAng=(a,b)=>Math.atan2(a.x*b.z-a.z*b.x,a.x*b.x+a.z*b.z);
+  const rotY=(v,c,th)=>{ const d=new THREE.Vector3(v.x-c.x,0,v.z-c.z).applyAxisAngle(up,-th); return new THREE.Vector3(c.x+d.x,v.y,c.z+d.z); };
+  const node=[0]; for(let k=1;k<n-1;k++){ const u=P.handles[k].userData; if(u.ptype||u.rev) node.push(k); } node.push(n-1);
+  const poses=[], knots=[], segs=[]; let dir=1, hPrev=null, pivots=0, revs=0;
+  for(let s=0;s<node.length-1;s++){ const a0=node[s], a1=node[s+1]; let start=P.pts[a0].clone();
+    if(s>0){ const u=P.handles[a0].userData; if(u.rev){ dir=-dir; revs++; } const ty=u.ptype||'L'; if(u.ptype) pivots++;
+      const ctr=ty==='O'?start.clone().addScaledVector(nrm(hPrev),sg*G):ty==='C'?start.clone().addScaledVector(nrm(hPrev),sg*G/2):start.clone();
+      const nxt=P.pts[a0+1]; let th=0;
+      for(let it=0;it<8;it++){ const np=rotY(start,ctr,th); const tg=flat(new THREE.Vector3(nxt.x-np.x,0,nxt.z-np.z)).multiplyScalar(dir); th=sAng(hPrev,tg); }
+      const M=Math.max(2,Math.ceil(Math.abs(th)/0.05));
+      for(let j=1;j<=M;j++){ const t_=th*j/M; const p=rotY(start,ctr,t_); p.y=surfaceY(p.x,p.z,start.y); poses.push({p,h:hPrev.clone().applyAxisAngle(up,-t_),k:'v'}); }
+      start=rotY(start,ctr,th); start.y=P.pts[a0].y; }
+    const cv=new THREE.CatmullRomCurve3([start,...P.pts.slice(a0+1,a1+1).map(p=>p.clone())],false,'centripetal');
+    const Ns=Math.max(10,Math.round(cv.getLength()/0.01)), Qs=cv.getSpacedPoints(Ns);
+    for(let i=0;i<=Ns;i++){ const a=Qs[Math.max(0,i-1)], b=Qs[Math.min(Ns,i+1)]; const h=flat(new THREE.Vector3(b.x-a.x,0,b.z-a.z)).multiplyScalar(dir);
+      if(s>0&&i===0&&poses.length) continue; poses.push({p:Qs[i],h,k:'r'}); }
+    hPrev=poses[poses.length-1].h.clone();
+    const m=a1-a0; for(let k=0;k<=m;k++){ const u=k/m, p=cv.getPoint(u), t=cv.getTangent(u); knots.push({p,h:flat(t).multiplyScalar(dir)}); }
+    for(let k=0;k<m;k++){ let L=0, prev=cv.getPoint(k/m); for(let j=1;j<=60;j++){ const q=cv.getPoint((k+j/60)/m); L+=q.distanceTo(prev); prev=q; } segs.push(L);
+      if(n>2&&!P.stamps){ const mid=cv.getPoint((k+0.5)/m); mid.y=surfaceY(mid.x,mid.z,mid.y)+0.01; const lb=addLabel(mid,(L/IN).toFixed(1)+'″'); lb.el.classList.add('seg'); lb.el.style.color='#'+P.color.toString(16).padStart(6,'0'); P.segLabels.push(lb); } } }
+  const N=poses.length-1;
+  // wheel tracks and signed rolling
+  const W1=poses.map(o=>o.p), W2=poses.map(o=>{ const q=o.p.clone().addScaledVector(nrm(o.h),sg*G); q.y=surfaceY(q.x,q.z,o.p.y); return q; });
+  const d1=[0], d2=[0]; for(let i=1;i<=N;i++){ const hm=poses[i].h.clone().add(poses[i-1].h); if(hm.lengthSq()<1e-12) hm.copy(poses[i].h); hm.normalize();
+    d1.push(new THREE.Vector3().subVectors(W1[i],W1[i-1]).dot(hm)); d2.push(new THREE.Vector3().subVectors(W2[i],W2[i-1]).dot(hm)); }
+  const hw=tireIn*IN/2, base=new THREE.Color(P.color), bad=new THREE.Color(0xff3030), piv=new THREE.Color(0xffb020), swc=new THREE.Color(0xffe08a);
+  function band(W,d,baseC,check,mat,ro){ const pos=[], col=[], idx=[];
+    for(let i=0;i<=N;i++){ const q=W[i], nv=nrm(poses[i].h), dd=d[Math.min(N,Math.max(1,i))];
+      let off=false; if(check){ const A=q.z/S, B=-q.x/S; off=A<-1||(A<3.8&&(B<-0.93||B>6.09))||(A>=3.8&&A<5.16&&(B<-0.2||B>5.36)); }
+      const c=off?bad:dd<-1e-5?piv:poses[i].k==='v'?swc:baseC;
+      for(const s2 of [-1,1]){ const v=q.clone().addScaledVector(nv,s2*hw); v.y=surfaceY(v.x,v.z,q.y)+0.004; pos.push(v.x,v.y,v.z); col.push(c.r,c.g,c.b); }
+      if(i<N){ const k=2*i; idx.push(k,k+1,k+3,k,k+3,k+2); } }
+    const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); g.setAttribute('color',new THREE.Float32BufferAttribute(col,3)); g.setIndex(idx);
+    const me=new THREE.Mesh(g,mat); me.renderOrder=ro; return me; }
+  P.ribbon=band(W1,d1,base,false,P.ribVC||(P.ribVC=new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:0.4,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-4})),9); toolG.add(P.ribbon);
+  P.samples=W1;
+  let len=0, back1=0; const tiles=new Set();
+  for(let i=0;i<=N;i++){ if(i) len+=W1[i].distanceTo(W1[i-1]); if(d1[i]<-1e-5) back1++; const A=W1[i].z/S, B=-W1[i].x/S; if(A>=-1&&A<5&&B>=-0.93&&B<6.09) tiles.add('ABCDEF'[Math.floor(A)+1]+(6-Math.floor(B))); }
+  const rollQ=W1.filter((q,i)=>poses[i].k==='r');
+  P.stats={len,minR:minRadius(rollQ),tiles:[...tiles],segs,pivots,revs,back1:back1/N};
+  { const r1=[0], r2=[0], T=[0]; for(let i=1;i<=N;i++){ r1.push(r1[i-1]+d1[i]); r2.push(r2[i-1]+d2[i]); T.push(T[i-1]+Math.max(W1[i].distanceTo(W1[i-1]),P.axle?W2[i].distanceTo(W2[i-1]):0,1e-5)); }
+    P._pb={W1,W2:P.axle?W2:null,H:poses.map(o=>o.h),r1,r2,T}; }
+  if(P.axle){ P.ax.push(band(W2,d2,base.clone().lerp(new THREE.Color(0xffffff),0.35),true,axMat,9)); toolG.add(P.ax[P.ax.length-1]);
+    const rp=[]; knots.forEach(o=>{ const q=o.p.clone().addScaledVector(nrm(o.h),sg*G); q.y=surfaceY(q.x,q.z,o.p.y)+0.006; rp.push(o.p.x,o.p.y+0.006,o.p.z,q.x,q.y,q.z); });
     const gr=new THREE.BufferGeometry(); gr.setAttribute('position',new THREE.Float32BufferAttribute(rp,3)); const rl=new THREE.LineSegments(gr,new THREE.LineBasicMaterial({color:P.color,depthTest:false,transparent:true,opacity:0.55})); rl.renderOrder=10; toolG.add(rl); P.ax.push(rl);
-    P._Q2=Q2; P._kind=kind;
-    P.stats.ax={side:sg>0?'right':'left',len:len2,minR:minRadius(Q2.filter((q,i)=>kind[i]==='r')),back,blocked,sweep,N:M2}; }
-  if(P.stamps){ const C=Math.PI*wheelD*IN, half=C/2, sp=[], cl=[], cA=new THREE.Color(0xffd166), cB=new THREE.Color(0xffffff), L_=tireIn*IN*1.6+0.02;
-    let acc=[0]; for(let i=1;i<=N;i++) acc.push(acc[i-1]+Q[i].distanceTo(Q[i-1]));
-    let i=0; for(let k=1;k*half<=len+1e-6;k++){ const d=k*half; while(i<N&&acc[i+1]<d) i++; const f=i<N?(d-acc[i])/Math.max(1e-9,acc[i+1]-acc[i]):0;
-      const p=Q[i].clone().lerp(Q[Math.min(N,i+1)],f), t=T[i], nn=new THREE.Vector3(-t.z,0,t.x);
-      p.y=surfaceY(p.x,p.z,p.y)+0.006; const e1=p.clone().addScaledVector(nn,L_/2), e2=p.clone().addScaledVector(nn,-L_/2); sp.push(e1.x,e1.y,e1.z,e2.x,e2.y,e2.z);
-      const c=k%2?cA:cB; cl.push(c.r,c.g,c.b,c.r,c.g,c.b);
-      const lb=addLabel(e1,(k%2?(k>1?((k-1)/2)+'½':'½'):String(k/2))); lb.el.classList.add('stp'); lb.el.style.color=k%2?'#ffd166':'#ffffff'; P.stL.push(lb); }
-    // second wheel: its own stamps from the distance it actually rolls (backward rolling unwinds; it can print the same patch twice)
-    if(P._Q2){ const Q2=P._Q2, kd=P._kind, M2=Q2.length-1, cC=new THREE.Color(0xf9a8d4), cD=new THREE.Color(0xfce7f3); let s0=0, n2=0;
-      for(let j=1;j<=M2;j++){ const a=Q2[j-1], b=Q2[j], ds=a.distanceTo(b)*(kd[j]==='p'?-1:1), s1=s0+ds;
-        const k0=Math.floor(s0/half+1e-9), k1=Math.floor(s1/half+1e-9);
-        const ks=[]; if(k1>k0) for(let k=k0+1;k<=k1;k++) ks.push(k); else if(k1<k0) for(let k=k0;k>k1;k--) ks.push(k);
-        for(const k of ks){ if(k===0) continue; const f=(k*half-s0)/(s1-s0); const p=a.clone().lerp(b,f); const t=new THREE.Vector3(b.x-a.x,0,b.z-a.z); if(t.lengthSq()<1e-12) continue; t.normalize(); const nn=new THREE.Vector3(-t.z,0,t.x);
-          p.y=surfaceY(p.x,p.z,p.y)+0.006; const e1=p.clone().addScaledVector(nn,L_/2), e2=p.clone().addScaledVector(nn,-L_/2); sp.push(e1.x,e1.y,e1.z,e2.x,e2.y,e2.z);
-          const c=k%2?cC:cD; cl.push(c.r,c.g,c.b,c.r,c.g,c.b); const ak=Math.abs(k);
-          const lb=addLabel(e1,(k<0?'−':'')+(ak%2?(ak>1?((ak-1)/2)+'½':'½'):String(ak/2))); lb.el.classList.add('stp'); lb.el.style.color=k%2?'#f9a8d4':'#fce7f3'; P.stL.push(lb); n2++; }
+    let len2=0, back=0, blocked=0; for(let i=0;i<=N;i++){ if(i) len2+=W2[i].distanceTo(W2[i-1]); if(d2[i]<-1e-5) back++; const A=W2[i].z/S, B=-W2[i].x/S; if(A<-1||(A<3.8&&(B<-0.93||B>6.09))||(A>=3.8&&A<5.16&&(B<-0.2||B>5.36))) blocked++; }
+    P.stats.ax={side:sg>0?'right':'left',len:len2,minR:minRadius(W2.filter((q,i)=>poses[i].k==='r')),back,blocked,N}; }
+  // heading arrows: white = that wheel rolling forward, amber = rolling backward, pale = pivot sweep
+  { const pos=[], col=[], A=0.022, gap=5*IN, cw=new THREE.Color(0xffffff), ca=new THREE.Color(0xffb020), cp=new THREE.Color(0xffe08a);
+    const tracks=[[W1,d1]]; if(P.axle) tracks.push([W2,d2]);
+    for(const [W,d] of tracks){ let acc=gap/2;
+      for(let i=1;i<=N;i++){ acc+=W[i].distanceTo(W[i-1]); if(acc<gap) continue; acc=0;
+        const h=poses[i].h, nv=nrm(h), p=W[i].clone(); p.y+=0.007; const c=d[i]<-1e-5?ca:poses[i].k==='v'?cp:cw;
+        const tip=p.clone().addScaledVector(h,A*0.6), b1=p.clone().addScaledVector(h,-A*0.4).addScaledVector(nv,A*0.38), b2=p.clone().addScaledVector(h,-A*0.4).addScaledVector(nv,-A*0.38);
+        pos.push(tip.x,tip.y,tip.z,b1.x,b1.y,b1.z,b2.x,b2.y,b2.z); for(let q=0;q<3;q++) col.push(c.r,c.g,c.b); } }
+    if(pos.length){ const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); g.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
+      const me=new THREE.Mesh(g,arrowMat); me.renderOrder=11; toolG.add(me); P.ax.push(me); } }
+  if(P.stamps){ const C=Math.PI*wheelD*IN, half=C/2, sp=[], cl=[], L_=tireIn*IN*1.6+0.02;
+    function stamps(W,d,cA,cB,hexA,hexB){ let s0=0, cnt=0;
+      const put=(p,nn,k)=>{ p.y=surfaceY(p.x,p.z,p.y)+0.006; const e1=p.clone().addScaledVector(nn,L_/2), e2=p.clone().addScaledVector(nn,-L_/2); sp.push(e1.x,e1.y,e1.z,e2.x,e2.y,e2.z);
+        const c=k%2?cA:cB; cl.push(c.r,c.g,c.b,c.r,c.g,c.b); const ak=Math.abs(k);
+        const lb=addLabel(e1,(k<0?'−':'')+(ak%2?(ak>1?((ak-1)/2)+'½':'½'):String(ak/2))); lb.el.classList.add('stp'); lb.el.style.color=k%2?hexA:hexB; P.stL.push(lb); cnt++; };
+      put(W[0].clone(),nrm(poses[0].h),0);   // the starting point: where this wheel's patch touched the floor at the start
+      for(let j=1;j<=N;j++){ const s1=s0+d[j]; const k0=Math.floor(s0/half+1e-9), k1=Math.floor(s1/half+1e-9); const ks=[];
+        if(k1>k0) for(let k=k0+1;k<=k1;k++) ks.push(k); else if(k1<k0) for(let k=k0;k>k1;k--) ks.push(k);
+        for(const k of ks){ if(Math.abs(s1-s0)<1e-9) continue; const f=(k*half-s0)/(s1-s0); put(W[j-1].clone().lerp(W[j],f),nrm(poses[j].h),k); }
         s0=s1; }
-      P.stats.st2={net:s0,n:n2}; }
-    const g3=new THREE.BufferGeometry(); g3.setAttribute('position',new THREE.Float32BufferAttribute(sp,3)); g3.setAttribute('color',new THREE.Float32BufferAttribute(cl,3));
-    const ls=new THREE.LineSegments(g3,new THREE.LineBasicMaterial({vertexColors:true,depthTest:false,transparent:true})); ls.renderOrder=12; toolG.add(ls); P.ax.push(ls);
-    P.stats.st={C}; }
+      return {net:s0,n:cnt}; }
+    P.stats.st=Object.assign({C},stamps(W1,d1,new THREE.Color(0xffd166),new THREE.Color(0xffffff),'#ffd166','#ffffff'));
+    if(P.axle) P.stats.st2=stamps(W2,d2,new THREE.Color(0xf9a8d4),new THREE.Color(0xfce7f3),'#f9a8d4','#fce7f3');
+    if(sp.length){ const g3=new THREE.BufferGeometry(); g3.setAttribute('position',new THREE.Float32BufferAttribute(sp,3)); g3.setAttribute('color',new THREE.Float32BufferAttribute(cl,3));
+      const ls=new THREE.LineSegments(g3,new THREE.LineBasicMaterial({vertexColors:true,depthTest:false,transparent:true})); ls.renderOrder=12; toolG.add(ls); P.ax.push(ls); } }
   updateOut(); render(); }
-function addHandle(P,p,at){ const h=addPin(new THREE.Mesh(hGeo,P.hMat),0xffffff); hist.push({t:'p',P,h}); h.position.copy(p); h.renderOrder=11; toolG.add(h); if(at==null){P.pts.push(p.clone()); P.handles.push(h);} else {P.pts.splice(at,0,p.clone()); P.handles.splice(at,0,h);} }
+function addHandle(P,p,at){ curLayer='p'; const h=addPin(new THREE.Mesh(hGeo,P.hMat),0xffffff); hist.push({t:'p',P,h}); h.position.copy(p); h.renderOrder=11; toolG.add(h); if(at==null){P.pts.push(p.clone()); P.handles.push(h);} else {P.pts.splice(at,0,p.clone()); P.handles.splice(at,0,h);} }
 function removeMeas(m){ const i=meas.indexOf(m); if(i<0) return false; meas.splice(i,1); m.objs.forEach(o=>toolG.remove(o)); delLabel(m.label); updateOut(); render(); return true; }
 let selH=null, selP=null; const ringGeo=new THREE.TorusGeometry(0.024,0.004,8,32), ringMat=new THREE.MeshBasicMaterial({color:0xffb020,depthTest:false,transparent:true});
-function setPivot(h,on){ h.userData.pivot=on; if(on&&!h.userData.ring){ const r_=new THREE.Mesh(ringGeo,ringMat); r_.rotation.x=Math.PI/2; r_.renderOrder=13; h.add(r_); h.userData.ring=r_; } if(!on&&h.userData.ring){ h.remove(h.userData.ring); h.userData.ring=null; } }
+const PCOL={L:0xffb020,O:0xff6b3d,C:0xc084fc}; const ringMats={}; const revMat=new THREE.MeshBasicMaterial({color:0x22d3ee,depthTest:false,transparent:true}), revGeo=new THREE.TorusGeometry(0.031,0.003,8,32);
+function setPType(h,ty){ h.userData.ptype=ty||null; if(h.userData.ring){ h.remove(h.userData.ring); h.userData.ring=null; }
+  if(ty){ const r_=new THREE.Mesh(ringGeo,ringMats[ty]||(ringMats[ty]=new THREE.MeshBasicMaterial({color:PCOL[ty],depthTest:false,transparent:true}))); r_.rotation.x=Math.PI/2; r_.renderOrder=13; h.add(r_); h.userData.ring=r_; } }
+function setRev(h,on){ h.userData.rev=on; if(h.userData.rring){ h.remove(h.userData.rring); h.userData.rring=null; } if(on){ const r_=new THREE.Mesh(revGeo,revMat); r_.rotation.x=Math.PI/2; r_.renderOrder=13; h.add(r_); h.userData.rring=r_; } }
 const selRing=new THREE.Mesh(new THREE.TorusGeometry(0.03,0.0045,8,40),new THREE.MeshBasicMaterial({color:0xffffff,depthTest:false,transparent:true})); selRing.rotation.x=Math.PI/2; selRing.renderOrder=14;
 function select(P,h){ if(selRing.parent) selRing.parent.remove(selRing); selH=h; selP=P; if(h) h.add(selRing); pivBtn(); render(); }
-function pivBtn(){ const b=document.getElementById('tpivot'); if(!b) return; const ok=selH&&selP&&paths.includes(selP)&&selP.handles.includes(selH)&&selP.handles.indexOf(selH)>0&&selP.handles.indexOf(selH)<selP.handles.length-1;
-  b.disabled=!ok; b.textContent=ok&&selH.userData.pivot?'Remove pivot':'Make pivot'; b.setAttribute('aria-pressed',!!(ok&&selH.userData.pivot)); }
+function pivBtn(){ const b=document.getElementById('tpivot'), rb=document.getElementById('trev'); if(!b) return; const ok=!!(selH&&selP&&paths.includes(selP)&&selP.handles.includes(selH)&&selP.handles.indexOf(selH)>0&&selP.handles.indexOf(selH)<selP.handles.length-1);
+  const ty=ok?selH.userData.ptype:null; b.disabled=!ok; b.textContent='Pivot: '+({L:'on wheel 1',O:'on wheel 2',C:'spin'}[ty]||'off'); b.setAttribute('aria-pressed',!!ty);
+  rb.disabled=!ok; const rv=ok&&!!selH.userData.rev; rb.textContent='Reverse: '+(rv?'on':'off'); rb.setAttribute('aria-pressed',rv); }
 function removeHandle(P,h){ const i=P.handles.indexOf(h); if(i<0) return false; if(selH===h){ selH=null; } P.handles.splice(i,1); P.pts.splice(i,1); toolG.remove(h); rebuildPath(P); return true; }
 function removeMark(m){ const i=marks.indexOf(m); if(i<0) return false; marks.splice(i,1); toolG.remove(m.d); delLabel(m.L); marks.forEach((q,j)=>q.L.el.textContent=String(j+1)); updateOut(); render(); return true; }
 function addPathPoint(p){ const P=cur(); addHandle(P,p); select(P,P.handles[P.handles.length-1]); rebuildPath(P); }
 // --- imprint marks
 const marks=[]; const markMat=new THREE.MeshBasicMaterial({color:0xff4d6d,depthTest:false,transparent:true}); const markGeo=new THREE.SphereGeometry(0.011,14,10);
-function addMark(p){ const d=new THREE.Mesh(markGeo,markMat); d.position.copy(p); d.renderOrder=12; toolG.add(d); const L=addLabel(p,String(marks.length+1)); L.el.classList.add('mk'); const m={d,L}; marks.push(m); hist.push({t:'k',m}); updateOut(); render(); }
+function addMark(p){ curLayer='k'; const d=new THREE.Mesh(markGeo,markMat); d.position.copy(p); d.renderOrder=12; toolG.add(d); const L=addLabel(p,String(marks.length+1)); L.el.classList.add('mk'); const m={d,L}; marks.push(m); hist.push({t:'k',m}); updateOut(); render(); }
 // --- groove lines (direction of rolling from the gap in an imprint) and the axle across it
 const grooves=[]; let gPend=null; const gMat=new THREE.MeshBasicMaterial({color:0xffffff,depthTest:false,transparent:true,opacity:0.35,depthWrite:false});
 const gLine=new THREE.LineBasicMaterial({color:0xffffff,depthTest:false,transparent:true}), aLine=new THREE.LineDashedMaterial({color:0xffffff,depthTest:false,transparent:true,dashSize:0.02,gapSize:0.012});
@@ -509,7 +534,7 @@ function grooveGeom(G){ const a=G.objs[0].position,b=G.objs[1].position; G.ln.ge
   const M=a.clone().add(b).multiplyScalar(0.5), d=new THREE.Vector3(b.x-a.x,0,b.z-a.z).normalize(), n=new THREE.Vector3(-d.z,0,d.x), Gm=gauge*IN;
   const e1=M.clone().addScaledVector(n,Gm), e2=M.clone().addScaledVector(n,-Gm); e1.y=surfaceY(e1.x,e1.z,M.y)+0.004; e2.y=surfaceY(e2.x,e2.z,M.y)+0.004;
   G.ax.geometry.setFromPoints([e2,M,e1]); G.ax.computeLineDistances(); G.objs[3].position.copy(e1); G.objs[4].position.copy(e2); G.L1.p.copy(e1); G.L2.p.copy(e2); G.L1.el.textContent=G.L2.el.textContent=gauge+'″'; }
-function addGroovePoint(p){ const d=addPin(new THREE.Mesh(dotGeo,gMat),0xffffff); d.position.copy(p); d.renderOrder=10; toolG.add(d); hist.push({t:'g',d});
+function addGroovePoint(p){ curLayer='m'; const d=addPin(new THREE.Mesh(dotGeo,gMat),0xffffff); d.position.copy(p); d.renderOrder=10; toolG.add(d); hist.push({t:'g',d});
   if(!gPend){ gPend=d; render(); return; }
   const ln=new THREE.Line(new THREE.BufferGeometry(),gLine); ln.renderOrder=10; const ax=new THREE.Line(new THREE.BufferGeometry(),aLine); ax.renderOrder=10;
   const t1=addPin(new THREE.Mesh(dotGeo,gMat),0xffffff), t2=addPin(new THREE.Mesh(dotGeo,gMat),0xffffff); [ln,ax,t1,t2].forEach(o=>toolG.add(o));
@@ -519,33 +544,38 @@ function removeGroove(G){ const i=grooves.indexOf(G); if(i<0) return false; groo
 // --- output
 const out=document.getElementById('tout');
 const hex=c=>'#'+c.toString(16).padStart(6,'0');
+const openDet=new Set();
+document.getElementById('tout').addEventListener('toggle',e=>{ const d=e.target; if(d.dataset&&d.dataset.p!=null){ const i=+d.dataset.p; d.open?openDet.add(i):openDet.delete(i); } },true);
 function updateOut(){ let h='';
-  meas.forEach((m,i)=>{ h+=`<dt>Measure ${i+1}</dt><dd>${fmtIn(m.dist)}</dd>`; });
+  meas.forEach((m,i)=>{ h+=`<dl><dt>Measure ${i+1}</dt><dd>${fmtIn(m.dist)}</dd></dl>`; });
   paths.forEach((P,i)=>{ if(!P.pts.length) return; const sw=`<span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${hex(P.color)};margin-right:6px"></span>`;
-    if(!P.stats){ h+=`<dt>${sw}Path ${i+1}${i===active?' (active)':''}</dt><dd>1 point</dd>`; return; }
-    h+=`<dt>${sw}Path ${i+1}${i===active?' (active)':''}</dt><dd>${fmtIn(P.stats.len)}</dd>${P.stats.segs.length>1?`<dt>Segments</dt><dd style="white-space:normal">${P.stats.segs.map(v=>(v/IN).toFixed(1)+'″').join(' · ')}</dd>`:''}<dt>Tightest turn</dt><dd>${isFinite(P.stats.minR)?(P.stats.minR/IN).toFixed(1)+'″':'straight'}</dd><dt>Tiles</dt><dd style="white-space:normal">${P.stats.tiles.join(', ')||'none'}</dd>${P.stats.pivots?`<dt>Pivot points</dt><dd>${P.stats.pivots}</dd>`:''}${P.stats.st?`<dt>Stamps (${wheelD}″ wheel)</dt><dd>every ${(P.stats.st.C/2/IN).toFixed(1)}″ (½ turn)</dd>${P.stats.st2?`<dt>Second wheel stamps</dt><dd>${P.stats.st2.n} · net ${(P.stats.st2.net/P.stats.st.C).toFixed(2)} turns</dd>`:''}`:''}${P.stats.ax?`<dt>Second wheel (${P.stats.ax.side}, ${gauge}″)</dt><dd>${(P.stats.ax.len/IN).toFixed(1)}″</dd><dt>Its tightest turn</dt><dd>${isFinite(P.stats.ax.minR)?(P.stats.ax.minR/IN).toFixed(1)+'″':'straight'}</dd>${P.stats.ax.back?`<dt style="color:#ffb020">Other wheel reverses</dt><dd style="color:#ffb020">${Math.round(P.stats.ax.back/P.stats.ax.N*100)}% of path</dd>`:''}<dt>Bend limit</dt><dd>${P.stats.minR*1/IN<gauge?`tightest bend ${(P.stats.minR/IN).toFixed(1)}″ < spacing ${gauge}″`:'none'}</dd>${P.stats.ax.blocked?`<dt style="color:#ff6b6b">Hits wall or bed</dt><dd style="color:#ff6b6b">${Math.round(P.stats.ax.blocked/P.stats.ax.N*100)}% of path</dd>`:''}`:''}`; });
-  if(grooves.length) h+=`<dt>Groove lines</dt><dd>${grooves.length}</dd>`;
-  if(marks.length) h+=`<dt>Imprints marked</dt><dd>${marks.length}</dd>`;
-  out.innerHTML=h; const ap=paths[active]; document.getElementById('taxle').textContent='Second wheel: '+(!ap||!ap.axle?'off':ap.axle>0?'right':'left'); document.getElementById('tstamp').textContent='Wheel stamps: '+(ap&&ap.stamps?'on':'off'); document.getElementById('tstamp').setAttribute('aria-pressed',!!(ap&&ap.stamps)); pivBtn(); document.getElementById('tcopy').hidden=!marks.length; }
+    if(!P.stats){ h+=`<dl><dt>${sw}Path ${i+1}${i===active?' (active)':''}</dt><dd>1 point</dd></dl>`; return; }
+    h+=`<dl><dt>${sw}Path ${i+1}${i===active?' (active)':''}</dt><dd>${fmtIn(P.stats.len)}</dd></dl><details data-p="${i}"${openDet.has(i)?' open':''}><summary>Details</summary><dl>${P.stats.segs.length>1?`<dt>Segments</dt><dd style="white-space:normal">${P.stats.segs.map(v=>(v/IN).toFixed(1)+'″').join(' · ')}</dd>`:''}<dt>Tightest turn</dt><dd>${isFinite(P.stats.minR)?(P.stats.minR/IN).toFixed(1)+'″':'straight'}</dd><dt>Tiles</dt><dd style="white-space:normal">${P.stats.tiles.join(', ')||'none'}</dd>${P.stats.pivots?`<dt>Pivot points</dt><dd>${P.stats.pivots}</dd>`:''}${P.stats.revs?`<dt>Reverses</dt><dd>${P.stats.revs}</dd>`:''}${P.stats.back1>0.001?`<dt style="color:#ffb020">Wheel 1 rolls backward</dt><dd style="color:#ffb020">${Math.round(P.stats.back1*100)}% of path</dd>`:''}${P.stats.st?`<dt>Stamps (${wheelD}″ wheel)</dt><dd>every ${(P.stats.st.C/2/IN).toFixed(1)}″ (½ turn) · net ${(P.stats.st.net/P.stats.st.C).toFixed(2)} turns</dd>${P.stats.st2?`<dt>Second wheel stamps</dt><dd>${P.stats.st2.n} · net ${(P.stats.st2.net/P.stats.st.C).toFixed(2)} turns</dd>`:''}`:''}${P.stats.ax?`<dt>Second wheel (${P.stats.ax.side}, ${gauge}″)</dt><dd>${(P.stats.ax.len/IN).toFixed(1)}″</dd><dt>Its tightest turn</dt><dd>${isFinite(P.stats.ax.minR)?(P.stats.ax.minR/IN).toFixed(1)+'″':'straight'}</dd>${P.stats.ax.back?`<dt style="color:#ffb020">Other wheel reverses</dt><dd style="color:#ffb020">${Math.round(P.stats.ax.back/P.stats.ax.N*100)}% of path</dd>`:''}<dt>Bend limit</dt><dd>${P.stats.minR*1/IN<gauge?`tightest bend ${(P.stats.minR/IN).toFixed(1)}″ < spacing ${gauge}″`:'none'}</dd>${P.stats.ax.blocked?`<dt style="color:#ff6b6b">Hits wall or bed</dt><dd style="color:#ff6b6b">${Math.round(P.stats.ax.blocked/P.stats.ax.N*100)}% of path</dd>`:''}`:''}</dl></details>`; });
+  if(grooves.length) h+=`<dl><dt>Groove lines</dt><dd>${grooves.length}</dd></dl>`;
+  if(marks.length) h+=`<dl><dt>Imprints marked</dt><dd>${marks.length}</dd></dl>`;
+  if(bpaths.some(B=>B.pts.length)) h+=`<dl><dt>Blood paths</dt><dd>${bpaths.filter(B=>B.pts.length).length}</dd></dl>`;
+  out.innerHTML=h; const ap=paths[active]; document.getElementById('taxle').textContent='Second wheel: '+(!ap||!ap.axle?'off':ap.axle>0?'right':'left'); document.getElementById('tstamp').textContent='Wheel stamps: '+(ap&&ap.stamps?'on':'off'); document.getElementById('tstamp').setAttribute('aria-pressed',!!(ap&&ap.stamps)); pivBtn(); document.getElementById('tcopy').hidden=!marks.length; if(window.__pbRefresh) window.__pbRefresh(); }
 // --- buttons
-const bm=document.getElementById('tmeas'), bp=document.getElementById('tpath'), bk=document.getElementById('tmark');
-function setTool(t){ tool=(tool===t)?'none':t; bm.setAttribute('aria-pressed',tool==='measure'); bp.setAttribute('aria-pressed',tool==='path'); bk.setAttribute('aria-pressed',tool==='mark'); bg.setAttribute('aria-pressed',tool==='groove');
+const bm=document.getElementById('tmeas'), bp=document.getElementById('tpath'), bk=document.getElementById('tmark'), bbl=document.getElementById('tblood');
+function setTool(t){ tool=(tool===t)?'none':t; bm.setAttribute('aria-pressed',tool==='measure'); bp.setAttribute('aria-pressed',tool==='path'); bk.setAttribute('aria-pressed',tool==='mark'); bg.setAttribute('aria-pressed',tool==='groove'); bbl.setAttribute('aria-pressed',tool==='blood'); if(TL[tool]&&!layerVis[TL[tool]]) setLayer(TL[tool],true);
   document.querySelectorAll('#tools .tsec[data-for]').forEach(el=>{ el.hidden=!el.dataset.for.split(' ').includes(tool); });
   if(tool!=='none'&&placing){ document.getElementById('place').click(); } }
 const bg=document.getElementById('tgroove')||document.createElement('button');   // groove-line tool hidden for now
-bm.onclick=()=>setTool('measure'); bp.onclick=()=>setTool('path'); bk.onclick=()=>setTool('mark'); bg.onclick=()=>setTool('groove');
+bm.onclick=()=>setTool('measure'); bp.onclick=()=>setTool('path'); bk.onclick=()=>setTool('mark'); bg.onclick=()=>setTool('groove'); bbl.onclick=()=>setTool('blood');
 document.getElementById('taxle').onclick=()=>{ const P=paths[active]; if(!P){ return; } P.axle=!P.axle?-1:P.axle<0?1:0; rebuildPath(P); };
-document.getElementById('tpivot').onclick=()=>{ if(!selH||!selP) return; setPivot(selH,!selH.userData.pivot); rebuildPath(selP); pivBtn(); };
+document.getElementById('tpivot').onclick=()=>{ if(!selH||!selP) return; const ord=[null,'L','O','C']; setPType(selH,ord[(ord.indexOf(selH.userData.ptype||null)+1)%4]); rebuildPath(selP); pivBtn(); };
+document.getElementById('trev').onclick=()=>{ if(!selH||!selP) return; setRev(selH,!selH.userData.rev); rebuildPath(selP); pivBtn(); };
 document.getElementById('tstamp').onclick=()=>{ const P=paths[active]; if(!P) return; P.stamps=!P.stamps; rebuildPath(P); };
 document.getElementById('td').addEventListener('input',e=>{ wheelD=+e.target.value; document.getElementById('tdv').textContent=wheelD+'″'; paths.forEach(P=>{ if(P.stamps) rebuildPath(P); }); });
 document.getElementById('tg').addEventListener('input',e=>{ gauge=+e.target.value; document.getElementById('tgv').textContent=gauge+'″'; paths.forEach(P=>{ if(P.axle) rebuildPath(P); }); grooves.forEach(grooveGeom); updateOut(); render(); });
 { const dlg=document.getElementById('help'); document.querySelectorAll('.helpb').forEach(b=>b.onclick=()=>{ dlg.showModal(); if(b.dataset.sec) document.getElementById('help-'+b.dataset.sec).scrollIntoView({block:'start'}); else dlg.scrollTop=0; }); dlg.querySelector('.x').onclick=()=>dlg.close(); dlg.addEventListener('click',e=>{ if(e.target===dlg) dlg.close(); }); }
 document.getElementById('tnew').onclick=()=>{ newPath(); if(tool!=='path') setTool('path'); };
-document.getElementById('tclear').onclick=()=>{ selH=null; selP=null; setTimeout(pivBtn,0); toolG.clear(); labels.forEach(l=>l.el.remove()); labels.length=0; meas.length=0; mPend=null; paths.length=0; active=-1; marks.length=0; hist.length=0; grooves.length=0; gPend=null; updateOut(); render(); };
+document.getElementById('tclear').onclick=()=>{ selH=null; selP=null; setTimeout(pivBtn,0); toolG.clear(); labels.filter(l=>!l.fixed).forEach(l=>l.el.remove()); { const keep=labels.filter(l=>l.fixed); labels.length=0; labels.push(...keep); } meas.length=0; mPend=null; paths.length=0; active=-1; marks.length=0; hist.length=0; grooves.length=0; gPend=null; bpaths.length=0; bact=-1; updateOut(); render(); };
 document.getElementById('tundo').onclick=()=>{
   while(hist.length){ const e=hist.pop();
     if(e.t==='p'){ if(paths.includes(e.P)&&removeHandle(e.P,e.h)){ active=paths.indexOf(e.P); updateOut(); return; } }
     else if(e.t==='k'){ if(removeMark(e.m)) return; }
+    else if(e.t==='b'){ if(bpaths.includes(e.B)&&removeBloodHandle(e.B,e.h)){ bact=bpaths.indexOf(e.B); return; } }
     else if(e.t==='g'){ if(gPend===e.d){ toolG.remove(gPend); gPend=null; render(); return; } const G=grooves.find(G=>G.objs[1]===e.d); if(G){ removeGroove(G); if(!gPend){ gPend=G.objs[0]; toolG.add(gPend); } render(); return; } }
     else { if(mPend&&mPend.d===e.d){ toolG.remove(mPend.d); mPend=null; updateOut(); render(); return; }
       const m=meas.find(m=>m.objs[1]===e.d); if(m){ removeMeas(m); if(!mPend){ toolG.add(m.objs[0]); mPend={p:m.objs[0].position.clone(),d:m.objs[0]}; } render(); return; } } } };
@@ -567,6 +597,10 @@ function grab(e){ drag=null; const T=e.pointerType==='touch'?34:15;
     if(!bs) return false; const P=paths[bp]; active=bp;
     let k=0,inc=Infinity; for(let i=0;i<P.pts.length-1;i++){ const a=P.pts[i],b=P.pts[i+1]; const c=a.distanceTo(bs)+bs.distanceTo(b)-a.distanceTo(b); if(c<inc){inc=c;k=i;} }
     addHandle(P,bs,k+1); drag={kind:'h',pi:bp,k:k+1}; rebuildPath(P); return true; }
+  if(tool==='blood'){ const c=[]; bpaths.forEach((B,bi)=>B.handles.forEach((h,k)=>c.push({pos:h.position,kind:'bh',bi,k}))); const g=nearest(c,e,T); if(g){ bact=g.bi; drag=g; return true; }
+    let bs=null,bi=-1,bd=e.pointerType==='touch'?30:12; bpaths.forEach((B,i)=>B.samples.forEach(p=>{ const sp=toScreen(p); if(!sp) return; const d=Math.hypot(sp[0]-e.clientX,sp[1]-e.clientY); if(d<bd){bd=d;bs=p;bi=i;} }));
+    if(!bs) return false; const B=bpaths[bi]; bact=bi; let k=0,inc=Infinity; for(let i=0;i<B.pts.length-1;i++){ const a=B.pts[i],b=B.pts[i+1]; const c2=a.distanceTo(bs)+bs.distanceTo(b)-a.distanceTo(b); if(c2<inc){inc=c2;k=i;} }
+    const q=bs.clone(); q.y-=0.004; addBloodHandle(B,q,k+1); drag={kind:'bh',bi,k:k+1}; rebuildBlood(B); return true; }
   if(tool==='mark'){ const g=nearest(marks.map((m,i)=>({pos:m.d.position,kind:'k',i})),e,T); if(g){drag=g; return true;} return false; }
   if(tool==='groove'){ const c=[]; grooves.forEach(G=>[0,1].forEach(j=>c.push({pos:G.objs[j].position,kind:'g',G,j}))); const g=nearest(c,e,T); if(g){drag=g; return true;} return false; }
   const cands=[]; meas.forEach(m=>[0,1].forEach(j=>cands.push({pos:m.objs[j].position,kind:'m',m,j})));
@@ -577,21 +611,154 @@ function moveMeas(m,j,p){ m.objs[j].position.copy(p); const a=m.objs[0].position
 r.domElement.addEventListener('pointermove',e=>{ if(!drag) return; const hit=pick(e); if(!hit) return;
   if(drag.kind==='m') moveMeas(drag.m,drag.j,hit.point);
   else if(drag.kind==='g'){ drag.G.objs[drag.j].position.copy(hit.point); grooveGeom(drag.G); render(); }
+  else if(drag.kind==='bh'){ const B=bpaths[drag.bi]; B.pts[drag.k].copy(hit.point); B.handles[drag.k].position.copy(hit.point); rebuildBlood(B); }
   else if(drag.kind==='k'){ const m=marks[drag.i]; m.d.position.copy(hit.point); m.L.p.copy(hit.point); render(); }
   else { const P=paths[drag.pi]; P.pts[drag.k].copy(hit.point); P.handles[drag.k].position.copy(hit.point); rebuildPath(P); } });
 r.domElement.addEventListener('pointerup',e=>{
   if(drag){ const g=drag; drag=null; ctl.enabled=!fish;
-    if(dn&&Math.hypot(e.clientX-dn[0],e.clientY-dn[1])<=8&&(g.kind==='h'||g.kind==='k'||g.kind==='m'||g.kind==='g')){
-      const o=g.kind==='h'?paths[g.pi].handles[g.k]:g.kind==='k'?marks[g.i]:g.kind==='g'?g.G:g.m, now=performance.now();
-      if(lastTap&&lastTap.o===o&&now-lastTap.t<450){ lastTap=null; if(g.kind==='h') removeHandle(paths[g.pi],o); else if(g.kind==='k') removeMark(o); else if(g.kind==='g') removeGroove(o); else removeMeas(o); }
+    if(dn&&Math.hypot(e.clientX-dn[0],e.clientY-dn[1])<=8&&(g.kind==='h'||g.kind==='k'||g.kind==='m'||g.kind==='g'||g.kind==='bh')){
+      const o=g.kind==='bh'?bpaths[g.bi].handles[g.k]:g.kind==='h'?paths[g.pi].handles[g.k]:g.kind==='k'?marks[g.i]:g.kind==='g'?g.G:g.m, now=performance.now();
+      if(lastTap&&lastTap.o===o&&now-lastTap.t<450){ lastTap=null; if(g.kind==='bh') removeBloodHandle(bpaths[g.bi],o); else if(g.kind==='h') removeHandle(paths[g.pi],o); else if(g.kind==='k') removeMark(o); else if(g.kind==='g') removeGroove(o); else removeMeas(o); }
       else lastTap={o,t:now}; }
     return; }
   if(tool==='none'||!dn||Math.hypot(e.clientX-dn[0],e.clientY-dn[1])>6) return;
   const hit=pick(e); if(!hit) return;
-  if(tool==='groove') addGroovePoint(hit.point); else if(tool==='measure') addMeasPoint(hit.point); else if(tool==='mark') addMark(hit.point); else addPathPoint(hit.point); });
+  if(tool==='blood') addBloodPoint(hit.point,e.shiftKey); else if(tool==='groove') addGroovePoint(hit.point); else if(tool==='measure') addMeasPoint(hit.point); else if(tool==='mark') addMark(hit.point); else addPathPoint(hit.point); });
+// --- blood paths: thin curved lines, no lengths
+const bpaths=[]; let bact=-1; const BCOL=0xa3001f; const bDotGeo=new THREE.SphereGeometry(0.007,14,10); const bDotMat=new THREE.MeshBasicMaterial({color:BCOL,depthTest:false,transparent:true,opacity:0.45,depthWrite:false}), bLineMat=new THREE.LineBasicMaterial({color:BCOL,depthTest:false,transparent:true});
+function newBlood(){ const B={pts:[],handles:[],line:null,samples:[]}; bpaths.push(B); bact=bpaths.length-1; updateOut(); return B; }
+const bStartMat=new THREE.MeshBasicMaterial({color:BCOL,depthTest:false,transparent:true}), bArrowMat=new THREE.MeshBasicMaterial({color:BCOL,depthTest:false,side:THREE.DoubleSide,transparent:true});   // transparent: drawn after the photo overlays on B6/C6
+function rebuildBlood(B){ curLayer='b'; if(B.line){ toolG.remove(B.line); B.line.geometry.dispose(); B.line=null; } (B.deco||[]).forEach(o=>toolG.remove(o)); B.deco=[]; B.samples=[];
+  if(B.pts.length>=2){ const cv=new THREE.CatmullRomCurve3(B.pts.map(p=>p.clone()),false,'centripetal'); const Q=cv.getSpacedPoints(Math.max(20,Math.round(cv.getLength()/0.01)));
+    Q.forEach(q=>q.y+=0.004); B.samples=Q; B.line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(Q),bLineMat); B.line.renderOrder=10; toolG.add(B.line);
+    // start: solid dot; end: arrowhead pointing along the last stretch of the line
+    const d0=new THREE.Mesh(new THREE.CircleGeometry(0.0045,20),bStartMat); d0.rotation.x=-Math.PI/2; d0.position.copy(Q[0]); d0.renderOrder=12; toolG.add(d0); B.deco.push(d0);
+    const e=Q[Q.length-1], pv=Q[Math.max(0,Q.length-4)], dir=new THREE.Vector3(e.x-pv.x,0,e.z-pv.z).normalize(), nv=new THREE.Vector3(-dir.z,0,dir.x), L=0.0175, Wd=0.008;
+    const tip=e.clone().addScaledVector(dir,L*0.35), b1=e.clone().addScaledVector(dir,-L*0.65).addScaledVector(nv,Wd), b2=e.clone().addScaledVector(dir,-L*0.65).addScaledVector(nv,-Wd);
+    const ag=new THREE.BufferGeometry(); ag.setAttribute('position',new THREE.Float32BufferAttribute([tip.x,tip.y,tip.z,b1.x,b1.y,b1.z,b2.x,b2.y,b2.z],3));
+    const ar=new THREE.Mesh(ag,bArrowMat); ar.renderOrder=12; toolG.add(ar); B.deco.push(ar);
+    B.deco.forEach(o=>{ o.raycast=()=>{}; }); }
+  B.handles.forEach((h,k)=>h.scale.setScalar(B.pts.length>=2&&k===B.handles.length-1?1e-4:1));   // the arrow marks the end point (still draggable)
+  updateOut(); render(); }
+function addBloodHandle(B,p,at){ curLayer='b'; const h=addPin(new THREE.Mesh(bDotGeo,bDotMat),BCOL); h.position.copy(p); h.renderOrder=11; toolG.add(h); hist.push({t:'b',B,h});
+  if(at==null){ B.pts.push(p.clone()); B.handles.push(h); } else { B.pts.splice(at,0,p.clone()); B.handles.splice(at,0,h); } }
+function addBloodPoint(p,extend){ const cur_=(bact>=0&&bpaths[bact])?bpaths[bact]:null; const B=(cur_&&(cur_.pts.length<2||extend))?cur_:newBlood(); addBloodHandle(B,p); rebuildBlood(B); }
+function removeBloodHandle(B,h){ const i=B.handles.indexOf(h); if(i<0) return false; B.handles.splice(i,1); B.pts.splice(i,1); toolG.remove(h); rebuildBlood(B); return true; }
+document.getElementById('tbnew').onclick=()=>{ newBlood(); if(tool!=='blood') setTool('blood'); };
+// --- glowing tile grid with labels (rows A-F, columns 1-7)
+const gridG=new THREE.Group(); scene.add(gridG); gridG.visible=false; const gridLabels=[];
+{ const y=0.004, core=new THREE.MeshBasicMaterial({color:0x5eead4,transparent:true,opacity:0.95,depthWrite:false}), glow=new THREE.MeshBasicMaterial({color:0x2dd4bf,transparent:true,opacity:0.25,depthWrite:false,blending:THREE.AdditiveBlending});
+  const bar=(x0,z0,x1,z1,w,m)=>{ const L=Math.hypot(x1-x0,z1-z0), g=new THREE.PlaneGeometry(L,w); g.rotateX(-Math.PI/2); g.rotateY(-Math.atan2(z1-z0,x1-x0)); const me=new THREE.Mesh(g,m); me.position.set((x0+x1)/2,y,(z0+z1)/2); me.renderOrder=8; gridG.add(me); };
+  const Bs=[-0.93,0,1,2,3,4,5,6,6.09], As=[-1,0,1,2,3,4,5];
+  for(const a of As) for(const [w,m] of [[0.022,glow],[0.004,core]]) bar(-Bs[0]*S,a*S,-Bs[Bs.length-1]*S,a*S,w,m);
+  for(const b of Bs) for(const [w,m] of [[0.022,glow],[0.004,core]]) bar(-b*S,As[0]*S,-b*S,As[As.length-1]*S,w,m);
+  curLayer='grid'; for(let r=0;r<6;r++) for(let c=1;c<=7;c++){ const b0=Math.max(-0.93,6-c), b1=Math.min(6.09,7-c); const L=addLabel(new THREE.Vector3(-(b0+b1)/2*S,y,(r-0.5)*S),'ABCDEF'[r]+c); L.fixed=true; L.el.classList.add('grid'); gridLabels.push(L); }
+  gridG.traverse(o=>{ o.raycast=()=>{}; }); }
+{ const gb=document.getElementById('grid'); gb.onclick=()=>{ const on=gb.getAttribute('aria-pressed')!=='true'; gb.setAttribute('aria-pressed',on); gridG.visible=on; layerVis.grid=on?1:0; render(); }; }
+// --- layer visibility
+const TL={measure:'m',path:'p',mark:'k',blood:'b',groove:'m'};
+function setLayer(l,on){ layerVis[l]=on?1:0; const b=document.querySelector('#tlayers [data-l="'+l+'"]'); if(b) b.setAttribute('aria-pressed',!!on); render(); }
+document.querySelectorAll('#tlayers [data-l]').forEach(b=>b.onclick=()=>setLayer(b.dataset.l,!layerVis[b.dataset.l]));
+// --- save / load session
+const T3=v=>[+(v.x/S).toFixed(5),+(v.y/S).toFixed(5),+(v.z/S).toFixed(5)], V3=a=>new THREE.Vector3(a[0]*S,a[1]*S,a[2]*S);
+function sessionObj(){ const sl={}; document.querySelectorAll('input[type=range][id]').forEach(i=>sl[i.id]=+i.value);
+  const pr=id=>{ const b=document.getElementById(id); return b?b.getAttribute('aria-pressed')==='true':null; };
+  return {app:'PBATT',version:1,saved:new Date().toISOString(),sliders:sl,
+    view:{daylight:pr('ld'),cutaway:pr('cut'),moonPath:pr('mpath'),tileLabels:pr('grid'),footageMarks:pr('refs'),figure:{visible:fig.visible,pos:T3(fig.position)},camera:{pos:T3(cam.position),target:T3(ctl.target)}},
+    layers:{...layerVis},
+    measure:meas.map(m=>[T3(m.objs[0].position),T3(m.objs[1].position)]),
+    paths:paths.map(P=>({pts:P.pts.map(T3),pivot:P.handles.map(h=>h.userData.ptype||null),reverse:P.handles.map(h=>!!h.userData.rev),axle:P.axle||0,stamps:!!P.stamps})),
+    imprints:marks.map(m=>T3(m.d.position)), blood:bpaths.map(B=>B.pts.map(T3))}; }
+function loadSession(o){ if(!o||o.app!=='PBATT') throw new Error('not a PBATT session file');
+  document.getElementById('tclear').onclick();
+  Object.entries(o.sliders||{}).forEach(([id,v])=>{ const i=document.getElementById(id); if(i&&i.type==='range'){ i.value=v; i.dispatchEvent(new Event('input',{bubbles:true})); } });
+  const V=o.view||{}; const tog=(id,want)=>{ const b=document.getElementById(id); if(b&&want!=null&&(b.getAttribute('aria-pressed')==='true')!==!!want) b.click(); };
+  if(V.daylight!=null) document.getElementById(V.daylight?'ld':'lm').click(); tog('cut',V.cutaway); tog('mpath',V.moonPath); tog('grid',V.tileLabels); tog('refs',V.footageMarks);
+  if(V.figure){ fig.visible=!!V.figure.visible; fig.position.copy(V3(V.figure.pos)); const fb_=document.getElementById('fig'); if(fb_) fb_.setAttribute('aria-pressed',fig.visible); }
+  (o.measure||[]).forEach(([a,b])=>{ addMeasPoint(V3(a)); addMeasPoint(V3(b)); });
+  (o.paths||[]).forEach(p=>{ const P=newPath(); p.pts.forEach(q=>addHandle(P,V3(q))); P.handles.forEach((h,k)=>{ if(p.pivot&&p.pivot[k]) setPType(h,p.pivot[k]); if(p.reverse&&p.reverse[k]) setRev(h,true); }); P.axle=p.axle||0; P.stamps=!!p.stamps; rebuildPath(P); });
+  (o.imprints||[]).forEach(q=>addMark(V3(q)));
+  (o.blood||[]).forEach(pts=>{ const B=newBlood(); pts.forEach(q=>addBloodHandle(B,V3(q))); rebuildBlood(B); });
+  Object.entries(o.layers||{}).forEach(([l,v])=>{ if(l==='grid'||l==='ref') return; setLayer(l,!!v); });
+  if(V.camera){ cam.position.copy(V3(V.camera.pos)); ctl.target.copy(V3(V.camera.target)); ctl.update(); }
+  hist.length=0; selH=null; selP=null; pivBtn(); updateOut(); render(); }
+let DL=null; try{ if(window.claude&&window.claude.use) window.claude.use('downloads').then(d=>{DL=d;}).catch(()=>{}); }catch(_){}
+document.getElementById('tsave').onclick=async()=>{ const b=document.getElementById('tsave'), txt=JSON.stringify(sessionObj(),null,1), name='pbatt-session-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')+'.json';
+  try{ if(DL){ await DL.save({filename:name,data:txt}); b.textContent='Saved'; }
+    else { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'})); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1000); b.textContent='Saved'; } }
+  catch(err){ b.textContent=err&&err.code==='declined'?'Not saved':'Save failed'; }
+  setTimeout(()=>b.textContent='Save',2000); };
+document.getElementById('tload').onclick=()=>document.getElementById('tfile').click();
+document.getElementById('tfile').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; const b=document.getElementById('tload');
+  try{ loadSession(JSON.parse(await f.text())); b.textContent='Loaded'; }catch(err){ b.textContent='Not a session file'; } e.target.value=''; setTimeout(()=>b.textContent='Load',2000); };
+// fixed reference marks found in footage (not part of the tools; Clear all keeps them)
+{ const refG=new THREE.Group(); scene.add(refG); refG.visible=false; layerVis.ref=0;
+  const dropG=new THREE.Group(); scene.add(dropG); const dropMat=new THREE.MeshBasicMaterial({color:0x7a0d12});   // the walkway drops themselves, always shown
+  const REFS=[{a:7.05,b:3.82,t:'W1 · walkway stain (est. ±2″)'},{a:12.715,b:3.546,t:'W2 · walkway drop (from video, approx.)'},{a:15.658,b:12.684,t:'Broken sprinkler (approx.)',c:0xf59e0b},{a:-46.3,b:-34.55,h:6.35,t:'Broken floodlight',c:0xf59e0b}];   // NewsNation Day 3 frame, ground-plane fit to the step edge and curbs
+  REFS.forEach(R_=>{ const p=new THREE.Vector3(-R_.b*S,0,R_.a*S); p.y=R_.h!=null?R_.h*S:-0.35*S+0.006;   // walkway level, or on a wall at height h
+    if(/^W\d/.test(R_.t)){ const d=new THREE.Mesh(new THREE.CircleGeometry(0.008,20),dropMat); d.rotation.x=-Math.PI/2; d.scale.set(1,1.25,1); d.position.copy(p); d.position.y-=0.003; dropG.add(d); }
+    const ring=new THREE.Mesh(new THREE.RingGeometry(0.045,0.055,32),new THREE.MeshBasicMaterial({color:R_.c||0x22d3ee,side:THREE.DoubleSide,depthTest:false,transparent:true})); if(R_.h==null) ring.rotation.x=-Math.PI/2; ring.position.copy(p); ring.renderOrder=12; refG.add(ring);
+    curLayer='ref'; const L=addLabel(p,R_.t); L.fixed=true; L.el.classList.add('seg'); L.el.style.color=R_.c?'#fbbf24':'#67e8f9'; });
+  refG.traverse(o=>{ o.raycast=()=>{}; }); dropG.traverse(o=>{ o.raycast=()=>{}; });
+  const rb=document.getElementById('refs'); rb.onclick=()=>{ const on=rb.getAttribute('aria-pressed')!=='true'; rb.setAttribute('aria-pressed',on); refG.visible=on; layerVis.ref=on?1:0; render(); }; }
+// casita Nest cameras: 110° horizontal field of view, drawn on the ground out to 25 ft (illustrative range)
+{ const camG=new THREE.Group(); scene.add(camG); const yG=-0.35*S+0.01, H=8.0*S, RNG=25*12*S/TILE_IN, FOV=110*Math.PI/180;
+  const CAMS=[{a:-50.129,b:-59.464,dir:new THREE.Vector3(0,0,1),t:'Casita front cam'},{a:-73.923,b:-42.082,dir:new THREE.Vector3(-1,0,0),t:'Casita side cam'}];
+  const lm=new THREE.LineBasicMaterial({color:0x60a5fa,transparent:true,opacity:0.9,depthTest:false}), fm=new THREE.MeshBasicMaterial({color:0x60a5fa,transparent:true,opacity:0.12,side:THREE.DoubleSide,depthWrite:false});
+  CAMS.forEach(c=>{ const o=new THREE.Vector3(-c.b*S,yG,c.a*S), base=Math.atan2(c.dir.z,c.dir.x), pts=[o.clone()], fan=[o.x,o.y,o.z];
+    for(let i=0;i<=40;i++){ const an=base-FOV/2+FOV*i/40; const p=new THREE.Vector3(o.x+Math.cos(an)*RNG,yG,o.z+Math.sin(an)*RNG); pts.push(p); fan.push(p.x,p.y,p.z); }
+    pts.push(o.clone()); const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),lm); ln.renderOrder=7; camG.add(ln);
+    const idx=[]; for(let i=1;i<=40;i++) idx.push(0,i,i+1); const fg=new THREE.BufferGeometry(); fg.setAttribute('position',new THREE.Float32BufferAttribute(fan,3)); fg.setIndex(idx); const fmh=new THREE.Mesh(fg,fm); fmh.renderOrder=6; camG.add(fmh);
+    const cm=new THREE.Mesh(new THREE.SphereGeometry(0.035,12,8),new THREE.MeshBasicMaterial({color:0x60a5fa})); cm.position.set(o.x,H,o.z); camG.add(cm);
+    const pole=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(o.x,H,o.z),o]),new THREE.LineDashedMaterial({color:0x60a5fa,dashSize:0.05,gapSize:0.05,transparent:true,opacity:0.7})); pole.computeLineDistances(); camG.add(pole); });
+  camG.traverse(o=>{ o.raycast=()=>{}; });
+  const cb=document.getElementById('cams'); cb.onclick=()=>{ const on=cb.getAttribute('aria-pressed')!=='true'; cb.setAttribute('aria-pressed',on); camG.visible=on; render(); }; }
+// --- playback: wheels (and axle) rolling along the active path
+{ const pbG=new THREE.Group(); scene.add(pbG); pbG.visible=false; const tireM=new THREE.MeshStandardMaterial({color:0x1d1f22,roughness:0.85}), hubM=new THREE.MeshStandardMaterial({color:0xd8b04a,roughness:0.5}), axM=new THREE.MeshStandardMaterial({color:0x9aa3ad,roughness:0.4,metalness:0.4});
+  let W=[], axle=null, t=0, playing=false, last=0; const pb=document.getElementById('tplayb'), sl=document.getElementById('tplay');
+  function wheel(){ const r=wheelD*IN/2, w=Math.max(tireIn,1)*IN; const g=new THREE.Group(), spin=new THREE.Group(); g.add(spin);
+    const ty=new THREE.CylinderGeometry(r,r,w,32); ty.rotateZ(Math.PI/2); spin.add(new THREE.Mesh(ty,tireM));
+    const hb=new THREE.CylinderGeometry(r*0.55,r*0.55,w*1.04,24); hb.rotateZ(Math.PI/2); spin.add(new THREE.Mesh(hb,hubM));
+    const mk=new THREE.Mesh(new THREE.BoxGeometry(w*1.08,r*0.18,r*0.18),new THREE.MeshBasicMaterial({color:0xff3b3b})); mk.position.y=r*0.97; spin.add(mk);   // red mark shows rotation
+    g.userData={spin,r}; g.traverse(o=>{ o.raycast=()=>{}; }); pbG.add(g); return g; }
+  function build(){ pbG.clear(); W=[]; axle=null; const P=paths[active]; if(!P||!P._pb) return false; W.push(wheel()); if(P._pb.W2){ W.push(wheel()); axle=new THREE.Mesh(new THREE.CylinderGeometry(0.008,0.008,1,10),axM); axle.raycast=()=>{}; pbG.add(axle); } return true; }
+  function place(f){ const P=paths[active]; if(!P||!P._pb){ pbG.visible=false; render(); return; } const D=P._pb, T=D.T, tot=T[T.length-1], x=f*tot;
+    let i=1; while(i<T.length-1&&T[i]<x) i++; const u=Math.min(1,Math.max(0,(x-T[i-1])/Math.max(1e-9,T[i]-T[i-1])));
+    const h=D.H[i-1].clone().lerp(D.H[i],u); if(h.lengthSq()<1e-12) h.copy(D.H[i]); h.normalize(); const yaw=Math.atan2(h.x,h.z);
+    const set=(g,Wt,rr)=>{ const p=Wt[i-1].clone().lerp(Wt[i],u), s=rr[i-1]+(rr[i]-rr[i-1])*u; g.position.set(p.x,p.y+g.userData.r+0.001,p.z); g.rotation.set(0,yaw,0); g.userData.spin.rotation.x=s/g.userData.r; };
+    if(W.length!==(D.W2?2:1)) build(); set(W[0],D.W1,D.r1); if(D.W2){ set(W[1],D.W2,D.r2); const a=W[0].position, b=W[1].position; axle.position.copy(a).add(b).multiplyScalar(0.5); axle.scale.set(1,a.distanceTo(b),1); axle.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),b.clone().sub(a).normalize()); }
+    pbG.visible=true; render(); }
+  function tick(ts){ if(!playing) return; const P=paths[active]; if(!P||!P._pb){ stop(); return; } const tot=P._pb.T[P._pb.T.length-1], spd=24*IN;   // about 2 ft/s
+    t=Math.min(1,t+(ts-last)/1000*spd/Math.max(tot,1e-6)); last=ts; sl.value=Math.round(t*1000); place(t); if(t>=1){ stop(); return; } requestAnimationFrame(tick); }
+  let hideT=null; const hideSoon=ms=>{ clearTimeout(hideT); hideT=setTimeout(()=>{ if(!playing){ pbG.visible=false; render(); } },ms); };
+  function stop(){ playing=false; pb.textContent='▶ Play'; hideSoon(600); }
+  pb.onclick=()=>{ if(playing){ stop(); return; } if(!build()) return; if(t>=1) t=0; playing=true; pb.textContent='❚❚ Pause'; last=performance.now(); requestAnimationFrame(tick); };
+  sl.addEventListener('input',()=>{ if(!pbG.children.length&&!build()) return; t=+sl.value/1000; place(t); if(!playing) hideSoon(1200); });
+  window.__pbRefresh=()=>{ const ok=!!(paths[active]&&paths[active]._pb); pb.disabled=!ok; sl.disabled=!ok; document.querySelectorAll('#tplay ~ .stepb, .stepw:has(#tplay) .stepb').forEach(b=>b.disabled=!ok); if(!ok){ stop(); pbG.visible=false; } else if(pbG.visible&&playing){ build(); place(t); } };
+  window.__pb={place:f=>{ build(); t=f; place(f); }}; }
 window.__rescale=()=>{ paths.forEach(rebuildPath); meas.forEach(m=>{ m.label.el.textContent=fmtIn(m.dist); }); grooves.forEach(grooveGeom); updateOut(); render(); };
-window.__tool={pivotIdx:(k)=>{ const P=paths[active]; select(P,P.handles[k]); document.getElementById('tpivot').click(); },addAB:(a,b)=>{ const v=new THREE.Vector3(-b*S,0,a*S); v.y=surfaceY(v.x,v.z,0.05); addPathPoint(v); },grooves,setTool,addPathPoint,addMeasPoint,addMark,newPath,marks,paths};
+window.__tool={sessionObj:()=>sessionObj(),loadSession:o=>loadSession(o),addBloodAB:(a,b,ext)=>{ const v=new THREE.Vector3(-b*S,0,a*S); v.y=surfaceY(v.x,v.z,0.05); addBloodPoint(v,ext); },bpaths,setLayer,pivotIdx:(k,ty)=>{ const P=paths[active]; select(P,P.handles[k]); setPType(P.handles[k],ty||'L'); rebuildPath(P); pivBtn(); },revIdx:(k)=>{ const P=paths[active]; select(P,P.handles[k]); setRev(P.handles[k],true); rebuildPath(P); pivBtn(); },addAB:(a,b)=>{ const v=new THREE.Vector3(-b*S,0,a*S); v.y=surfaceY(v.x,v.z,0.05); addPathPoint(v); },grooves,setTool,addPathPoint,addMeasPoint,addMark,newPath,marks,paths};
 }
+
+// slider fine-tuning: ‹ › step buttons (hold to repeat), mouse wheel, click value to type
+document.querySelectorAll('input[type=range]').forEach(inp=>{
+  const st=+inp.step||1, dec=(String(inp.step).split('.')[1]||'').length;
+  const set=v=>{ v=Math.min(+inp.max,Math.max(+inp.min,Math.round((v-+inp.min)/st)*st+ +inp.min)); inp.value=v.toFixed(dec); inp.dispatchEvent(new Event('input',{bubbles:true})); inp.dispatchEvent(new Event('change',{bubbles:true})); };
+  inp.addEventListener('wheel',e=>{ e.preventDefault(); set(+inp.value+(e.deltaY<0?1:-1)*st*(e.shiftKey?10:1)); },{passive:false});
+  const w=document.createElement('span'); w.className='stepw'; inp.parentNode.insertBefore(w,inp);
+  const mk=(t,d)=>{ const b=document.createElement('button'); b.type='button'; b.className='stepb'; b.textContent=t; b.setAttribute('aria-label',(d<0?'Decrease ':'Increase ')+(inp.getAttribute('aria-label')||(inp.labels&&inp.labels[0]?inp.labels[0].textContent:inp.id)));
+    let tm=null, iv=null; const stop=()=>{ clearTimeout(tm); clearInterval(iv); tm=iv=null; };
+    b.addEventListener('pointerdown',e=>{ e.preventDefault(); set(+inp.value+d*st); tm=setTimeout(()=>{ iv=setInterval(()=>set(+inp.value+d*st),70); },400); });
+    ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,stop));
+    b.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); set(+inp.value+d*st); } });
+    return b; };
+  w.append(mk('‹',-1),inp,mk('›',1));
+  const sp=w.parentElement.querySelector(':scope > span[id]');
+  if(sp){ sp.classList.add('valed'); sp.title='Click to type a value'; sp.tabIndex=0;
+    const edit=()=>{ if(sp.hidden) return; const f=document.createElement('input'); f.type='number'; f.className='valin'; f.step=inp.step||1; f.min=inp.min; f.max=inp.max; f.value=inp.value; sp.hidden=true; sp.after(f); f.focus(); f.select();
+      let done=false; const fin=ok=>{ if(done) return; done=true; if(ok&&f.value!=='') set(+f.value); f.remove(); sp.hidden=false; };
+      f.addEventListener('keydown',e=>{ if(e.key==='Enter') fin(true); if(e.key==='Escape') fin(false); }); f.addEventListener('blur',()=>fin(true)); };
+    sp.addEventListener('click',edit); sp.addEventListener('keydown',e=>{ if(e.key==='Enter') edit(); }); } });
 
 { const pn=document.getElementById('panel'), tab=document.getElementById('sidetab'), hb=document.getElementById('sidehide');
   hb.onclick=()=>{pn.classList.add('side-hidden'); tab.hidden=false; tab.focus();};
