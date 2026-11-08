@@ -123,8 +123,10 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 <li><b>Second wheel:</b> shows where the other wheel on the same axle would run, on the left or right of the active path as seen walking from its first point. <b>Wheel spacing</b> sets the distance between the wheel centres. Wherever the drawn path bends more tightly than the wheel spacing (a radius under, say, 16″ for a 16″ axle), the other wheel must briefly roll backward; that stretch is amber. This is geometry, not an error: a hand truck does it whenever it turns that sharply. Pale yellow is the sweep at a pivot point. Hand-placed bends are often sharper than the real route, so smoothing a bend usually clears the amber. Red means that wheel would hit a wall, pillar or bed.</li>
 <li><b>Pivot and Reverse:</b> tap a path point (a white ring shows it's selected). <b>Pivot</b> cycles how the truck turns there: <b>on wheel 1</b> (the wheel whose path you drew stays put, amber ring), <b>on wheel 2</b> (the other wheel stays put and wheel 1 swings round it, orange ring), or <b>spin</b> (the truck twists about the middle of its axle and the wheels roll opposite ways, purple ring). <b>Reverse</b> (cyan ring) makes the truck back up from that point without turning: draw the next points back the way it came. Each wheel's stamps count its actual rolling, so they run backward while it rolls backward and a patch can print twice. Pivots on wheel 2 and spins need a wheel spacing and side, so set <b>Second wheel</b> first (it assumes left if off). Paler stretches are pivots; amber means that wheel is rolling backward.</li>
 <li><b>Second wheel stamps:</b> with Second wheel and Wheel stamps both on, the other wheel gets its own stamps in pink, counted from the distance it actually rolls. Where it rolls backward the count unwinds (shown with −), so it can print the same patch twice.</li>
+<li><b>Model</b> switches playback between bare wheels and the stair chair. The chair rolls with its rear wheels on the path (with Second wheel on, its rear track takes the Wheel spacing), faces the way the truck faces, and its front casters swivel like real trailing casters, so you can see them swing round when the chair reverses or pivots.</li>
 <li><b>Play</b> rolls a wheel (two with Second wheel on) along the active path at about 2 ft/s, at the set diameter and tire width; the red mark on the tire shows it turning, including backward on reverses and pivots. Drag <b>Position</b> to scrub.</li>
 <li><b>Path details</b> (segments, tiles, stamps and so on) are folded under each path's <b>Details</b>.</li>
+<li><b>Stamp zero</b> slides the 0 mark (and every stamp with it) forward or back along the path by up to one full tire turn, for when the start point isn't where the tire's mark first touched.</li>
 <li><b>Wheel stamps:</b> 0 marks the start, and reappears if the wheel rolls back past it. Stamps mark where a tire of the set <b>Wheel diameter</b> touches the floor as it rolls along the active path, starting from its first point (put that where the wheel stood, under the axle). Half turns (½, 1½, …) show where a spot that started on top of the tire lands; whole turns (1, 2, …) show where the spot that started on the floor lands again.</li>
 <li><b>Blood path:</b> a thin line for tracing blood trails, with a dot at the start and an arrow at the end. Tap open ground twice to draw a new line (first tap is the start, second the end). Tap or drag the line itself to add a bend; drag a point to move it; double-tap a point to delete it. Shift-tap extends the current line instead of starting a new one.</li>
 <li><b>Arrows</b> along wheel tracks show which way the truck faces: white when that wheel is rolling forward, amber when it's rolling backward.</li>
@@ -133,7 +135,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 <li><b>Mark imprint:</b> tap each imprint to drop a numbered pin, then <b>Copy imprint list</b> to copy their positions.</li>
 <li><b>Editing:</b> double-tap any point or pin to delete it; a measure end deletes the whole measurement. <b>Undo point</b> removes the last thing you added.</li>
 </ul>
-<h3>Cot model</h3><p>An approximate Stryker Performance-PRO XT built from Stryker's parts-manual drawings (no published base dimensions): 6×2″ casters, wheelbase about 39″ pivot to pivot, track about 19.7″ and 21.3″ (which end is which is unconfirmed), caster trail 2.2″, litter 23″ wide, deck holes 1.5″ on a 2.2″ staggered grid. <b>Drag the cot</b> to move it (with no measuring tool active you can grab anywhere over it, even with the body hidden); <b>Shift-drag</b> turns it. <b>Tap floor to place</b> drops its base centre where you tap; <b>Heading</b> turns it; <b>Backrest</b> raises the head section up to 75° (the head end has the small load wheels). <b>Deck holes on floor</b> drops each deck hole straight down onto the floor (cyan rings); <b>Caster footprints</b> shows where each 2″ tire touches (amber), and moves with <b>Caster swivel</b>. Hide <b>Cot body</b> to see the floor marks from above. Height uses the nine positions in Stryker's manual.</p><h3>Stair chair</h3><p>An approximate Stryker Stair-PRO evacuation chair. Its rear wheels are the same 6×2″ wheel (6060-002-010) as the cot's casters. The 6250 has fixed front legs and is rolled tipped back on its two rear wheels; the 6251 adds small front swivel casters so it can also roll on all four. The 16.4″ wheelbase (rear axle to front leg) is measured from Stryker's side-view drawing, scaled by the 6″ wheel (it matches the 28″ published depth). The rear track (about 19″, centre to centre) is estimated from the 20.5″ frame width. <b>Tip back</b> lifts the front off the floor about the rear axle. Drag it to move, Shift-drag to turn, as with the cot.</p><h3>What's estimated</h3>
+<h3>Spatter source</h3><p>A point that sprays in straight lines, shown as a red light. Floor it can reach turns red; anything in the way (the chair's footplate, the figure, walls) leaves its shadow, with holes letting spray through. Real drops curve down under gravity, so treat the shadow as close to the source and approximate further out. <b>Tap floor to place</b> puts the source above the tapped spot; <b>Height</b> lifts it; <b>Reach</b> limits how far the red spreads; <b>Dim other lights</b> darkens the scene so the shadow stands out. <b>Spread</b> narrows the spray from all directions to a cone, aimed with <b>Direction</b> (0° toward the street, 90° toward column 1) and <b>Aim</b> (below 0° points down). <b>Scatter</b> fills the spray volume with faint red specks so its shape shows in 3D (the specks ignore shadows; the floor colouring is the accurate part). Drag the chair to move the shadow.</p><h3>Stair chair</h3><p>An approximate Stryker Stair-PRO evacuation chair. The 6251 has a foot support between its front casters: a flat centre with three holes in front and two behind, and a wing each side angling up to the leg with two holes each; <b>Footplate holes on floor</b> drops each hole straight down (cyan rings). The 6250's front legs pinch in slightly to a floor bar. Its rear wheels are the 6×2″ wheel 6060-002-010 (also used on Stryker cots); each can be set to the Stryker OEM tread or the aftermarket replacement tread (24 wedges per side). The 6250 has front legs joined by a bar that rests on the floor, and is rolled tipped back on its two rear wheels; level, the bar's contact shows as an amber strip; the 6251 adds small front swivel casters so it can also roll on all four. The 16.4″ wheelbase (rear axle to front leg) is measured from Stryker's side-view drawing, scaled by the 6″ wheel (it matches the 28″ published depth). The rear track (about 19″, centre to centre) is estimated from the 20.5″ frame width. <b>Tip back</b> lifts the front off the floor about the rear axle. Drag it to move, Shift-drag to turn. <b>Lock in place</b> pins it and lets taps pass through it, so you can mark or draw underneath. <b>Left/Right wheel</b> choose each rear wheel's tread.</p><h3>What's estimated</h3>
 <p>Ceiling height, pillar overhang, doorbell camera position (fitted to the footage), the left gravel bed and plants, wreath, mailer and front planting. Tiles not visible in any image are shown as plain tiles. Everything outside the porch is approximate.</p>
 </dialog>
 <div id="loading">Loading porch model…</div>
@@ -145,7 +147,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
       <button id="tmeas" aria-pressed="false">Measure</button><button id="tpath" aria-pressed="false">Wheel path</button><button id="tmark" aria-pressed="false">Mark imprint</button><button id="tblood" aria-pressed="false">Blood path</button></div></div>
     <div class="tsec" data-for="path" hidden><div class="lbl">Wheel path</div><div class="row"><button id="tnew">New path</button><button id="taxle">Second wheel: off</button><button id="tstamp">Wheel stamps: off</button><button id="tpivot" disabled>Pivot: off</button><button id="trev" disabled>Reverse: off</button></div>
       <div class="srow"><label for="tw">Tire width</label><input id="tw" type="range" min="0.5" max="4" step="0.25" value="1.5"><span id="twv">1.5″</span></div></div>
-    <div class="tsec" data-for="path" hidden><div class="srow"><label for="td">Wheel diameter</label><input id="td" type="range" min="3" max="12" step="0.05" value="6.1"><span id="tdv">6.1″</span></div><div class="srow"><label for="tg">Wheel spacing</label><input id="tg" type="range" min="8" max="26" step="0.25" value="16"><span id="tgv">16″</span></div><div class="row" style="margin-top:8px;align-items:center"><button id="tplayb" disabled>▶ Play</button><span style="font-size:12px;color:var(--muted)">wheels along the active path</span></div><div class="srow"><label for="tplay">Position</label><input id="tplay" type="range" min="0" max="1000" step="1" value="0" disabled></div></div>
+    <div class="tsec" data-for="path" hidden><div class="srow"><label for="td">Wheel diameter</label><input id="td" type="range" min="3" max="12" step="0.05" value="6.1"><span id="tdv">6.1″</span></div><div class="srow"><label for="tg">Wheel spacing</label><input id="tg" type="range" min="8" max="26" step="0.25" value="16"><span id="tgv">16″</span></div><div class="srow"><label for="tz">Stamp zero</label><input id="tz" type="range" min="-1" max="1" step="0.01" value="0"><span id="tzv">0 rev</span></div><div class="row" style="margin-top:8px;align-items:center"><button id="tplayb" disabled>▶ Play</button><button id="tpbm">Model: wheels</button></div><div class="srow"><label for="tplay">Position</label><input id="tplay" type="range" min="0" max="1000" step="1" value="0" disabled></div></div>
     <div class="tsec" data-for="mark" hidden><div class="row"><button id="tcopy" hidden>Copy imprint list</button></div>
       <textarea id="tcopytxt" hidden rows="3" style="width:100%;font:11px var(--mono);background:#0c101a;color:var(--fg);border:1px solid var(--line);border-radius:6px"></textarea></div>
     <div class="tsec" data-for="blood" hidden><div class="lbl">Blood path</div><div class="row"><button id="tbnew">New blood path</button></div></div>
@@ -178,12 +180,12 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
     <button id="fig" aria-pressed="true">Show figure</button><button id="home">Footage position</button><button id="place" aria-pressed="false">Tap floor to place</button></div>
     <div class="row" style="align-items:center;gap:10px;margin-top:8px"><label for="hgt" style="font-size:12px;color:var(--muted);width:56px">Height</label><input id="hgt" type="range" min="64" max="74" step="1" value="69" style="flex:1"><span id="hgtv" style="font:500 13px var(--mono);width:52px;text-align:right">5′9″</span></div>
     <div class="row" style="align-items:center;gap:10px"><label for="cr" style="font-size:12px;color:var(--muted);width:56px">Crouch</label><input id="cr" type="range" min="0" max="10" step="0.5" value="4" style="flex:1"><span id="crv" style="font:500 13px var(--mono);width:52px;text-align:right">4 in</span></div></div>
-  <div><div class="lbl">Cot (Stryker Performance-PRO XT, approx.)</div><div class="row">
-    <button id="cot" aria-pressed="false">Show cot</button><button id="cotplace" aria-pressed="false">Tap floor to place</button><button id="cotbody" aria-pressed="true">Cot body</button><button id="cotholes" aria-pressed="true">Deck holes on floor</button><button id="cotfeet" aria-pressed="true">Caster footprints</button><button id="cotmat" aria-pressed="true">Mattress</button></div>
-    <div style="margin-top:8px"></div><div class="row" style="align-items:center;gap:10px"><label for="cothd" style="font-size:12px;color:var(--muted);width:76px">Heading</label><input id="cothd" type="range" min="0" max="359" step="1" value="0" style="flex:1"><span id="cothdv" style="font:500 13px var(--mono);width:58px;text-align:right">0°</span></div><div class="row" style="align-items:center;gap:10px"><label for="cotbk" style="font-size:12px;color:var(--muted);width:76px">Backrest</label><input id="cotbk" type="range" min="0" max="75" step="1" value="0" style="flex:1"><span id="cotbkv" style="font:500 13px var(--mono);width:58px;text-align:right">0°</span></div><div class="row" style="align-items:center;gap:10px"><label for="cotpos" style="font-size:12px;color:var(--muted);width:76px">Height</label><input id="cotpos" type="range" min="1" max="9" step="1" value="2" style="flex:1"><span id="cotposv" style="font:500 13px var(--mono);width:58px;text-align:right">P2 22″</span></div><div class="row" style="align-items:center;gap:10px"><label for="cotsw" style="font-size:12px;color:var(--muted);width:76px">Caster swivel</label><input id="cotsw" type="range" min="-180" max="180" step="5" value="0" style="flex:1"><span id="cotswv" style="font:500 13px var(--mono);width:58px;text-align:right">0°</span></div><div class="row" style="align-items:center;gap:10px"><label for="cotsh" style="font-size:12px;color:var(--muted);width:76px">Litter shift</label><input id="cotsh" type="range" min="-12" max="12" step="0.5" value="0" style="flex:1"><span id="cotshv" style="font:500 13px var(--mono);width:58px;text-align:right">0″</span></div><div class="row" style="align-items:center;gap:10px"><label for="cotwb" style="font-size:12px;color:var(--muted);width:76px">Wheelbase</label><input id="cotwb" type="range" min="30" max="48" step="0.25" value="39" style="flex:1"><span id="cotwbv" style="font:500 13px var(--mono);width:58px;text-align:right">39″</span></div><div class="row" style="align-items:center;gap:10px"><label for="cotth" style="font-size:12px;color:var(--muted);width:76px">Head track</label><input id="cotth" type="range" min="15" max="25" step="0.1" value="19.7" style="flex:1"><span id="cotthv" style="font:500 13px var(--mono);width:58px;text-align:right">19.7″</span></div><div class="row" style="align-items:center;gap:10px"><label for="cottf" style="font-size:12px;color:var(--muted);width:76px">Foot track</label><input id="cottf" type="range" min="15" max="25" step="0.1" value="21.3" style="flex:1"><span id="cottfv" style="font:500 13px var(--mono);width:58px;text-align:right">21.3″</span></div>
-    <div id="cotinfo" style="font:500 11.5px var(--mono);color:var(--muted);margin-top:6px;line-height:1.45"></div></div>
+  <div><div class="lbl">Spatter source</div><div class="row">
+    <button id="spr" aria-pressed="false">Show source</button><button id="sprplace" aria-pressed="false">Tap floor to place</button><button id="sprdim" aria-pressed="true">Dim other lights</button><button id="sprfog" aria-pressed="true">Scatter</button></div>
+    <div style="margin-top:8px"></div><div class="row" style="align-items:center;gap:10px"><label for="sprh" style="font-size:12px;color:var(--muted);width:76px">Height</label><input id="sprh" type="range" min="1" max="48" step="0.5" value="12" style="flex:1"><span id="sprhv" style="font:500 13px var(--mono);width:58px;text-align:right">12″</span></div><div class="row" style="align-items:center;gap:10px"><label for="sprdir" style="font-size:12px;color:var(--muted);width:76px">Direction</label><input id="sprdir" type="range" min="0" max="359" step="1" value="0" style="flex:1"><span id="sprdirv" style="font:500 13px var(--mono);width:58px;text-align:right">0°</span></div><div class="row" style="align-items:center;gap:10px"><label for="sprtl" style="font-size:12px;color:var(--muted);width:76px">Aim</label><input id="sprtl" type="range" min="-90" max="45" step="1" value="-30" style="flex:1"><span id="sprtlv" style="font:500 13px var(--mono);width:58px;text-align:right">−30°</span></div><div class="row" style="align-items:center;gap:10px"><label for="sprsp" style="font-size:12px;color:var(--muted);width:76px">Spread</label><input id="sprsp" type="range" min="10" max="360" step="5" value="360" style="flex:1"><span id="sprspv" style="font:500 13px var(--mono);width:58px;text-align:right">all</span></div><div class="row" style="align-items:center;gap:10px"><label for="sprr" style="font-size:12px;color:var(--muted);width:76px">Reach</label><input id="sprr" type="range" min="6" max="72" step="1" value="30" style="flex:1"><span id="sprrv" style="font:500 13px var(--mono);width:58px;text-align:right">30″</span></div><div class="row" style="align-items:center;gap:10px"><label for="spri" style="font-size:12px;color:var(--muted);width:76px">Strength</label><input id="spri" type="range" min="10" max="100" step="5" value="60" style="flex:1"><span id="spriv" style="font:500 13px var(--mono);width:58px;text-align:right">60%</span></div>
+    <div id="sprinfo" style="font:500 11.5px var(--mono);color:var(--muted);margin-top:6px;line-height:1.45"></div></div>
   <div><div class="lbl">Stair chair (Stryker Stair-PRO, approx.)</div><div class="row">
-    <button id="chr" aria-pressed="false">Show chair</button><button id="chrplace" aria-pressed="false">Tap floor to place</button><button id="chrbody" aria-pressed="true">Chair body</button><button id="chrfeet" aria-pressed="true">Wheel footprints</button><button id="chrmod" aria-pressed="false">Model: 6251 (front casters)</button></div>
+    <button id="chr" aria-pressed="false">Show chair</button><button id="chrplace" aria-pressed="false">Tap floor to place</button><button id="chrbody" aria-pressed="true">Chair body</button><button id="chrfeet" aria-pressed="true">Wheel footprints</button><button id="chrholes" aria-pressed="true">Footplate holes on floor</button><button id="chrmod" aria-pressed="false">Model: 6251 (front casters)</button><button id="chrlock" aria-pressed="false">Lock in place</button><button id="chrwl">Left wheel: aftermarket</button><button id="chrwr">Right wheel: aftermarket</button></div>
     <div style="margin-top:8px"></div><div class="row" style="align-items:center;gap:10px"><label for="chrhd" style="font-size:12px;color:var(--muted);width:76px">Heading</label><input id="chrhd" type="range" min="0" max="359" step="1" value="0" style="flex:1"><span id="chrhdv" style="font:500 13px var(--mono);width:58px;text-align:right">0°</span></div><div class="row" style="align-items:center;gap:10px"><label for="chrtilt" style="font-size:12px;color:var(--muted);width:76px">Tip back</label><input id="chrtilt" type="range" min="0" max="40" step="1" value="0" style="flex:1"><span id="chrtiltv" style="font:500 13px var(--mono);width:58px;text-align:right">0°</span></div><div class="row" style="align-items:center;gap:10px"><label for="chrtr" style="font-size:12px;color:var(--muted);width:76px">Rear track</label><input id="chrtr" type="range" min="16" max="22" step="0.1" value="19" style="flex:1"><span id="chrtrv" style="font:500 13px var(--mono);width:58px;text-align:right">19.0″</span></div><div class="row" style="align-items:center;gap:10px"><label for="chrwb" style="font-size:12px;color:var(--muted);width:76px">Wheelbase</label><input id="chrwb" type="range" min="13" max="20" step="0.1" value="16.4" style="flex:1"><span id="chrwbv" style="font:500 13px var(--mono);width:58px;text-align:right">16.4″</span></div>
     <div id="chrinfo" style="font:500 11.5px var(--mono);color:var(--muted);margin-top:6px;line-height:1.45"></div></div>
   <div><div class="lbl">Doorbell camera</div><div class="row"><button id="bell" aria-pressed="true">Show doorbell</button><button id="glow" aria-pressed="false">Person detected (glow)</button><button data-v="perp">Suspect's eye view</button><button id="irb" aria-pressed="true">IR night vision (doorbell view)</button></div></div>
@@ -253,8 +255,8 @@ function buildFig(){ fig.clear(); const H=FIG_IN*IN;
   fig.add(body,head); fig.traverse(o=>{if(o.isMesh)o.castShadow=true}); }
 buildFig(); const FOOT=[4.85,1.5]; fig.position.copy(W(FOOT[0],FOOT[1],0)); scene.add(fig);
 let floors=[];
-window.MOON=await (await fetch('moon.json?v=110')).json();
-new GLTFLoader().load('porch.glb?v=110',g=>{
+window.MOON=await (await fetch('moon.json?v=117')).json();
+new GLTFLoader().load('porch.glb?v=117',g=>{
   g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=!/porch_floor|gravel|walkway|yard|ground|doormat|B6_C6|tile_edge|drive|road|stepstone|stone_path/.test(o.name);o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
     if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=/hires/.test(o.name)?3:/video/.test(o.name)?1:2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
@@ -326,141 +328,108 @@ r.domElement.addEventListener('pointerup',e=>{ if(!placing||!down) return; if(Ma
     const d=new THREE.Vector3(Math.sin(th)*Math.cos(ph),Math.sin(th)*Math.sin(ph),Math.cos(th)).applyMatrix3(fishMat.uniforms.Rt.value).normalize();
     ray.set(cubeCam.position.clone(),d); } else ray.setFromCamera(ptr,cam);
   const hit=ray.intersectObjects(floors,false)[0]; if(hit){fig.position.set(hit.point.x,hit.point.y,hit.point.z); fig.visible=true; fb.setAttribute('aria-pressed',true); render();}});
-// ---- Stryker cot model (Performance-PRO XT; base from the 6500/6085 parts-manual drawings, approximate)
-const cotG=new THREE.Group(); cotG.visible=false; scene.add(cotG); window.__cotG=cotG;
-const COT={bk:0,wb:39,th:19.7,tf:21.3,trail:2.2,pos:2,sw:0,sh:0,hd:0,body:true,holes:true,feet:true,mat:true};
-const COT_H=[13.8,22,25.8,28.1,31.9,34.6,37.3,40,42.2];   // bottom of mattress at the seat, per Stryker's manual
-const COT_HOLES=[[2.17, -2.22], [2.17, -0.01], [2.17, 2.22], [4.37, -1.12], [4.37, 1.12], [10.45, -3.32], [10.45, 3.32], [12.65, -4.42], [12.65, -2.22], [12.65, 2.19], [12.65, 4.42], [14.86, -3.32], [14.86, 3.32], [17.06, -4.42], [17.06, -2.22], [17.06, 2.19], [17.06, 4.42], [19.27, -3.32], [19.27, 3.32], [21.47, -4.42], [21.47, -2.22], [21.47, -0.01], [21.47, 2.19], [21.47, 4.42], [29.42, -4.42], [29.42, -2.22], [29.42, -0.01], [29.42, 2.22], [29.42, 4.42], [31.63, -3.32], [31.63, -1.12], [31.63, 1.12], [31.63, 3.32], [33.83, -4.42], [33.83, -0.01], [33.83, 2.19], [33.86, -2.22], [33.86, 4.42]];   // [inches from litter head end, inches lateral], 1.5" holes, from the 6085 manual top view
+// ---- shared helpers for the chair model (from the former cot model)
 const cotM={frame:new THREE.MeshStandardMaterial({color:0xb4b9c0,metalness:0.5,roughness:0.45}),dark:new THREE.MeshStandardMaterial({color:0x34373d,roughness:0.6}),
   deck:new THREE.MeshStandardMaterial({color:0x2c2f35,roughness:0.7,side:THREE.DoubleSide}),mat:new THREE.MeshStandardMaterial({color:0x17181b,roughness:0.55}),tyre:new THREE.MeshStandardMaterial({color:0x101112,roughness:0.85}),
   hole:new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.85,depthWrite:false,side:THREE.DoubleSide}),foot:new THREE.MeshBasicMaterial({color:0xffb020,transparent:true,opacity:0.6,depthWrite:false,side:THREE.DoubleSide}),
   footE:new THREE.MeshBasicMaterial({color:0xffb020,transparent:true,depthWrite:false,side:THREE.DoubleSide})};
 const cv3=(x,y,z)=>new THREE.Vector3(x*IN,y*IN,z*IN);   // cot frame: x lateral, y up, z along (+ toward foot), inches
 function cotTube(a,b,r,m){ const d=new THREE.Vector3().subVectors(b,a), L=d.length(); const o=new THREE.Mesh(new THREE.CylinderGeometry(r*IN,r*IN,L,12),m); o.position.copy(a).add(b).multiplyScalar(0.5); o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize()); return o; }
-function cotPanel(u0,u1,hw,y,holes){ const sh=new THREE.Shape(); sh.moveTo(-hw*IN,-u0*IN); sh.lineTo(hw*IN,-u0*IN); sh.lineTo(hw*IN,-u1*IN); sh.lineTo(-hw*IN,-u1*IN); sh.closePath();
-  holes.forEach(([u,v])=>{ const p=new THREE.Path(); p.absarc(v*IN,-u*IN,0.75*IN,0,Math.PI*2,true); sh.holes.push(p); });
-  const g=new THREE.ExtrudeGeometry(sh,{depth:0.18*IN,bevelEnabled:false,curveSegments:16}); const o=new THREE.Mesh(g,cotM.deck); o.rotation.x=-Math.PI/2; o.position.y=y*IN; return o; }
-const cotTag=(o,k)=>{ o.userData.ck=k; return o; };
-function buildCot(){ cotG.traverse(o=>{ if(o.geometry) o.geometry.dispose(); }); cotG.clear();
-  const h=COT_H[COT.pos-1], zH=-COT.wb/2, zF=COT.wb/2, yB=7.75, add=(o,k='body')=>{ cotG.add(cotTag(o,k)); return o; };
-  // casters: swivel pivot above the wheel, axle trails 2.2" (0 swivel = trailing toward the head end)
-  [[zH,COT.th/2],[zH,-COT.th/2],[zF,COT.tf/2],[zF,-COT.tf/2]].forEach(([z,x])=>{ const c=new THREE.Group(); c.position.copy(cv3(x,0,z)); c.rotation.y=COT.sw*Math.PI/180; cotG.add(c);
-    const hs=new THREE.Mesh(new THREE.CylinderGeometry(0.9*IN,0.9*IN,1.8*IN,16),cotM.frame); hs.position.y=6.9*IN; c.add(cotTag(hs,'body'));
-    [-1.2,1.2].forEach(sx=>c.add(cotTag(cotTube(cv3(sx,6.2,0.2),cv3(sx,3,-COT.trail),0.2,cotM.frame),'body')));
-    const wh=new THREE.Mesh(new THREE.CylinderGeometry(3*IN,3*IN,2*IN,32),cotM.tyre); wh.rotation.z=Math.PI/2; wh.position.copy(cv3(0,3,-COT.trail)); c.add(cotTag(wh,'body'));
-    const hub=new THREE.Mesh(new THREE.CylinderGeometry(1.1*IN,1.1*IN,2.15*IN,20),cotM.dark); hub.rotation.z=Math.PI/2; hub.position.copy(wh.position); c.add(cotTag(hub,'body'));
-    const fp=new THREE.Mesh(new THREE.PlaneGeometry(2*IN,1.1*IN),cotM.foot); fp.rotation.x=-Math.PI/2; fp.position.copy(cv3(0,0.1,-COT.trail)); fp.renderOrder=6; c.add(cotTag(fp,'feet'));
-    const fe=new THREE.Mesh(new THREE.RingGeometry(0.05*IN,0.16*IN,12),cotM.footE); fe.rotation.x=-Math.PI/2; fe.position.copy(cv3(0,0.12,0)); fe.renderOrder=7; c.add(cotTag(fe,'feet')); });
-  // base: side tubes dip between the casters, cross tubes at each end
-  [1,-1].forEach(s=>{ const p=[cv3(s*COT.th/2,yB,zH),cv3(s*(COT.th/2-0.5),5.3,zH+9),cv3(s*(COT.tf/2-0.5),5.3,zF-9),cv3(s*COT.tf/2,yB,zF)]; for(let i=0;i<3;i++) add(cotTube(p[i],p[i+1],0.65,cotM.frame)); });
-  add(cotTube(cv3(-COT.th/2,yB,zH),cv3(COT.th/2,yB,zH),0.65,cotM.frame)); add(cotTube(cv3(-COT.tf/2,yB,zF),cv3(COT.tf/2,yB,zF),0.65,cotM.frame));
-  // litter (68" frame, head end toward -z) and X-frame
-  const zh=COT.sh-34, zf=COT.sh+34, yL=h-1.2;
-  [1,-1].forEach(s=>add(cotTube(cv3(s*10.9,yL,zh),cv3(s*10.9,yL,zf),0.65,cotM.frame)));
-  [zh,zf,zh+24.6,zh+38].forEach(z=>add(cotTube(cv3(-10.9,yL,z),cv3(10.9,yL,z),0.5,cotM.frame)));
-  const lx=Math.max(4,h-12);
-  [[8.6,zH+1.5,COT.sh+lx*0.55],[6.4,zF-1.5,COT.sh-lx*0.55]].forEach(([x,zb,zt])=>[1,-1].forEach(s=>add(cotTube(cv3(s*x,yB,zb),cv3(s*x,yL-0.6,zt),0.75,cotM.frame))));
-  // deck panels with holes (head piece, backrest, seat) and a foot-section panel without holes
-  const pick=(a,b)=>COT_HOLES.filter(([u])=>u>a&&u<b).map(([u,v])=>[zh+u,v]);
-  // backrest (head piece + backrest panel + head end of the mattress) hinges at u=24.6 from the head end
-  const PU=24.6, bk=COT.bk*Math.PI/180, back=new THREE.Group(); back.position.copy(cv3(0,h,zh+PU)); back.rotation.x=bk; cotG.add(back);
-  const rel=(o)=>{ o.position.y-=h*IN; o.position.z-=(zh+PU)*IN; return o; };
-  [[0.3,6.4,3.6,pick(0,6.45)],[6.5,24.4,7.2,pick(6.45,25)]].forEach(([u0,u1,hw,hl])=>back.add(cotTag(rel(cotPanel(zh+u0,zh+u1,hw,h-0.2,hl)),'body')));
-  [1,-1].forEach(s=>back.add(cotTag(rel(cotTube(cv3(s*7.6,h-0.6,zh+0.5),cv3(s*7.6,h-0.6,zh+PU),0.45,cotM.frame)),'body')));
-  [[27.2,36.2,5.9,pick(25,40)],[38.5,66.5,7.2,[]]].forEach(([u0,u1,hw,hl])=>add(cotPanel(zh+u0,zh+u1,hw,h-0.2,hl)));
-  const mb=new THREE.Mesh(new THREE.BoxGeometry(21*IN,3*IN,(PU-1)*IN),cotM.mat); mb.position.copy(cv3(0,1.5,-(PU-1)/2-0.25)); back.add(cotTag(mb,'mat'));
-  const mt=new THREE.Mesh(new THREE.BoxGeometry(21*IN,3*IN,(66.5-PU)*IN),cotM.mat); mt.position.copy(cv3(0,h+1.5,zh+PU+(66.5-PU)/2+0.25)); add(mt,'mat');
-  if(COT.bk>0){ const br=cotTube(cv3(0,h-1,zh+PU+2),cv3(0,h-1+Math.sin(bk)*12,zh+PU-Math.cos(bk)*12),0.5,cotM.dark); add(br); }   // gas strut
-  // invisible pick slab over the litter footprint (drag the cot when no tool is active)
-  const pk=new THREE.Mesh(new THREE.BoxGeometry(23*IN,Math.max(h,8)*IN,70*IN),new THREE.MeshBasicMaterial({colorWrite:false,depthWrite:false})); pk.position.copy(cv3(0,Math.max(h,8)/2,COT.sh)); pk.userData.cpick=true; cotG.add(pk);
-  // retractable head section with the two load wheels
-  [1,-1].forEach(s=>add(cotTube(cv3(s*4.5,yL,zh),cv3(s*4.5,yL-3.5,zh-9),0.5,cotM.frame)));
-  add(cotTube(cv3(-6,yL-3.5,zh-9),cv3(6,yL-3.5,zh-9),0.5,cotM.frame));
-  [1,-1].forEach(s=>{ const w=new THREE.Mesh(new THREE.CylinderGeometry(2*IN,2*IN,1.5*IN,20),cotM.tyre); w.rotation.z=Math.PI/2; w.position.copy(cv3(s*5,yL-4.6,zh-10)); add(w); });
-  // deck holes dropped straight down onto the floor
-  COT_HOLES.forEach(([u,v0])=>{ const v=v0; const zz=u<PU? zh+PU-(PU-u)*Math.cos(bk) : zh+u;   // straight down from where the hole is now
-    const m=new THREE.Mesh(new THREE.RingGeometry(0.62*IN,0.75*IN,28),cotM.hole); m.rotation.x=-Math.PI/2; m.position.copy(cv3(v,0.14,zz)); m.renderOrder=6; add(m,'holes');
-    const d=new THREE.Mesh(new THREE.CircleGeometry(0.06*IN,10),cotM.hole); d.rotation.x=-Math.PI/2; d.position.copy(cv3(v,0.15,zz)); d.renderOrder=6; add(d,'holes'); });
-  cotG.traverse(o=>{ if(o.isMesh){ const k=o.userData.ck; o.castShadow=(k==='body'||k==='mat'); o.receiveShadow=o.castShadow; if(k!=='body'&&k!=='mat'&&!o.userData.cpick) o.raycast=()=>{}; } });
-  cotVis(); cotInfo(); render(); }
-function cotVis(){ cotG.traverse(o=>{ const k=o.userData.ck; if(k) o.visible=!!COT[k]; }); }
+// treaded 6x2" wheel (6060-002-010 size), geometry in inches, axle along x. Tread shapes match the Cot Wheel Treads page defaults.
+const TREAD=(()=>{ const R0=3, HW=1, CIRC=2*Math.PI*R0, GD=0.13, CRN=0.53, sst=(a,b,v)=>{ const t=Math.min(1,Math.max(0,(v-a)/(b-a))); return t*t*(3-2*t); }, wrap=(s,p)=>((s%p)+p*1.5)%p-p/2;
+  const crown=x=>R0-CRN*Math.pow(Math.min(1,Math.abs(x)/HW),2.5);
+  const oem=(x,s)=>{ const p=CIRC/12, aL=0.85, aB=0.48, aW=0.10; let g=0;   // 12 groups: two right triangles per edge either side of a straight rib, staggered by half a group
+    for(const sg of [1,-1]){ const e=1-sg*x; if(e>aL+0.05) continue; const d0=wrap(s-(sg>0?p/2:0),p); for(const c of [-1,1]){ const u=c*d0-aW/2; g=Math.max(g,sst(-0.012,0.012,Math.min(u,aB*(1-e/aL)-u,aL-e))); } } return g; };
+  const tri=(px,py,A,B,C)=>{ const ed=(P,Q)=>{ const ex=Q[0]-P[0],ey=Q[1]-P[1],vx=px-P[0],vy=py-P[1],t=Math.max(0,Math.min(1,(vx*ex+vy*ey)/(ex*ex+ey*ey))); return [Math.hypot(vx-ex*t,vy-ey*t),vx*ey-vy*ex]; };
+    const a=ed(A,B),b=ed(B,C),c=ed(C,A), sg=Math.sign((B[0]-A[0])*(A[1]-C[1])-(B[1]-A[1])*(A[0]-C[0])), inside=Math.min(sg*a[1],sg*b[1],sg*c[1])>0; const d=Math.min(a[0],b[0],c[0]); return inside?-d:d; };
+  const rep_=(()=>{ const bL=0.85,bB=0.56,bR=0.05, A=[-0.3,bB/2*(1+0.3/bL)], B=[-0.3,-A[1]], C=[bL,0];
+    const la=Math.hypot(B[0]-C[0],B[1]-C[1]), lb=Math.hypot(A[0]-C[0],A[1]-C[1]), lc=Math.hypot(A[0]-B[0],A[1]-B[1]), per=la+lb+lc, I=[(la*A[0]+lb*B[0]+lc*C[0])/per,(la*A[1]+lb*B[1]+lc*C[1])/per];
+    const area=Math.abs((B[0]-A[0])*(C[1]-A[1])-(C[0]-A[0])*(B[1]-A[1]))/2, rho=2*area/per, r=Math.min(bR,rho*0.95), f=(rho-r)/rho, sh=v=>[I[0]+(v[0]-I[0])*f,I[1]+(v[1]-I[1])*f]; return {a:sh(A),b:sh(B),c:sh(C),r,bL}; })();
+  const repl=(x,s)=>{ const p=CIRC/24; let g=0;   // aftermarket: 24 wedges per side, staggered side to side, apex rounded
+    for(const sg of [1,-1]){ const e=1-sg*x; if(e>rep_.bL+0.1) continue; const ds=wrap(s-(sg>0?p/2:0),p); g=Math.max(g,sst(-0.012,0.012,-(tri(e,ds,rep_.a,rep_.b,rep_.c)-rep_.r))); } return g; };
+  const cache={};
+  const geo=k=>{ if(cache[k]) return cache[k]; const gfn=k==='oem'?oem:repl, nT=720, nX=41, pos=new Float32Array(nT*nX*3), idx=[];
+    for(let i=0;i<nT;i++){ const th=i/nT*Math.PI*2, s=th*R0, c=Math.cos(th), sn=Math.sin(th);
+      for(let j=0;j<nX;j++){ const x=-HW+2*HW*j/(nX-1), r=crown(x)-GD*gfn(x,s), q=(i*nX+j)*3; pos[q]=x*IN; pos[q+1]=r*c*IN; pos[q+2]=r*sn*IN; } }
+    for(let i=0;i<nT;i++){ const i2=(i+1)%nT; for(let j=0;j<nX-1;j++){ const a=i*nX+j,b=i2*nX+j; idx.push(a,b,a+1,b,b+1,a+1); } }
+    const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(pos,3)); g.setIndex(idx); g.computeVertexNormals(); return cache[k]=g; };
+  const side=new THREE.RingGeometry(1.1*IN,(R0-CRN)*IN,48); const hubG=new THREE.CylinderGeometry(1.1*IN,1.1*IN,2.0*IN,24);
+  return { wheel:(k,tyreMat,hubMat)=>{ const G=new THREE.Group(); G.add(new THREE.Mesh(geo(k),tyreMat));
+      [1,-1].forEach(sg=>{ const d=new THREE.Mesh(side,hubMat); d.rotation.y=sg*Math.PI/2; d.position.x=sg*HW*IN*0.98; G.add(d); });
+      const h=new THREE.Mesh(hubG,hubMat); h.rotation.z=Math.PI/2; G.add(h); G.userData.shared=true; return G; } }; })();
 const cotTile=v=>{ const a=v.z/S, b=-v.x/S; return (a>=-1&&a<5&&b>=-0.93&&b<6.09)?'ABCDEF'[Math.floor(a)+1]+(6-Math.floor(b)):'off porch'; };
-function cotInfo(){ const el=document.getElementById('cotinfo'); if(!el) return; if(!cotG.visible){ el.textContent=''; return; } cotG.updateMatrixWorld(true);
-  const p=cotG.position, nm=['Head L','Head R','Foot L','Foot R'], out=['Base centre '+cotTile(p)+' (a '+(p.z/S).toFixed(2)+', b '+(-p.x/S).toFixed(2)+')'];
-  [[-COT.wb/2,COT.th/2],[-COT.wb/2,-COT.th/2],[COT.wb/2,COT.tf/2],[COT.wb/2,-COT.tf/2]].forEach(([z,x],i)=>{ const sw=COT.sw*Math.PI/180, c=cv3(x-Math.sin(sw)*COT.trail,0,z-Math.cos(sw)*COT.trail).applyMatrix4(cotG.matrixWorld); out.push(nm[i]+' tire: '+cotTile(c)); });
-  el.innerHTML=out.join('<br>'); }
-function cotPlaceAt(p){ cotG.position.set(p.x,p.y,p.z); cotG.visible=true; document.getElementById('cot').setAttribute('aria-pressed',true); cotInfo(); render(); }
-function cotState(){ return {visible:cotG.visible,pos:[+(cotG.position.x/S).toFixed(5),+(cotG.position.y/S).toFixed(5),+(cotG.position.z/S).toFixed(5)],body:COT.body,holes:COT.holes,feet:COT.feet,mat:COT.mat}; }
-function cotLoad(c){ if(!c) return; ['body','holes','feet','mat'].forEach(k=>{ if(c[k]!=null){ COT[k]=!!c[k]; const b=document.getElementById(k==='mat'?'cotmat':'cot'+k); if(b) b.setAttribute('aria-pressed',COT[k]); } });
-  if(c.pos) cotG.position.set(c.pos[0]*S,c.pos[1]*S,c.pos[2]*S); cotG.visible=!!c.visible; document.getElementById('cot').setAttribute('aria-pressed',cotG.visible); buildCot(); }
-{ cotG.position.copy(W(2.5,2.6,0)); let cotPlacing=false;
-  const pickRay=e=>{ const rc=r.domElement.getBoundingClientRect(), R=new THREE.Raycaster();   // same picking as the figure (handles the doorbell fisheye too)
-    if(fish){ const va=rc.width/rc.height, fa=0.75; let qx=(e.clientX-rc.left)/rc.width, qy=1-(e.clientY-rc.top)/rc.height;
-      if(va>fa) qx=(qx-0.5)*va/fa+0.5; else qy=(qy-0.5)*fa/va+0.5;
-      const px=qx*600-300, py=(1-qy)*800-400, th=Math.hypot(px,py)/fishMat.uniforms.f.value, ph=Math.atan2(py,px);
-      const d=new THREE.Vector3(Math.sin(th)*Math.cos(ph),Math.sin(th)*Math.sin(ph),Math.cos(th)).applyMatrix3(fishMat.uniforms.Rt.value).normalize(); R.set(cubeCam.position.clone(),d); }
-    else R.setFromCamera(new THREE.Vector2((e.clientX-rc.left)/rc.width*2-1,-(e.clientY-rc.top)/rc.height*2+1),cam);
-    return R; }; const cb=document.getElementById('cot'), cpb=document.getElementById('cotplace');
-  cb.onclick=()=>{ cotG.visible=!cotG.visible; cb.setAttribute('aria-pressed',cotG.visible); cotInfo(); render(); };
-  cpb.onclick=()=>{ cotPlacing=!cotPlacing; cpb.setAttribute('aria-pressed',cotPlacing); if(cotPlacing&&placing) document.getElementById('place').click(); };
-  pb.addEventListener('click',()=>{ if(placing&&cotPlacing){ cotPlacing=false; cpb.setAttribute('aria-pressed',false); } });
-  [['cotbody','body'],['cotholes','holes'],['cotfeet','feet'],['cotmat','mat']].forEach(([id,k])=>{ const b=document.getElementById(id); b.onclick=()=>{ COT[k]=!COT[k]; b.setAttribute('aria-pressed',COT[k]); cotVis(); render(); }; });
-  let cdn=null; r.domElement.addEventListener('pointerdown',e=>{ cdn=[e.clientX,e.clientY]; });
-  r.domElement.addEventListener('pointerup',e=>{ if(!cotPlacing||!cdn||Math.hypot(e.clientX-cdn[0],e.clientY-cdn[1])>6) return; const hit=pickRay(e).intersectObjects(floors,false)[0]; if(hit) cotPlaceAt(hit.point); });
-  const sl=(id,k,fmt)=>{ const i=document.getElementById(id), sp=document.getElementById(id+'v'); const f=()=>{ COT[k]=+i.value; sp.textContent=fmt(COT[k]); if(k==='hd'){ cotG.rotation.y=COT.hd*Math.PI/180; cotInfo(); render(); } else buildCot(); }; i.addEventListener('input',f); sp.textContent=fmt(+i.value); };
-  sl('cothd','hd',v=>v+'°'); sl('cotbk','bk',v=>v+'°'); sl('cotpos','pos',v=>'P'+v+' '+COT_H[v-1]+'″'); sl('cotsw','sw',v=>v+'°'); sl('cotsh','sh',v=>(v>0?'+':'')+v+'″'); sl('cotwb','wb',v=>v+'″'); sl('cotth','th',v=>v.toFixed(1)+'″'); sl('cottf','tf',v=>v.toFixed(1)+'″');
-  document.getElementById('tsc').addEventListener('input',()=>buildCot());
-  // drag the cot: grab its body (any tool), or anywhere over its footprint when no tool is active; Shift-drag turns it
-  let cdrag=null; const flr=e=>pickRay(e).intersectObjects(floors,false)[0];
-  r.domElement.addEventListener('pointerdown',e=>{ if(!cotG.visible||cotPlacing||e.button>0) return;
-    const hits=pickRay(e).intersectObjects(cotG.children,true).filter(h=>{ for(let o=h.object;o&&o!==cotG;o=o.parent) if(!o.visible&&!h.object.userData.cpick) return false; return h.object.userData.cpick?!['tmeas','tpath','tmark','tblood'].some(id=>{ const b=document.getElementById(id); return b&&b.getAttribute('aria-pressed')==='true'; }):true; });
-    if(!hits.length) return; const f=flr(e); if(!f) return;
-    cdrag={off:cotG.position.clone().sub(f.point),rot:e.shiftKey,a0:Math.atan2(f.point.x-cotG.position.x,f.point.z-cotG.position.z),h0:COT.hd};
-    ctl.enabled=false; try{ r.domElement.setPointerCapture(e.pointerId); }catch(_){} e.stopImmediatePropagation(); e.preventDefault(); },true);
-  r.domElement.addEventListener('pointermove',e=>{ if(!cdrag) return; const f=flr(e); if(!f) return;
-    if(cdrag.rot){ const a=Math.atan2(f.point.x-cotG.position.x,f.point.z-cotG.position.z); let hd=Math.round(((cdrag.h0+(a-cdrag.a0)*180/Math.PI)%360+360)%360); const i=document.getElementById('cothd'); i.value=hd; i.dispatchEvent(new Event('input')); }
-    else { cotG.position.set(f.point.x+cdrag.off.x,f.point.y,f.point.z+cdrag.off.z); cotInfo(); render(); } });
-  const cup=()=>{ if(cdrag){ cdrag=null; ctl.enabled=!fish; } }; r.domElement.addEventListener('pointerup',cup); r.domElement.addEventListener('pointercancel',cup);
-  window.__cot={place:(a,b)=>cotPlaceAt(W(a,b,0)),COT,build:buildCot};
-  setTimeout(buildCot,0); }   // after render() is initialised
+let _stand=null; const standOn=()=>{ if(!_stand){ _stand=[...floors]; scene.traverse(o=>{ if(o.isMesh&&/threshold_top/.test(o.name)) _stand.push(o); }); } return _stand; };
+function settle(G,pts){ G.updateMatrixWorld(true); const R=new THREE.Raycaster(); let hi=-1e9, any=false;
+  pts.forEach(p=>{ const w=p.clone().applyMatrix4(G.matrixWorld); R.set(new THREE.Vector3(w.x,G.position.y+1.5,w.z),new THREE.Vector3(0,-1,0)); const h=R.intersectObjects(standOn(),false)[0]; if(h){ hi=Math.max(hi,h.point.y); any=true; } });
+  if(any&&Math.abs(G.position.y-hi)>1e-5){ G.position.y=hi; G.updateMatrixWorld(true); } }
 // ---- Stryker Stair-PRO chair (6250 / 6251), approximate; axle at the origin, +z toward the front legs, inches
 const chrG=new THREE.Group(); chrG.visible=false; scene.add(chrG); window.__chrG=chrG;
-const CHR={hd:0,tilt:0,tr:19,wb:16.4,m6251:true,body:true,feet:true};
-const chrM={frame:new THREE.MeshStandardMaterial({color:0xe9c21c,metalness:0.3,roughness:0.5}),blk:new THREE.MeshStandardMaterial({color:0x1d1f22,roughness:0.6}),seat:new THREE.MeshStandardMaterial({color:0x26282c,roughness:0.7,side:THREE.DoubleSide})};
-function buildChr(){ chrG.traverse(o=>{ if(o.geometry) o.geometry.dispose(); }); chrG.clear();
-  const tag=(o,k)=>{ o.userData.ck=k; return o; }, T=CHR.tr/2, F=CHR.wb, tl=CHR.tilt*Math.PI/180;
+const CHR={hd:0,tilt:0,tr:19,wb:16.4,m6251:true,body:true,feet:true,holes:true,wL:'rep',wR:'rep',lock:false};
+const chrM={frame:new THREE.MeshStandardMaterial({color:0xe9c21c,metalness:0.3,roughness:0.5}),blk:new THREE.MeshStandardMaterial({color:0x1d1f22,roughness:0.6,side:THREE.DoubleSide}),seat:new THREE.MeshStandardMaterial({color:0x26282c,roughness:0.7,side:THREE.DoubleSide})};
+function buildChr(G=chrG,C=CHR){ const keep=new Set(); G.traverse(o=>{ if(o.userData.shared) o.traverse(c=>{ if(c.geometry) keep.add(c.geometry); }); }); G.traverse(o=>{ if(o.geometry&&!keep.has(o.geometry)) o.geometry.dispose(); }); G.clear();
+  const tag=(o,k)=>{ o.userData.ck=k; return o; }, T=C.tr/2, F=C.wb, tl=C.tilt*Math.PI/180;
   // rear wheels stay on the floor; everything else tips about the axle
-  [1,-1].forEach(s=>{ const w=new THREE.Mesh(new THREE.CylinderGeometry(3*IN,3*IN,2*IN,32),cotM.tyre); w.rotation.z=Math.PI/2; w.position.copy(cv3(s*T,3,0)); chrG.add(tag(w,'body'));
-    const hb=new THREE.Mesh(new THREE.CylinderGeometry(1.1*IN,1.1*IN,2.15*IN,20),cotM.dark); hb.rotation.z=Math.PI/2; hb.position.copy(w.position); chrG.add(tag(hb,'body'));
-    const fp=new THREE.Mesh(new THREE.PlaneGeometry(2*IN,1.1*IN),cotM.foot); fp.rotation.x=-Math.PI/2; fp.position.copy(cv3(s*T,0.1,0)); fp.renderOrder=6; chrG.add(tag(fp,'feet')); });
-  const tg=new THREE.Group(); tg.position.copy(cv3(0,3,0)); tg.rotation.x=-tl; chrG.add(tg);
+  [1,-1].forEach(s=>{ const w=TREAD.wheel(s>0?C.wL:C.wR,cotM.tyre,cotM.dark); w.position.copy(cv3(s*T,3,0)); w.traverse(o=>{ if(o.isMesh) tag(o,'body'); }); w.userData.rear=s; G.add(w);
+    const fp=new THREE.Mesh(new THREE.PlaneGeometry(2*IN,1.1*IN),cotM.foot); fp.rotation.x=-Math.PI/2; fp.position.copy(cv3(s*T,0.1,0)); fp.renderOrder=6; G.add(tag(fp,'feet')); });
+  const tg=new THREE.Group(); tg.position.copy(cv3(0,3,0)); tg.rotation.x=-tl; G.add(tg);
   const v=(x,y,z)=>cv3(x,y-3,z), add=(o,k='body')=>{ tg.add(tag(o,k)); return o; }, tb=(a,b,r,m=chrM.frame)=>add(cotTube(a,b,r,m));
   const P=T-1.6;   // uprights just inside the wheels
   [1,-1].forEach(s=>{ tb(v(s*P,4.5,0.4),v(s*P,34,-3.8),0.6);                       // backrest posts
     tb(v(s*(P-0.3),18.4,-1.6),v(s*(P-0.3),18.9,13.5),0.5);                         // seat side rails
-    tb(v(s*(P-0.3),18.4,12.7),v(s*(P-0.3),0.5,F),0.5);                             // front legs
+    if(C.m6251) tb(v(s*(P-0.3),18.4,12.7),v(s*(P-0.3),5.1,F),0.5);              // 6251 front legs end at the foot support, casters below
+    else { const kz=12.7+(F-12.7)*(18.4-3.2)/(18.4-0.5); tb(v(s*(P-0.3),18.4,12.7),v(s*(P-0.3),3.2,kz),0.5); tb(v(s*(P-0.3),3.2,kz),v(s*(P-1.4),0.5,F),0.5); }   // 6250: legs pinch in to the floor bar
     tb(v(s*P,6.5,1.2),v(s*(P-0.3),5.7,F-1.6),0.55);                                // lower side bars
     tb(v(s*(P-0.3),5.8,F-1.2),v(s*(P+1.2),5.8,F+4.8),0.45,chrM.blk);               // foot-end lift handles
-    const ft=CHR.m6251?null:add(new THREE.Mesh(new THREE.CylinderGeometry(0.55*IN,0.6*IN,0.5*IN,14),chrM.blk)); if(ft) ft.position.copy(v(s*(P-0.3),0.25,F));
-    if(CHR.m6251){ const cw=new THREE.Mesh(new THREE.CylinderGeometry(2*IN,2*IN,1.1*IN,24),chrM.blk); cw.rotation.z=Math.PI/2; cw.position.copy(v(s*(P-0.3),2,F+1.0)); add(cw);
-      tb(v(s*(P-0.3),4.6,F+0.1),v(s*(P-0.3),2,F+1.0),0.25,chrM.frame); } });
+    if(C.m6251){ // swivel caster: pivot over the leg, 4" wheel trailing 1" behind the pivot (the group's +z); rotation.y = swivel
+      const cg=new THREE.Group(); cg.position.copy(v(s*(P-0.3),4.3,F)); cg.userData.caster=s; tg.add(cg);
+      const hs=new THREE.Mesh(new THREE.CylinderGeometry(0.75*IN,0.75*IN,0.9*IN,16),chrM.blk); cg.add(tag(hs,'body'));
+      [-0.65,0.65].forEach(o=>cg.add(tag(cotTube(cv3(o,-0.3,0.1),cv3(o,-2.3,1.0),0.12,chrM.blk),'body')));
+      const sp=new THREE.Group(); sp.position.copy(cv3(0,-2.3,1.0)); cg.add(sp); cg.userData.spin=sp;
+      const cw=new THREE.Mesh(new THREE.CylinderGeometry(2*IN,2*IN,1.1*IN,24),chrM.blk); cw.rotation.z=Math.PI/2; sp.add(tag(cw,'body'));
+      const mk=new THREE.Mesh(new THREE.BoxGeometry(1.15*IN,0.35*IN,0.35*IN),chrM.frame); mk.position.y=1.85*IN; sp.add(tag(mk,'body')); } });
+  const holeMk=[];   // hole centres (as child markers) dropped onto the floor below
+  if(!C.m6251) tb(v(-(P-1.4),0.5,F),v(P-1.4,0.5,F),0.5);   // 6250: floor bar between the pinched leg bottoms
+  else { // 6251 foot support (6251-001-050): flat centre panel (3 holes in front, 2 behind) and a wing each side angling up to the leg, 2 holes each
+    const cw=4.0, yc=3.7, z0=F-0.4, z1=F+2.9, xe=P-0.3, ye=5.0, wl=Math.hypot(xe-cw,ye-yc), ang=Math.atan2(ye-yc,xe-cw), th=0.18, R=0.42;
+    const panel=(w0,w1,holes)=>{ const sh=new THREE.Shape(); sh.moveTo(w0*IN,-z0*IN); sh.lineTo(w1*IN,-z0*IN); sh.lineTo(w1*IN,-z1*IN); sh.lineTo(w0*IN,-z1*IN); sh.closePath();
+      holes.forEach(([x,z])=>{ const h=new THREE.Path(); h.absarc(x*IN,-z*IN,R*IN,0,Math.PI*2,true); sh.holes.push(h); });
+      const m=new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:th*IN,bevelEnabled:false,curveSegments:14}),chrM.blk); m.rotation.x=-Math.PI/2;
+      holes.forEach(([x,z])=>{ const o=new THREE.Object3D(); o.position.set(x*IN,-z*IN,0); m.add(o); holeMk.push(o); }); return m; };
+    const ctr=panel(-cw,cw,[[-2.0,F+2.0],[0,F+2.0],[2.0,F+2.0],[-1.0,F+0.55],[1.0,F+0.55]]); ctr.position.copy(v(0,yc,0)); add(ctr);
+    [1,-1].forEach(sg=>{ const g=new THREE.Group(); g.position.copy(v(sg*cw,yc,0)); g.rotation.z=sg*ang; tg.add(g);
+      const w=panel(0,wl+0.5,[[wl*0.55,F+0.6],[wl*0.55,F+2.1]]); if(sg<0){ w.scale.x=-1; } g.add(tag(w,'body')); }); }
   tb(v(-P,34,-3.8),v(P,34,-3.8),0.6); tb(v(-P,6.5,1.2),v(P,6.5,1.2),0.6); tb(v(-(P-0.3),18.9,13.5),v(P-0.3,18.9,13.5),0.5);
-  const st=new THREE.Mesh(new THREE.BoxGeometry((2*P-1)*IN,0.3*IN,14*IN),chrM.seat); st.position.copy(v(0,18.8,6)); st.rotation.x=-0.03; add(st);
-  const bk=new THREE.Mesh(new THREE.BoxGeometry((2*P-1)*IN,15*IN,0.25*IN),chrM.seat); bk.position.copy(v(0,27,-2.3)); bk.rotation.x=-0.15; add(bk);
+  // ABS seat: rounded panel with two restraint-belt slots near the back corners
+  { const hw=P-0.5, d=14, rr=1.5, sh=new THREE.Shape(); sh.moveTo((-hw+rr)*IN,0); sh.lineTo((hw-rr)*IN,0); sh.quadraticCurveTo(hw*IN,0,hw*IN,-rr*IN); sh.lineTo(hw*IN,-(d-rr)*IN); sh.quadraticCurveTo(hw*IN,-d*IN,(hw-rr)*IN,-d*IN); sh.lineTo((-hw+rr)*IN,-d*IN); sh.quadraticCurveTo(-hw*IN,-d*IN,-hw*IN,-(d-rr)*IN); sh.lineTo(-hw*IN,-rr*IN); sh.quadraticCurveTo(-hw*IN,0,(-hw+rr)*IN,0);
+    [[-(hw-2.0),4.2],[hw-2.0,4.2]].forEach(([x,z])=>{ const p=new THREE.Path(); p.absellipse(x*IN,-z*IN,1.0*IN,0.32*IN,0,Math.PI*2,true); sh.holes.push(p); });   // restraint-belt slots
+    const st=new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:0.3*IN,bevelEnabled:false,curveSegments:10}),chrM.seat); st.rotation.x=-Math.PI/2; st.position.copy(v(0,18.75,-1.0)); add(st); }
+  // ABS backrest (6250-001-116): full-width band at the bottom, then a narrow upper panel up to the top bar, leaving large open windows beside it
+  { const lean=Math.atan2(4.2,29.5), y0=21.6, H=12.3, hf=P-0.1, hb=4.0, wu=0.63*P, wt=0.6*P, fil=0.9, sh=new THREE.Shape();
+    sh.moveTo(-hf*IN,0); sh.lineTo(hf*IN,0); sh.lineTo(hf*IN,hb*IN); sh.lineTo((wu+fil)*IN,hb*IN); sh.quadraticCurveTo(wu*IN,hb*IN,wu*IN,(hb+fil)*IN); sh.lineTo(wt*IN,H*IN);
+    sh.lineTo(-wt*IN,H*IN); sh.lineTo(-wu*IN,(hb+fil)*IN); sh.quadraticCurveTo(-wu*IN,hb*IN,-(wu+fil)*IN,hb*IN); sh.lineTo(-hf*IN,hb*IN); sh.closePath();
+    const bk=new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:0.25*IN,bevelEnabled:false,curveSegments:10}),chrM.seat); bk.position.copy(v(0,y0,0.4-(y0-4.5)*Math.tan(lean)+0.55)); bk.rotation.x=-lean; add(bk); }
   // front contacts (only when the chair is level)
-  if(CHR.tilt<0.5) [1,-1].forEach(s=>{ const fp=new THREE.Mesh(CHR.m6251?new THREE.PlaneGeometry(1.1*IN,0.8*IN):new THREE.CircleGeometry(0.55*IN,16),cotM.foot); fp.rotation.x=-Math.PI/2; fp.position.copy(cv3(s*(P-0.3),0.1,F+(CHR.m6251?1.0:0))); fp.renderOrder=6; chrG.add(tag(fp,'feet')); });
-  const pk=new THREE.Mesh(new THREE.BoxGeometry((CHR.tr+2)*IN,34*IN,(F+6)*IN),new THREE.MeshBasicMaterial({colorWrite:false,depthWrite:false})); pk.position.copy(cv3(0,17,F/2)); pk.userData.cpick=true; chrG.add(pk);
-  chrG.traverse(o=>{ if(o.isMesh){ const k=o.userData.ck; o.castShadow=k==='body'; o.receiveShadow=o.castShadow; if(k!=='body'&&!o.userData.cpick) o.raycast=()=>{}; } });
-  chrVis(); chrInfo(); render(); }
+  if(C.tilt<0.5){ if(C.m6251) [1,-1].forEach(s=>{ const fp=new THREE.Mesh(new THREE.PlaneGeometry(1.1*IN,0.8*IN),cotM.foot); fp.rotation.x=-Math.PI/2; fp.position.copy(cv3(s*(P-0.3),0.1,F+1.0)); fp.renderOrder=6; G.add(tag(fp,'feet')); });
+    else { const fp=new THREE.Mesh(new THREE.PlaneGeometry((2*P-2.8)*IN,0.6*IN),cotM.foot); fp.rotation.x=-Math.PI/2; fp.position.copy(cv3(0,0.1,F)); fp.renderOrder=6; G.add(tag(fp,'feet')); } }   // the 6250's bar contact strip
+  if(holeMk.length){ G.updateMatrixWorld(true); const wv=new THREE.Vector3();
+    holeMk.forEach(o=>{ o.getWorldPosition(wv); G.worldToLocal(wv); const m=new THREE.Mesh(new THREE.RingGeometry(0.3*IN,0.42*IN,24),cotM.hole); m.rotation.x=-Math.PI/2; m.position.set(wv.x,0.14*IN,wv.z); m.renderOrder=6; G.add(tag(m,'holes'));
+      const d=new THREE.Mesh(new THREE.CircleGeometry(0.05*IN,10),cotM.hole); d.rotation.x=-Math.PI/2; d.position.set(wv.x,0.15*IN,wv.z); d.renderOrder=6; G.add(tag(d,'holes')); }); }
+  const pk=new THREE.Mesh(new THREE.BoxGeometry((C.tr+2)*IN,34*IN,(F+6)*IN),new THREE.MeshBasicMaterial({colorWrite:false,depthWrite:false})); pk.position.copy(cv3(0,17,F/2)); pk.userData.cpick=true; G.add(pk);
+  G.traverse(o=>{ if(o.isMesh){ const k=o.userData.ck; o.castShadow=k==='body'; o.receiveShadow=o.castShadow; if(k!=='body'&&!o.userData.cpick) o.raycast=()=>{}; } });
+  if(G===chrG){ chrVis(); chrInfo(); render(); } else G.traverse(o=>{ const k=o.userData.ck; if(k) o.visible=k==='body'; if(o.isMesh) o.raycast=()=>{}; if(o.userData.cpick) o.visible=false; }); }
 function chrVis(){ chrG.traverse(o=>{ const k=o.userData.ck; if(k) o.visible=!!CHR[k]; }); }
-function chrInfo(){ const el=document.getElementById('chrinfo'); if(!el) return; if(!chrG.visible){ el.textContent=''; return; } chrG.updateMatrixWorld(true);
+function chrInfo(){ const el=document.getElementById('chrinfo'); if(!el) return; if(!chrG.visible){ el.textContent=''; return; }
+  { const T=CHR.tr/2, P=T-1.6, F=CHR.wb, pts=[cv3(T,0,0),cv3(-T,0,0)]; if(CHR.tilt<0.5) pts.push(cv3(P-0.3,0,F+(CHR.m6251?1:0)),cv3(-(P-0.3),0,F+(CHR.m6251?1:0))); settle(chrG,pts); }
+  chrG.updateMatrixWorld(true);
   const p=chrG.position, out=['Rear axle centre '+cotTile(p)+' (a '+(p.z/S).toFixed(2)+', b '+(-p.x/S).toFixed(2)+')'];
   [['Left rear tire',CHR.tr/2],['Right rear tire',-CHR.tr/2]].forEach(([n,x])=>out.push(n+': '+cotTile(cv3(x,0,0).applyMatrix4(chrG.matrixWorld))));
-  out.push(CHR.tilt>=0.5?'Tipped back: only the rear wheels touch':(CHR.m6251?'Level: on all four wheels':'Level: resting on its front legs')); el.innerHTML=out.join('<br>'); }
+  out.push(CHR.tilt>=0.5?'Tipped back: only the rear wheels touch':(CHR.m6251?'Level: on all four wheels':'Level: resting on its front bar')); el.innerHTML=out.join('<br>'); }
 function chrPlaceAt(p){ chrG.position.set(p.x,p.y,p.z); chrG.visible=true; document.getElementById('chr').setAttribute('aria-pressed',true); chrInfo(); render(); }
-function chrState(){ return {visible:chrG.visible,pos:[+(chrG.position.x/S).toFixed(5),+(chrG.position.y/S).toFixed(5),+(chrG.position.z/S).toFixed(5)],m6251:CHR.m6251,body:CHR.body,feet:CHR.feet}; }
-function chrLoad(c){ if(!c) return; ['body','feet'].forEach(k=>{ if(c[k]!=null){ CHR[k]=!!c[k]; document.getElementById('chr'+k).setAttribute('aria-pressed',CHR[k]); } });
-  if(c.m6251!=null){ CHR.m6251=!!c.m6251; const b=document.getElementById('chrmod'); b.textContent=CHR.m6251?'Model: 6251 (front casters)':'Model: 6250 (front legs)'; }
+function chrState(){ return {visible:chrG.visible,pos:[+(chrG.position.x/S).toFixed(5),+(chrG.position.y/S).toFixed(5),+(chrG.position.z/S).toFixed(5)],m6251:CHR.m6251,body:CHR.body,feet:CHR.feet,holes:CHR.holes,wL:CHR.wL,wR:CHR.wR,lock:CHR.lock}; }
+function chrLoad(c){ if(!c) return; ['body','feet','holes'].forEach(k=>{ if(c[k]!=null){ CHR[k]=!!c[k]; document.getElementById('chr'+k).setAttribute('aria-pressed',CHR[k]); } });
+  if(c.m6251!=null){ CHR.m6251=!!c.m6251; const b=document.getElementById('chrmod'); b.textContent=CHR.m6251?'Model: 6251 (front casters)':'Model: 6250 (front bar)'; }
+  [['wL','chrwl','Left'],['wR','chrwr','Right']].forEach(([k,id,n])=>{ if(c[k]){ CHR[k]=c[k]; document.getElementById(id).textContent=n+' wheel: '+(c[k]==='oem'?'Stryker OEM':'aftermarket'); } });
+  if(c.lock!=null&&!!c.lock!==CHR.lock) document.getElementById('chrlock').click();
   if(c.pos) chrG.position.set(c.pos[0]*S,c.pos[1]*S,c.pos[2]*S); chrG.visible=!!c.visible; document.getElementById('chr').setAttribute('aria-pressed',chrG.visible); buildChr(); }
 { chrG.position.copy(W(3.3,4.0,0)); let placingC=false;
   const pickRay=e=>{ const rc=r.domElement.getBoundingClientRect(), R=new THREE.Raycaster();
@@ -473,15 +442,18 @@ function chrLoad(c){ if(!c) return; ['body','feet'].forEach(k=>{ if(c[k]!=null){
   const cb=document.getElementById('chr'), cpb=document.getElementById('chrplace'), mb=document.getElementById('chrmod');
   cb.onclick=()=>{ chrG.visible=!chrG.visible; cb.setAttribute('aria-pressed',chrG.visible); chrInfo(); render(); };
   cpb.onclick=()=>{ placingC=!placingC; cpb.setAttribute('aria-pressed',placingC); };
-  mb.onclick=()=>{ CHR.m6251=!CHR.m6251; mb.textContent=CHR.m6251?'Model: 6251 (front casters)':'Model: 6250 (front legs)'; buildChr(); };
-  [['chrbody','body'],['chrfeet','feet']].forEach(([id,k])=>{ const b=document.getElementById(id); b.onclick=()=>{ CHR[k]=!CHR[k]; b.setAttribute('aria-pressed',CHR[k]); chrVis(); render(); }; });
+  const wlab=k=>k==='oem'?'Stryker OEM':'aftermarket';
+  [['chrwl','wL','Left'],['chrwr','wR','Right']].forEach(([id,k,n])=>{ const b=document.getElementById(id); b.onclick=()=>{ CHR[k]=CHR[k]==='oem'?'rep':'oem'; b.textContent=n+' wheel: '+wlab(CHR[k]); buildChr(); }; });
+  { const lb=document.getElementById('chrlock'); lb.onclick=()=>{ CHR.lock=!CHR.lock; lb.setAttribute('aria-pressed',CHR.lock); lb.textContent=CHR.lock?'Locked (tap to unlock)':'Lock in place'; }; }
+  mb.onclick=()=>{ CHR.m6251=!CHR.m6251; mb.textContent=CHR.m6251?'Model: 6251 (front casters)':'Model: 6250 (front bar)'; buildChr(); };
+  [['chrbody','body'],['chrfeet','feet'],['chrholes','holes']].forEach(([id,k])=>{ const b=document.getElementById(id); b.onclick=()=>{ CHR[k]=!CHR[k]; b.setAttribute('aria-pressed',CHR[k]); chrVis(); render(); }; });
   let dn2=null; r.domElement.addEventListener('pointerdown',e=>{ dn2=[e.clientX,e.clientY]; });
   r.domElement.addEventListener('pointerup',e=>{ if(!placingC||!dn2||Math.hypot(e.clientX-dn2[0],e.clientY-dn2[1])>6) return; const hit=pickRay(e).intersectObjects(floors,false)[0]; if(hit) chrPlaceAt(hit.point); });
   const sl=(id,k,fmt)=>{ const i=document.getElementById(id), sp=document.getElementById(id+'v'); const f=()=>{ CHR[k]=+i.value; sp.textContent=fmt(CHR[k]); if(k==='hd'){ chrG.rotation.y=CHR.hd*Math.PI/180; chrInfo(); render(); } else buildChr(); }; i.addEventListener('input',f); sp.textContent=fmt(+i.value); };
   sl('chrhd','hd',v=>v+'°'); sl('chrtilt','tilt',v=>v+'°'); sl('chrtr','tr',v=>v.toFixed(1)+'″'); sl('chrwb','wb',v=>v.toFixed(1)+'″');
   document.getElementById('tsc').addEventListener('input',()=>buildChr());
   let drag2=null; const flr=e=>pickRay(e).intersectObjects(floors,false)[0];
-  r.domElement.addEventListener('pointerdown',e=>{ if(!chrG.visible||placingC||e.button>0) return;
+  r.domElement.addEventListener('pointerdown',e=>{ if(!chrG.visible||placingC||CHR.lock||e.button>0) return;
     const toolOn=['tmeas','tpath','tmark','tblood'].some(id=>{ const b=document.getElementById(id); return b&&b.getAttribute('aria-pressed')==='true'; });
     const hits=pickRay(e).intersectObjects(chrG.children,true).filter(h=>{ for(let o=h.object;o&&o!==chrG;o=o.parent) if(!o.visible&&!h.object.userData.cpick) return false; return h.object.userData.cpick?!toolOn:true; });
     if(!hits.length) return; const f=flr(e); if(!f) return;
@@ -493,6 +465,72 @@ function chrLoad(c){ if(!c) return; ['body','feet'].forEach(k=>{ if(c[k]!=null){
   const up2=()=>{ if(drag2){ drag2=null; ctl.enabled=!fish; } }; r.domElement.addEventListener('pointerup',up2); r.domElement.addEventListener('pointercancel',up2);
   window.__chr={place:(a,b)=>chrPlaceAt(W(a,b,0)),CHR,build:buildChr};
   setTimeout(buildChr,0); }
+// ---- spatter source: a red point light with shadows, so anything between it and the floor leaves a shadow (holes let it through)
+const sprG=new THREE.Group(); sprG.visible=false; scene.add(sprG); window.__sprG=sprG;
+const SPR={h:12,r:30,i:60,dim:true,base:new THREE.Vector3(),dir:0,tl:-30,sp:360,fog:true};
+const sprL=new THREE.PointLight(0xff2a2a,0,1,0); sprL.castShadow=true; sprL.shadow.mapSize.set(2048,2048); sprL.shadow.camera.near=0.005; sprL.shadow.bias=-0.0004; sprL.shadow.normalBias=0.002; sprG.add(sprL);
+const sprDot=new THREE.Mesh(new THREE.SphereGeometry(0.008,16,12),new THREE.MeshBasicMaterial({color:0xff3b3b,depthTest:false,transparent:true})); sprDot.renderOrder=12; sprG.add(sprDot);
+const sprLine=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]),new THREE.LineDashedMaterial({color:0xff6b6b,dashSize:0.01,gapSize:0.008,depthTest:false,transparent:true})); sprLine.renderOrder=12; sprG.add(sprLine);
+const sprS=new THREE.SpotLight(0xff2a2a,0,1,Math.PI/4,0.25,0); sprS.castShadow=true; sprS.shadow.mapSize.set(2048,2048); sprS.shadow.camera.near=0.005; sprS.shadow.bias=-0.0004; sprS.shadow.normalBias=0.002; sprG.add(sprS,sprS.target);
+const sprPts=new THREE.Points(new THREE.BufferGeometry(),new THREE.PointsMaterial({size:0.0035,vertexColors:true,transparent:true,opacity:0.55,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true})); sprPts.renderOrder=11; sprG.add(sprPts);
+sprG.traverse(o=>{ o.raycast=()=>{}; });
+const sprDirV=()=>{ const az=SPR.dir*Math.PI/180, el=SPR.tl*Math.PI/180; return new THREE.Vector3(-Math.sin(az)*Math.cos(el),Math.sin(el),Math.cos(az)*Math.cos(el)); };   // 0° = toward the street, 90° = toward column 1
+function sprScatter(p){ const N=3500, pos=new Float32Array(N*3), col=new Float32Array(N*3), d=sprDirV(), half=Math.min(Math.PI,SPR.sp/2*Math.PI/180), R=SPR.r*IN, fy=SPR.base.y;
+  const t1=new THREE.Vector3(), t2=new THREE.Vector3(); t1.set(0,1,0).cross(d); if(t1.lengthSq()<1e-6) t1.set(1,0,0); t1.normalize(); t2.copy(d).cross(t1);
+  let n=0; for(let k=0;k<N*3&&n<N;k++){ const ct=1-Math.random()*(1-Math.cos(half)), st=Math.sqrt(1-ct*ct), ph=Math.random()*Math.PI*2, rr=R*Math.pow(Math.random(),0.75);
+    const v=d.clone().multiplyScalar(ct).addScaledVector(t1,st*Math.cos(ph)).addScaledVector(t2,st*Math.sin(ph)).multiplyScalar(rr).add(p); if(v.y<fy+0.002) continue;
+    pos[n*3]=v.x; pos[n*3+1]=v.y; pos[n*3+2]=v.z; const f=0.9*(1-rr/R)+0.1; col[n*3]=f; col[n*3+1]=f*0.12; col[n*3+2]=f*0.12; n++; }
+  const g=sprPts.geometry; g.setAttribute('position',new THREE.BufferAttribute(pos.slice(0,n*3),3)); g.setAttribute('color',new THREE.BufferAttribute(col.slice(0,n*3),3)); g.computeBoundingSphere(); }
+let sprSaved=null;
+function sprApply(){ const p=SPR.base.clone(); p.y+=SPR.h*IN; sprL.position.copy(p); sprDot.position.copy(p);
+  sprLine.geometry.setFromPoints([p,SPR.base]); sprLine.computeLineDistances();
+  const omni=SPR.sp>=355, I=sprG.visible?SPR.i/100*6:0;
+  sprL.distance=SPR.r*IN; sprL.intensity=omni?I:0; sprS.distance=SPR.r*IN; sprS.intensity=omni?0:I; sprS.angle=Math.min(Math.PI/2*0.98,SPR.sp/2*Math.PI/180); sprS.position.copy(p); sprS.target.position.copy(p.clone().add(sprDirV())); sprS.target.updateMatrixWorld();
+  sprPts.visible=SPR.fog; if(SPR.fog&&sprG.visible) sprScatter(p);
+  const dimOn=sprG.visible&&SPR.dim;
+  if(dimOn&&!sprSaved){ sprSaved={hemi:hemi.intensity,moon:moon.intensity,sun:sun.intensity}; }
+  if(sprSaved){ if(dimOn){ hemi.intensity=sprSaved.hemi*0.35; moon.intensity=sprSaved.moon*0.2; sun.intensity=sprSaved.sun*0.15; } else { hemi.intensity=sprSaved.hemi; moon.intensity=sprSaved.moon; sun.intensity=sprSaved.sun; sprSaved=null; } }
+  const el=document.getElementById('sprinfo'); if(el) el.textContent=sprG.visible?('Above '+cotTile(SPR.base)+' (a '+(SPR.base.z/S).toFixed(2)+', b '+(-SPR.base.x/S).toFixed(2)+'), '+SPR.h+'″ up'):'';
+  render(); }
+function sprState(){ return {visible:sprG.visible,base:[+(SPR.base.x/S).toFixed(5),+(SPR.base.y/S).toFixed(5),+(SPR.base.z/S).toFixed(5)],h:SPR.h,r:SPR.r,i:SPR.i,dim:SPR.dim,dir:SPR.dir,tl:SPR.tl,sp:SPR.sp,fog:SPR.fog}; }
+function sprLoad(c){ if(!c) return; if(c.base) SPR.base.set(c.base[0]*S,c.base[1]*S,c.base[2]*S); ['h','r','i','dir','tl','sp'].forEach(k=>{ if(c[k]!=null){ SPR[k]=c[k]; const id={h:'sprh',r:'sprr',i:'spri',dir:'sprdir',tl:'sprtl',sp:'sprsp'}[k], i=document.getElementById(id); i.value=c[k]; i.dispatchEvent(new Event('input')); } });
+  if(c.fog!=null){ SPR.fog=!!c.fog; document.getElementById('sprfog').setAttribute('aria-pressed',SPR.fog); }
+  if(c.dim!=null){ SPR.dim=!!c.dim; document.getElementById('sprdim').setAttribute('aria-pressed',SPR.dim); }
+  sprG.visible=!!c.visible; document.getElementById('spr').setAttribute('aria-pressed',sprG.visible); sprApply(); }
+{ SPR.base.copy(W(1.0,0.8,0)); let placingS=false;
+  const pickRay=e=>{ const rc=r.domElement.getBoundingClientRect(), R=new THREE.Raycaster();
+    if(fish){ const va=rc.width/rc.height, fa=0.75; let qx=(e.clientX-rc.left)/rc.width, qy=1-(e.clientY-rc.top)/rc.height;
+      if(va>fa) qx=(qx-0.5)*va/fa+0.5; else qy=(qy-0.5)*fa/va+0.5;
+      const px=qx*600-300, py=(1-qy)*800-400, th=Math.hypot(px,py)/fishMat.uniforms.f.value, ph=Math.atan2(py,px);
+      const d=new THREE.Vector3(Math.sin(th)*Math.cos(ph),Math.sin(th)*Math.sin(ph),Math.cos(th)).applyMatrix3(fishMat.uniforms.Rt.value).normalize(); R.set(cubeCam.position.clone(),d); }
+    else R.setFromCamera(new THREE.Vector2((e.clientX-rc.left)/rc.width*2-1,-(e.clientY-rc.top)/rc.height*2+1),cam);
+    return R; };
+  const b=document.getElementById('spr'), pb2=document.getElementById('sprplace'), db=document.getElementById('sprdim');
+  b.onclick=()=>{ sprG.visible=!sprG.visible; b.setAttribute('aria-pressed',sprG.visible); sprApply(); };
+  { const fb=document.getElementById('sprfog'); fb.onclick=()=>{ SPR.fog=!SPR.fog; fb.setAttribute('aria-pressed',SPR.fog); sprApply(); }; }
+  db.onclick=()=>{ SPR.dim=!SPR.dim; db.setAttribute('aria-pressed',SPR.dim); sprApply(); };
+  pb2.onclick=()=>{ placingS=!placingS; pb2.setAttribute('aria-pressed',placingS); };
+  let dn3=null; r.domElement.addEventListener('pointerdown',e=>{ dn3=[e.clientX,e.clientY]; });
+  r.domElement.addEventListener('pointerup',e=>{ if(!placingS||!dn3||Math.hypot(e.clientX-dn3[0],e.clientY-dn3[1])>6) return; const hit=pickRay(e).intersectObjects(floors,false)[0];
+    if(hit){ SPR.base.copy(hit.point); sprG.visible=true; b.setAttribute('aria-pressed',true); sprApply(); } });
+  [['sprh','h',v=>v+'″'],['sprr','r',v=>v+'″'],['spri','i',v=>v+'%'],['sprdir','dir',v=>v+'°'],['sprtl','tl',v=>(v<0?'−':v>0?'+':'')+Math.abs(v)+'°'],['sprsp','sp',v=>v>=355?'all':v+'°']].forEach(([id,k,f])=>{ const i=document.getElementById(id), sp=document.getElementById(id+'v'); i.addEventListener('input',()=>{ SPR[k]=+i.value; sp.textContent=f(SPR[k]); sprApply(); }); sp.textContent=f(+i.value); });
+  document.getElementById('tsc').addEventListener('input',()=>sprApply());
+  lm.addEventListener('click',()=>{ if(sprSaved){ sprSaved=null; sprApply(); } }); ld.addEventListener('click',()=>{ if(sprSaved){ sprSaved=null; sprApply(); } });
+  window.__spr={place:(a,b_,h)=>{ SPR.base.copy(W(a,b_,0)); if(h!=null){ const i=document.getElementById('sprh'); i.value=h; i.dispatchEvent(new Event('input')); } sprG.visible=true; document.getElementById('spr').setAttribute('aria-pressed',true); sprApply(); },SPR};
+  setTimeout(sprApply,0); }
+// ---- touch watchdog: iOS sometimes drops a pointerup/pointercancel, leaving the camera controls counting a finger that has lifted
+// (one finger then zooms, two fingers do nothing). When the last finger lifts, cancel any pointer still marked as down and clear stuck drags.
+{ const el=r.domElement, live=new Set(), rpc=el.releasePointerCapture.bind(el);
+  el.releasePointerCapture=id=>{ try{ rpc(id); }catch(_){} };
+  el.addEventListener('pointerdown',e=>{ if(e.pointerType==='touch') live.add(e.pointerId); },true);
+  ['pointerup','pointercancel'].forEach(t=>el.addEventListener(t,e=>{ if(e.isTrusted) live.delete(e.pointerId); },true));
+  const reset=e=>{ if(e.touches&&e.touches.length) return;
+    [...live].forEach(id=>{ live.delete(id); try{ el.dispatchEvent(new PointerEvent('pointercancel',{pointerId:id,pointerType:'touch',bubbles:true})); }catch(_){} });
+    try{ drag=null; }catch(_){} if(!fish) ctl.enabled=true; };
+  window.addEventListener('touchend',reset,true); window.addEventListener('touchcancel',reset,true);
+  document.addEventListener('visibilitychange',()=>{ if(document.hidden) reset({}); }); }
+window.__camDist=()=>cam.position.distanceTo(ctl.target);
+window.__camAz=()=>Math.atan2(cam.position.x-ctl.target.x,cam.position.z-ctl.target.z);
 // panel toggle (phones)
 const tg=document.getElementById('toggle'), panel=document.getElementById('panel');
 tg.onclick=()=>{const c=panel.classList.toggle('collapsed'); tg.textContent=c?'Show':'Hide'; tg.setAttribute('aria-expanded',!c);};
@@ -547,7 +585,7 @@ window.__ready=()=>floors.length>0;
 const toolG=new THREE.Group(); scene.add(toolG);
 let curLayer='m'; const layerVis={m:1,p:1,k:1,b:1,grid:0}; const _tgAdd=toolG.add.bind(toolG);
 toolG.add=(...o)=>{ o.forEach(x=>{ if(!x.userData.layer) x.userData.layer=curLayer; }); return _tgAdd(...o); };
-const noPick=o=>{ for(let p=o;p;p=p.parent){ if(p===fig||p===window.__cotG||p===window.__chrG||p===toolG||p===bellG||p===night||p===sky||p===window.__hills) return true; } return false; };
+const noPick=o=>{ for(let p=o;p;p=p.parent){ if(p===fig||p===window.__chrG||p===window.__sprG||p===toolG||p===bellG||p===night||p===sky||p===window.__hills) return true; } return false; };
 function pickRay(e){ const rc=r.domElement.getBoundingClientRect(); const R=new THREE.Raycaster();
   if(fish){ const va=rc.width/rc.height, fa=0.75; let qx=(e.clientX-rc.left)/rc.width, qy=1-(e.clientY-rc.top)/rc.height;
     if(va>fa) qx=(qx-0.5)*va/fa+0.5; else qy=(qy-0.5)*fa/va+0.5;
@@ -669,11 +707,11 @@ function rebuildPath(P){ curLayer='p'; if(P.ribbon){toolG.remove(P.ribbon); P.ri
     if(pos.length){ const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); g.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
       const me=new THREE.Mesh(g,arrowMat); me.renderOrder=11; toolG.add(me); P.ax.push(me); } }
   if(P.stamps){ const C=Math.PI*wheelD*IN, half=C/2, sp=[], cl=[], L_=tireIn*IN*1.6+0.02;
-    function stamps(W,d,cA,cB,hexA,hexB){ let s0=0, cnt=0;
+    function stamps(W,d,cA,cB,hexA,hexB){ let s0=-stampZero*C, cnt=0;   // stampZero shifts the 0 mark along the path by that many tire turns
       const put=(p,nn,k)=>{ p.y=surfaceY(p.x,p.z,p.y)+0.006; const e1=p.clone().addScaledVector(nn,L_/2), e2=p.clone().addScaledVector(nn,-L_/2); sp.push(e1.x,e1.y,e1.z,e2.x,e2.y,e2.z);
         const c=k%2?cA:cB; cl.push(c.r,c.g,c.b,c.r,c.g,c.b); const ak=Math.abs(k);
         const lb=addLabel(e1,(k<0?'−':'')+(ak%2?(ak>1?((ak-1)/2)+'½':'½'):String(ak/2))); lb.el.classList.add('stp'); lb.el.style.color=k%2?hexA:hexB; P.stL.push(lb); cnt++; };
-      put(W[0].clone(),nrm(poses[0].h),0);   // the starting point: where this wheel's patch touched the floor at the start
+      if(Math.abs(stampZero)<1e-6) put(W[0].clone(),nrm(poses[0].h),0);   // the starting point: where this wheel's patch touched the floor at the start
       for(let j=1;j<=N;j++){ const s1=s0+d[j]; const k0=Math.floor(s0/half+1e-9), k1=Math.floor(s1/half+1e-9); const ks=[];
         if(k1>k0) for(let k=k0+1;k<=k1;k++) ks.push(k); else if(k1<k0) for(let k=k0;k>k1;k--) ks.push(k);
         for(const k of ks){ if(Math.abs(s1-s0)<1e-9) continue; const f=(k*half-s0)/(s1-s0); put(W[j-1].clone().lerp(W[j],f),nrm(poses[j].h),k); }
@@ -741,6 +779,7 @@ document.getElementById('taxle').onclick=()=>{ const P=paths[active]; if(!P){ re
 document.getElementById('tpivot').onclick=()=>{ if(!selH||!selP) return; const ord=[null,'L','O','C']; setPType(selH,ord[(ord.indexOf(selH.userData.ptype||null)+1)%4]); rebuildPath(selP); pivBtn(); };
 document.getElementById('trev').onclick=()=>{ if(!selH||!selP) return; setRev(selH,!selH.userData.rev); rebuildPath(selP); pivBtn(); };
 document.getElementById('tstamp').onclick=()=>{ const P=paths[active]; if(!P) return; P.stamps=!P.stamps; rebuildPath(P); };
+let stampZero=0; document.getElementById('tz').addEventListener('input',e=>{ stampZero=+e.target.value; document.getElementById('tzv').textContent=(stampZero>0?'+':'')+stampZero.toFixed(2)+' rev'; paths.forEach(P=>{ if(P.stamps) rebuildPath(P); }); });
 document.getElementById('td').addEventListener('input',e=>{ wheelD=+e.target.value; document.getElementById('tdv').textContent=wheelD+'″'; paths.forEach(P=>{ if(P.stamps) rebuildPath(P); }); });
 document.getElementById('tg').addEventListener('input',e=>{ gauge=+e.target.value; document.getElementById('tgv').textContent=gauge+'″'; paths.forEach(P=>{ if(P.axle) rebuildPath(P); }); grooves.forEach(grooveGeom); updateOut(); render(); });
 { const dlg=document.getElementById('help'); document.querySelectorAll('.helpb').forEach(b=>b.onclick=()=>{ dlg.showModal(); if(b.dataset.sec) document.getElementById('help-'+b.dataset.sec).scrollIntoView({block:'start'}); else dlg.scrollTop=0; }); dlg.querySelector('.x').onclick=()=>dlg.close(); dlg.addEventListener('click',e=>{ if(e.target===dlg) dlg.close(); }); }
@@ -839,7 +878,7 @@ const T3=v=>[+(v.x/S).toFixed(5),+(v.y/S).toFixed(5),+(v.z/S).toFixed(5)], V3=a=
 function sessionObj(){ const sl={}; document.querySelectorAll('input[type=range][id]').forEach(i=>sl[i.id]=+i.value);
   const pr=id=>{ const b=document.getElementById(id); return b?b.getAttribute('aria-pressed')==='true':null; };
   return {app:'PBATT',version:1,saved:new Date().toISOString(),sliders:sl,
-    view:{daylight:pr('ld'),cutaway:pr('cut'),moonPath:pr('mpath'),tileLabels:pr('grid'),footageMarks:pr('refs'),figure:{visible:fig.visible,pos:T3(fig.position)},cot:cotState(),chair:chrState(),camera:{pos:T3(cam.position),target:T3(ctl.target)}},
+    view:{daylight:pr('ld'),cutaway:pr('cut'),moonPath:pr('mpath'),tileLabels:pr('grid'),footageMarks:pr('refs'),figure:{visible:fig.visible,pos:T3(fig.position)},chair:chrState(),spray:sprState(),camera:{pos:T3(cam.position),target:T3(ctl.target)}},
     layers:{...layerVis},
     measure:meas.map(m=>[T3(m.objs[0].position),T3(m.objs[1].position)]),
     paths:paths.map(P=>({pts:P.pts.map(T3),pivot:P.handles.map(h=>h.userData.ptype||null),reverse:P.handles.map(h=>!!h.userData.rev),axle:P.axle||0,stamps:!!P.stamps})),
@@ -850,7 +889,7 @@ function loadSession(o){ if(!o||o.app!=='PBATT') throw new Error('not a PBATT se
   const V=o.view||{}; const tog=(id,want)=>{ const b=document.getElementById(id); if(b&&want!=null&&(b.getAttribute('aria-pressed')==='true')!==!!want) b.click(); };
   if(V.daylight!=null) document.getElementById(V.daylight?'ld':'lm').click(); tog('cut',V.cutaway); tog('mpath',V.moonPath); tog('grid',V.tileLabels); tog('refs',V.footageMarks);
   if(V.figure){ fig.visible=!!V.figure.visible; fig.position.copy(V3(V.figure.pos)); const fb_=document.getElementById('fig'); if(fb_) fb_.setAttribute('aria-pressed',fig.visible); }
-  if(V.cot) cotLoad(V.cot); if(V.chair) chrLoad(V.chair);
+  if(V.chair) chrLoad(V.chair); if(V.spray) sprLoad(V.spray);
   (o.measure||[]).forEach(([a,b])=>{ addMeasPoint(V3(a)); addMeasPoint(V3(b)); });
   (o.paths||[]).forEach(p=>{ const P=newPath(); p.pts.forEach(q=>addHandle(P,V3(q))); P.handles.forEach((h,k)=>{ if(p.pivot&&p.pivot[k]) setPType(h,p.pivot[k]); if(p.reverse&&p.reverse[k]) setRev(h,true); }); P.axle=p.axle||0; P.stamps=!!p.stamps; rebuildPath(P); });
   (o.imprints||[]).forEach(q=>addMark(V3(q)));
@@ -897,11 +936,31 @@ document.getElementById('tfile').onchange=async e=>{ const f=e.target.files[0]; 
     const hb=new THREE.CylinderGeometry(r*0.55,r*0.55,w*1.04,24); hb.rotateZ(Math.PI/2); spin.add(new THREE.Mesh(hb,hubM));
     const mk=new THREE.Mesh(new THREE.BoxGeometry(w*1.08,r*0.18,r*0.18),new THREE.MeshBasicMaterial({color:0xff3b3b})); mk.position.y=r*0.97; spin.add(mk);   // red mark shows rotation
     g.userData={spin,r}; g.traverse(o=>{ o.raycast=()=>{}; }); pbG.add(g); return g; }
-  function build(){ pbG.clear(); W=[]; axle=null; const P=paths[active]; if(!P||!P._pb) return false; W.push(wheel()); if(P._pb.W2){ W.push(wheel()); axle=new THREE.Mesh(new THREE.CylinderGeometry(0.008,0.008,1,10),axM); axle.raycast=()=>{}; pbG.add(axle); } return true; }
+  let pbChair=false, CH=null, casterSim=null;
+  document.getElementById('tpbm').onclick=e=>{ pbChair=!pbChair; e.target.textContent='Model: '+(pbChair?'stair chair':'wheels'); if(pbG.visible){ build(); place(t); } };
+  function chairTrack(D){ return D.W2?D.W1[0].distanceTo(D.W2[0])/IN:CHR.tr; }
+  function buildChair(D){ CH=new THREE.Group(); const C={...CHR,tilt:0,hd:0,tr:chairTrack(D),body:true}; buildChr(CH,C); pbG.add(CH);
+    // simulate the front casters over the whole path once: each contact point is dragged behind its pivot (trailing caster)
+    const N=D.W1.length, yaw=[], cen=[], P_=C.tr/2-1.6-0.3, F=C.wb, tr=1.0*IN, sims=[[],[]], dist=[[0],[0]];
+    for(let i=0;i<N;i++){ const h=D.H[i].clone(); h.y=0; if(h.lengthSq()<1e-12&&i) h.copy(D.H[i-1]); h.normalize(); const y=Math.atan2(h.x,h.z); yaw.push(y);
+      const c=D.W2?D.W1[i].clone().add(D.W2[i]).multiplyScalar(0.5):D.W1[i].clone(); cen.push(c);
+      [1,-1].forEach((sg,k)=>{ const lx=sg*P_*IN, lz=F*IN, px=c.x+lx*Math.cos(y)+lz*Math.sin(y), pz=c.z-lx*Math.sin(y)+lz*Math.cos(y);
+        let cp=i?sims[k][i-1].c:{x:px-tr*Math.sin(y),z:pz-tr*Math.cos(y)};   // start trailing straight behind
+        let dx=cp.x-px, dz=cp.z-pz, L=Math.hypot(dx,dz)||1; const nc={x:px+dx/L*tr,z:pz+dz/L*tr};
+        if(i){ const pc=sims[k][i-1].c; dist[k].push(dist[k][i-1]+Math.hypot(nc.x-pc.x,nc.z-pc.z)); }
+        sims[k].push({c:nc,sw:Math.atan2(nc.x-px,nc.z-pz)-y}); }); }
+    casterSim={yaw,cen,sims,dist,track:C.tr}; }
+  function placeChair(D,i,u){ const S_=casterSim, lerp=(a,b)=>a+(b-a)*u, y=S_.yaw[i-1]+Math.atan2(Math.sin(S_.yaw[i]-S_.yaw[i-1]),Math.cos(S_.yaw[i]-S_.yaw[i-1]))*u;
+    const c=S_.cen[i-1].clone().lerp(S_.cen[i],u); CH.position.copy(c); CH.rotation.set(0,y,0); CH.updateMatrixWorld(true);
+    const lx=new THREE.Vector3(Math.cos(y),0,-Math.sin(y)), w1=D.W1[i-1].clone().lerp(D.W1[i],u), s1=Math.sign(w1.clone().sub(c).dot(lx))||1;
+    CH.traverse(o=>{ if(o.userData.rear){ const rr=(D.W2&&o.userData.rear!==s1)?lerp(D.r2[i-1],D.r2[i]):lerp(D.r1[i-1],D.r1[i]); o.rotation.x=rr/(3*IN); }
+      if(o.userData.caster){ const k=o.userData.caster>0?0:1, a=S_.sims[k][i-1].sw, b=S_.sims[k][i].sw; o.rotation.y=Math.PI+a+Math.atan2(Math.sin(b-a),Math.cos(b-a))*u; o.userData.spin.rotation.x=lerp(S_.dist[k][i-1],S_.dist[k][i])/(2*IN); } }); }
+  function build(){ pbG.clear(); W=[]; axle=null; CH=null; const P=paths[active]; if(!P||!P._pb) return false; if(pbChair){ buildChair(P._pb); return true; } W.push(wheel()); if(P._pb.W2){ W.push(wheel()); axle=new THREE.Mesh(new THREE.CylinderGeometry(0.008,0.008,1,10),axM); axle.raycast=()=>{}; pbG.add(axle); } return true; }
   function place(f){ const P=paths[active]; if(!P||!P._pb){ pbG.visible=false; render(); return; } const D=P._pb, T=D.T, tot=T[T.length-1], x=f*tot;
     let i=1; while(i<T.length-1&&T[i]<x) i++; const u=Math.min(1,Math.max(0,(x-T[i-1])/Math.max(1e-9,T[i]-T[i-1])));
     const h=D.H[i-1].clone().lerp(D.H[i],u); if(h.lengthSq()<1e-12) h.copy(D.H[i]); h.normalize(); const yaw=Math.atan2(h.x,h.z);
     const set=(g,Wt,rr)=>{ const p=Wt[i-1].clone().lerp(Wt[i],u), s=rr[i-1]+(rr[i]-rr[i-1])*u; g.position.set(p.x,p.y+g.userData.r+0.001,p.z); g.rotation.set(0,yaw,0); g.userData.spin.rotation.x=s/g.userData.r; };
+    if(pbChair){ if(!CH) build(); placeChair(D,i,u); pbG.visible=true; render(); return; }
     if(W.length!==(D.W2?2:1)) build(); set(W[0],D.W1,D.r1); if(D.W2){ set(W[1],D.W2,D.r2); const a=W[0].position, b=W[1].position; axle.position.copy(a).add(b).multiplyScalar(0.5); axle.scale.set(1,a.distanceTo(b),1); axle.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),b.clone().sub(a).normalize()); }
     pbG.visible=true; render(); }
   function tick(ts){ if(!playing) return; const P=paths[active]; if(!P||!P._pb){ stop(); return; } const tot=P._pb.T[P._pb.T.length-1], spd=24*IN;   // about 2 ft/s
