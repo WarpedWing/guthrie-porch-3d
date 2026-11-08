@@ -133,7 +133,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 <li><b>Mark imprint:</b> tap each imprint to drop a numbered pin, then <b>Copy imprint list</b> to copy their positions.</li>
 <li><b>Editing:</b> double-tap any point or pin to delete it; a measure end deletes the whole measurement. <b>Undo point</b> removes the last thing you added.</li>
 </ul>
-<h3>What's estimated</h3>
+<h3>Cot model</h3><p>An approximate Stryker Performance-PRO XT built from Stryker's parts-manual drawings (no published base dimensions): 6×2″ casters, wheelbase about 39″ pivot to pivot, track about 19.7″ and 21.3″ (which end is which is unconfirmed), caster trail 2.2″, litter 23″ wide, deck holes 1.5″ on a 2.2″ staggered grid. <b>Drag the cot</b> to move it (with no measuring tool active you can grab anywhere over it, even with the body hidden); <b>Shift-drag</b> turns it. <b>Tap floor to place</b> drops its base centre where you tap; <b>Heading</b> turns it; <b>Backrest</b> raises the head section up to 75° (the head end has the small load wheels). <b>Deck holes on floor</b> drops each deck hole straight down onto the floor (cyan rings); <b>Caster footprints</b> shows where each 2″ tire touches (amber), and moves with <b>Caster swivel</b>. Hide <b>Cot body</b> to see the floor marks from above. Height uses the nine positions in Stryker's manual.</p><h3>Stair chair</h3><p>An approximate Stryker Stair-PRO evacuation chair. Its rear wheels are the same 6×2″ wheel (6060-002-010) as the cot's casters. The 6250 has fixed front legs and is rolled tipped back on its two rear wheels; the 6251 adds small front swivel casters so it can also roll on all four. The 16.4″ wheelbase (rear axle to front leg) is measured from Stryker's side-view drawing, scaled by the 6″ wheel (it matches the 28″ published depth). The rear track (about 19″, centre to centre) is estimated from the 20.5″ frame width. <b>Tip back</b> lifts the front off the floor about the rear axle. Drag it to move, Shift-drag to turn, as with the cot.</p><h3>What's estimated</h3>
 <p>Ceiling height, pillar overhang, doorbell camera position (fitted to the footage), the left gravel bed and plants, wreath, mailer and front planting. Tiles not visible in any image are shown as plain tiles. Everything outside the porch is approximate.</p>
 </dialog>
 <div id="loading">Loading porch model…</div>
@@ -178,6 +178,14 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
     <button id="fig" aria-pressed="true">Show figure</button><button id="home">Footage position</button><button id="place" aria-pressed="false">Tap floor to place</button></div>
     <div class="row" style="align-items:center;gap:10px;margin-top:8px"><label for="hgt" style="font-size:12px;color:var(--muted);width:56px">Height</label><input id="hgt" type="range" min="64" max="74" step="1" value="69" style="flex:1"><span id="hgtv" style="font:500 13px var(--mono);width:52px;text-align:right">5′9″</span></div>
     <div class="row" style="align-items:center;gap:10px"><label for="cr" style="font-size:12px;color:var(--muted);width:56px">Crouch</label><input id="cr" type="range" min="0" max="10" step="0.5" value="4" style="flex:1"><span id="crv" style="font:500 13px var(--mono);width:52px;text-align:right">4 in</span></div></div>
+  <div><div class="lbl">Cot (Stryker Performance-PRO XT, approx.)</div><div class="row">
+    <button id="cot" aria-pressed="false">Show cot</button><button id="cotplace" aria-pressed="false">Tap floor to place</button><button id="cotbody" aria-pressed="true">Cot body</button><button id="cotholes" aria-pressed="true">Deck holes on floor</button><button id="cotfeet" aria-pressed="true">Caster footprints</button><button id="cotmat" aria-pressed="true">Mattress</button></div>
+    <div style="margin-top:8px"></div><div class="row" style="align-items:center;gap:10px"><label for="cothd" style="font-size:12px;color:var(--muted);width:76px">Heading</label><input id="cothd" type="range" min="0" max="359" step="1" value="0" style="flex:1"><span id="cothdv" style="font:500 13px var(--mono);width:58px;text-align:right">0°</span></div><div class="row" style="align-items:center;gap:10px"><label for="cotbk" style="font-size:12px;color:var(--muted);width:76px">Backrest</label><input id="cotbk" type="range" min="0" max="75" step="1" value="0" style="flex:1"><span id="cotbkv" style="font:500 13px var(--mono);width:58px;text-align:right">0°</span></div><div class="row" style="align-items:center;gap:10px"><label for="cotpos" style="font-size:12px;color:var(--muted);width:76px">Height</label><input id="cotpos" type="range" min="1" max="9" step="1" value="2" style="flex:1"><span id="cotposv" style="font:500 13px var(--mono);width:58px;text-align:right">P2 22″</span></div><div class="row" style="align-items:center;gap:10px"><label for="cotsw" style="font-size:12px;color:var(--muted);width:76px">Caster swivel</label><input id="cotsw" type="range" min="-180" max="180" step="5" value="0" style="flex:1"><span id="cotswv" style="font:500 13px var(--mono);width:58px;text-align:right">0°</span></div><div class="row" style="align-items:center;gap:10px"><label for="cotsh" style="font-size:12px;color:var(--muted);width:76px">Litter shift</label><input id="cotsh" type="range" min="-12" max="12" step="0.5" value="0" style="flex:1"><span id="cotshv" style="font:500 13px var(--mono);width:58px;text-align:right">0″</span></div><div class="row" style="align-items:center;gap:10px"><label for="cotwb" style="font-size:12px;color:var(--muted);width:76px">Wheelbase</label><input id="cotwb" type="range" min="30" max="48" step="0.25" value="39" style="flex:1"><span id="cotwbv" style="font:500 13px var(--mono);width:58px;text-align:right">39″</span></div><div class="row" style="align-items:center;gap:10px"><label for="cotth" style="font-size:12px;color:var(--muted);width:76px">Head track</label><input id="cotth" type="range" min="15" max="25" step="0.1" value="19.7" style="flex:1"><span id="cotthv" style="font:500 13px var(--mono);width:58px;text-align:right">19.7″</span></div><div class="row" style="align-items:center;gap:10px"><label for="cottf" style="font-size:12px;color:var(--muted);width:76px">Foot track</label><input id="cottf" type="range" min="15" max="25" step="0.1" value="21.3" style="flex:1"><span id="cottfv" style="font:500 13px var(--mono);width:58px;text-align:right">21.3″</span></div>
+    <div id="cotinfo" style="font:500 11.5px var(--mono);color:var(--muted);margin-top:6px;line-height:1.45"></div></div>
+  <div><div class="lbl">Stair chair (Stryker Stair-PRO, approx.)</div><div class="row">
+    <button id="chr" aria-pressed="false">Show chair</button><button id="chrplace" aria-pressed="false">Tap floor to place</button><button id="chrbody" aria-pressed="true">Chair body</button><button id="chrfeet" aria-pressed="true">Wheel footprints</button><button id="chrmod" aria-pressed="false">Model: 6251 (front casters)</button></div>
+    <div style="margin-top:8px"></div><div class="row" style="align-items:center;gap:10px"><label for="chrhd" style="font-size:12px;color:var(--muted);width:76px">Heading</label><input id="chrhd" type="range" min="0" max="359" step="1" value="0" style="flex:1"><span id="chrhdv" style="font:500 13px var(--mono);width:58px;text-align:right">0°</span></div><div class="row" style="align-items:center;gap:10px"><label for="chrtilt" style="font-size:12px;color:var(--muted);width:76px">Tip back</label><input id="chrtilt" type="range" min="0" max="40" step="1" value="0" style="flex:1"><span id="chrtiltv" style="font:500 13px var(--mono);width:58px;text-align:right">0°</span></div><div class="row" style="align-items:center;gap:10px"><label for="chrtr" style="font-size:12px;color:var(--muted);width:76px">Rear track</label><input id="chrtr" type="range" min="16" max="22" step="0.1" value="19" style="flex:1"><span id="chrtrv" style="font:500 13px var(--mono);width:58px;text-align:right">19.0″</span></div><div class="row" style="align-items:center;gap:10px"><label for="chrwb" style="font-size:12px;color:var(--muted);width:76px">Wheelbase</label><input id="chrwb" type="range" min="13" max="20" step="0.1" value="16.4" style="flex:1"><span id="chrwbv" style="font:500 13px var(--mono);width:58px;text-align:right">16.4″</span></div>
+    <div id="chrinfo" style="font:500 11.5px var(--mono);color:var(--muted);margin-top:6px;line-height:1.45"></div></div>
   <div><div class="lbl">Doorbell camera</div><div class="row"><button id="bell" aria-pressed="true">Show doorbell</button><button id="glow" aria-pressed="false">Person detected (glow)</button><button data-v="perp">Suspect's eye view</button><button id="irb" aria-pressed="true">IR night vision (doorbell view)</button></div></div>
   <div><div class="lbl">Scale</div>
     <div class="row" style="align-items:center;gap:10px"><label for="tsc" style="font-size:12px;color:var(--muted);width:76px">Tile spacing</label><input id="tsc" type="range" min="11.8" max="12.8" step="0.05" value="12.2" style="flex:1"><span id="tscv" style="font:500 13px var(--mono);width:52px;text-align:right">12.20″</span></div></div>
@@ -245,8 +253,8 @@ function buildFig(){ fig.clear(); const H=FIG_IN*IN;
   fig.add(body,head); fig.traverse(o=>{if(o.isMesh)o.castShadow=true}); }
 buildFig(); const FOOT=[4.85,1.5]; fig.position.copy(W(FOOT[0],FOOT[1],0)); scene.add(fig);
 let floors=[];
-window.MOON=await (await fetch('moon.json?v=107')).json();
-new GLTFLoader().load('porch.glb?v=107',g=>{
+window.MOON=await (await fetch('moon.json?v=110')).json();
+new GLTFLoader().load('porch.glb?v=110',g=>{
   g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=!/porch_floor|gravel|walkway|yard|ground|doormat|B6_C6|tile_edge|drive|road|stepstone|stone_path/.test(o.name);o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
     if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=/hires/.test(o.name)?3:/video/.test(o.name)?1:2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
@@ -318,6 +326,173 @@ r.domElement.addEventListener('pointerup',e=>{ if(!placing||!down) return; if(Ma
     const d=new THREE.Vector3(Math.sin(th)*Math.cos(ph),Math.sin(th)*Math.sin(ph),Math.cos(th)).applyMatrix3(fishMat.uniforms.Rt.value).normalize();
     ray.set(cubeCam.position.clone(),d); } else ray.setFromCamera(ptr,cam);
   const hit=ray.intersectObjects(floors,false)[0]; if(hit){fig.position.set(hit.point.x,hit.point.y,hit.point.z); fig.visible=true; fb.setAttribute('aria-pressed',true); render();}});
+// ---- Stryker cot model (Performance-PRO XT; base from the 6500/6085 parts-manual drawings, approximate)
+const cotG=new THREE.Group(); cotG.visible=false; scene.add(cotG); window.__cotG=cotG;
+const COT={bk:0,wb:39,th:19.7,tf:21.3,trail:2.2,pos:2,sw:0,sh:0,hd:0,body:true,holes:true,feet:true,mat:true};
+const COT_H=[13.8,22,25.8,28.1,31.9,34.6,37.3,40,42.2];   // bottom of mattress at the seat, per Stryker's manual
+const COT_HOLES=[[2.17, -2.22], [2.17, -0.01], [2.17, 2.22], [4.37, -1.12], [4.37, 1.12], [10.45, -3.32], [10.45, 3.32], [12.65, -4.42], [12.65, -2.22], [12.65, 2.19], [12.65, 4.42], [14.86, -3.32], [14.86, 3.32], [17.06, -4.42], [17.06, -2.22], [17.06, 2.19], [17.06, 4.42], [19.27, -3.32], [19.27, 3.32], [21.47, -4.42], [21.47, -2.22], [21.47, -0.01], [21.47, 2.19], [21.47, 4.42], [29.42, -4.42], [29.42, -2.22], [29.42, -0.01], [29.42, 2.22], [29.42, 4.42], [31.63, -3.32], [31.63, -1.12], [31.63, 1.12], [31.63, 3.32], [33.83, -4.42], [33.83, -0.01], [33.83, 2.19], [33.86, -2.22], [33.86, 4.42]];   // [inches from litter head end, inches lateral], 1.5" holes, from the 6085 manual top view
+const cotM={frame:new THREE.MeshStandardMaterial({color:0xb4b9c0,metalness:0.5,roughness:0.45}),dark:new THREE.MeshStandardMaterial({color:0x34373d,roughness:0.6}),
+  deck:new THREE.MeshStandardMaterial({color:0x2c2f35,roughness:0.7,side:THREE.DoubleSide}),mat:new THREE.MeshStandardMaterial({color:0x17181b,roughness:0.55}),tyre:new THREE.MeshStandardMaterial({color:0x101112,roughness:0.85}),
+  hole:new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.85,depthWrite:false,side:THREE.DoubleSide}),foot:new THREE.MeshBasicMaterial({color:0xffb020,transparent:true,opacity:0.6,depthWrite:false,side:THREE.DoubleSide}),
+  footE:new THREE.MeshBasicMaterial({color:0xffb020,transparent:true,depthWrite:false,side:THREE.DoubleSide})};
+const cv3=(x,y,z)=>new THREE.Vector3(x*IN,y*IN,z*IN);   // cot frame: x lateral, y up, z along (+ toward foot), inches
+function cotTube(a,b,r,m){ const d=new THREE.Vector3().subVectors(b,a), L=d.length(); const o=new THREE.Mesh(new THREE.CylinderGeometry(r*IN,r*IN,L,12),m); o.position.copy(a).add(b).multiplyScalar(0.5); o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize()); return o; }
+function cotPanel(u0,u1,hw,y,holes){ const sh=new THREE.Shape(); sh.moveTo(-hw*IN,-u0*IN); sh.lineTo(hw*IN,-u0*IN); sh.lineTo(hw*IN,-u1*IN); sh.lineTo(-hw*IN,-u1*IN); sh.closePath();
+  holes.forEach(([u,v])=>{ const p=new THREE.Path(); p.absarc(v*IN,-u*IN,0.75*IN,0,Math.PI*2,true); sh.holes.push(p); });
+  const g=new THREE.ExtrudeGeometry(sh,{depth:0.18*IN,bevelEnabled:false,curveSegments:16}); const o=new THREE.Mesh(g,cotM.deck); o.rotation.x=-Math.PI/2; o.position.y=y*IN; return o; }
+const cotTag=(o,k)=>{ o.userData.ck=k; return o; };
+function buildCot(){ cotG.traverse(o=>{ if(o.geometry) o.geometry.dispose(); }); cotG.clear();
+  const h=COT_H[COT.pos-1], zH=-COT.wb/2, zF=COT.wb/2, yB=7.75, add=(o,k='body')=>{ cotG.add(cotTag(o,k)); return o; };
+  // casters: swivel pivot above the wheel, axle trails 2.2" (0 swivel = trailing toward the head end)
+  [[zH,COT.th/2],[zH,-COT.th/2],[zF,COT.tf/2],[zF,-COT.tf/2]].forEach(([z,x])=>{ const c=new THREE.Group(); c.position.copy(cv3(x,0,z)); c.rotation.y=COT.sw*Math.PI/180; cotG.add(c);
+    const hs=new THREE.Mesh(new THREE.CylinderGeometry(0.9*IN,0.9*IN,1.8*IN,16),cotM.frame); hs.position.y=6.9*IN; c.add(cotTag(hs,'body'));
+    [-1.2,1.2].forEach(sx=>c.add(cotTag(cotTube(cv3(sx,6.2,0.2),cv3(sx,3,-COT.trail),0.2,cotM.frame),'body')));
+    const wh=new THREE.Mesh(new THREE.CylinderGeometry(3*IN,3*IN,2*IN,32),cotM.tyre); wh.rotation.z=Math.PI/2; wh.position.copy(cv3(0,3,-COT.trail)); c.add(cotTag(wh,'body'));
+    const hub=new THREE.Mesh(new THREE.CylinderGeometry(1.1*IN,1.1*IN,2.15*IN,20),cotM.dark); hub.rotation.z=Math.PI/2; hub.position.copy(wh.position); c.add(cotTag(hub,'body'));
+    const fp=new THREE.Mesh(new THREE.PlaneGeometry(2*IN,1.1*IN),cotM.foot); fp.rotation.x=-Math.PI/2; fp.position.copy(cv3(0,0.1,-COT.trail)); fp.renderOrder=6; c.add(cotTag(fp,'feet'));
+    const fe=new THREE.Mesh(new THREE.RingGeometry(0.05*IN,0.16*IN,12),cotM.footE); fe.rotation.x=-Math.PI/2; fe.position.copy(cv3(0,0.12,0)); fe.renderOrder=7; c.add(cotTag(fe,'feet')); });
+  // base: side tubes dip between the casters, cross tubes at each end
+  [1,-1].forEach(s=>{ const p=[cv3(s*COT.th/2,yB,zH),cv3(s*(COT.th/2-0.5),5.3,zH+9),cv3(s*(COT.tf/2-0.5),5.3,zF-9),cv3(s*COT.tf/2,yB,zF)]; for(let i=0;i<3;i++) add(cotTube(p[i],p[i+1],0.65,cotM.frame)); });
+  add(cotTube(cv3(-COT.th/2,yB,zH),cv3(COT.th/2,yB,zH),0.65,cotM.frame)); add(cotTube(cv3(-COT.tf/2,yB,zF),cv3(COT.tf/2,yB,zF),0.65,cotM.frame));
+  // litter (68" frame, head end toward -z) and X-frame
+  const zh=COT.sh-34, zf=COT.sh+34, yL=h-1.2;
+  [1,-1].forEach(s=>add(cotTube(cv3(s*10.9,yL,zh),cv3(s*10.9,yL,zf),0.65,cotM.frame)));
+  [zh,zf,zh+24.6,zh+38].forEach(z=>add(cotTube(cv3(-10.9,yL,z),cv3(10.9,yL,z),0.5,cotM.frame)));
+  const lx=Math.max(4,h-12);
+  [[8.6,zH+1.5,COT.sh+lx*0.55],[6.4,zF-1.5,COT.sh-lx*0.55]].forEach(([x,zb,zt])=>[1,-1].forEach(s=>add(cotTube(cv3(s*x,yB,zb),cv3(s*x,yL-0.6,zt),0.75,cotM.frame))));
+  // deck panels with holes (head piece, backrest, seat) and a foot-section panel without holes
+  const pick=(a,b)=>COT_HOLES.filter(([u])=>u>a&&u<b).map(([u,v])=>[zh+u,v]);
+  // backrest (head piece + backrest panel + head end of the mattress) hinges at u=24.6 from the head end
+  const PU=24.6, bk=COT.bk*Math.PI/180, back=new THREE.Group(); back.position.copy(cv3(0,h,zh+PU)); back.rotation.x=bk; cotG.add(back);
+  const rel=(o)=>{ o.position.y-=h*IN; o.position.z-=(zh+PU)*IN; return o; };
+  [[0.3,6.4,3.6,pick(0,6.45)],[6.5,24.4,7.2,pick(6.45,25)]].forEach(([u0,u1,hw,hl])=>back.add(cotTag(rel(cotPanel(zh+u0,zh+u1,hw,h-0.2,hl)),'body')));
+  [1,-1].forEach(s=>back.add(cotTag(rel(cotTube(cv3(s*7.6,h-0.6,zh+0.5),cv3(s*7.6,h-0.6,zh+PU),0.45,cotM.frame)),'body')));
+  [[27.2,36.2,5.9,pick(25,40)],[38.5,66.5,7.2,[]]].forEach(([u0,u1,hw,hl])=>add(cotPanel(zh+u0,zh+u1,hw,h-0.2,hl)));
+  const mb=new THREE.Mesh(new THREE.BoxGeometry(21*IN,3*IN,(PU-1)*IN),cotM.mat); mb.position.copy(cv3(0,1.5,-(PU-1)/2-0.25)); back.add(cotTag(mb,'mat'));
+  const mt=new THREE.Mesh(new THREE.BoxGeometry(21*IN,3*IN,(66.5-PU)*IN),cotM.mat); mt.position.copy(cv3(0,h+1.5,zh+PU+(66.5-PU)/2+0.25)); add(mt,'mat');
+  if(COT.bk>0){ const br=cotTube(cv3(0,h-1,zh+PU+2),cv3(0,h-1+Math.sin(bk)*12,zh+PU-Math.cos(bk)*12),0.5,cotM.dark); add(br); }   // gas strut
+  // invisible pick slab over the litter footprint (drag the cot when no tool is active)
+  const pk=new THREE.Mesh(new THREE.BoxGeometry(23*IN,Math.max(h,8)*IN,70*IN),new THREE.MeshBasicMaterial({colorWrite:false,depthWrite:false})); pk.position.copy(cv3(0,Math.max(h,8)/2,COT.sh)); pk.userData.cpick=true; cotG.add(pk);
+  // retractable head section with the two load wheels
+  [1,-1].forEach(s=>add(cotTube(cv3(s*4.5,yL,zh),cv3(s*4.5,yL-3.5,zh-9),0.5,cotM.frame)));
+  add(cotTube(cv3(-6,yL-3.5,zh-9),cv3(6,yL-3.5,zh-9),0.5,cotM.frame));
+  [1,-1].forEach(s=>{ const w=new THREE.Mesh(new THREE.CylinderGeometry(2*IN,2*IN,1.5*IN,20),cotM.tyre); w.rotation.z=Math.PI/2; w.position.copy(cv3(s*5,yL-4.6,zh-10)); add(w); });
+  // deck holes dropped straight down onto the floor
+  COT_HOLES.forEach(([u,v0])=>{ const v=v0; const zz=u<PU? zh+PU-(PU-u)*Math.cos(bk) : zh+u;   // straight down from where the hole is now
+    const m=new THREE.Mesh(new THREE.RingGeometry(0.62*IN,0.75*IN,28),cotM.hole); m.rotation.x=-Math.PI/2; m.position.copy(cv3(v,0.14,zz)); m.renderOrder=6; add(m,'holes');
+    const d=new THREE.Mesh(new THREE.CircleGeometry(0.06*IN,10),cotM.hole); d.rotation.x=-Math.PI/2; d.position.copy(cv3(v,0.15,zz)); d.renderOrder=6; add(d,'holes'); });
+  cotG.traverse(o=>{ if(o.isMesh){ const k=o.userData.ck; o.castShadow=(k==='body'||k==='mat'); o.receiveShadow=o.castShadow; if(k!=='body'&&k!=='mat'&&!o.userData.cpick) o.raycast=()=>{}; } });
+  cotVis(); cotInfo(); render(); }
+function cotVis(){ cotG.traverse(o=>{ const k=o.userData.ck; if(k) o.visible=!!COT[k]; }); }
+const cotTile=v=>{ const a=v.z/S, b=-v.x/S; return (a>=-1&&a<5&&b>=-0.93&&b<6.09)?'ABCDEF'[Math.floor(a)+1]+(6-Math.floor(b)):'off porch'; };
+function cotInfo(){ const el=document.getElementById('cotinfo'); if(!el) return; if(!cotG.visible){ el.textContent=''; return; } cotG.updateMatrixWorld(true);
+  const p=cotG.position, nm=['Head L','Head R','Foot L','Foot R'], out=['Base centre '+cotTile(p)+' (a '+(p.z/S).toFixed(2)+', b '+(-p.x/S).toFixed(2)+')'];
+  [[-COT.wb/2,COT.th/2],[-COT.wb/2,-COT.th/2],[COT.wb/2,COT.tf/2],[COT.wb/2,-COT.tf/2]].forEach(([z,x],i)=>{ const sw=COT.sw*Math.PI/180, c=cv3(x-Math.sin(sw)*COT.trail,0,z-Math.cos(sw)*COT.trail).applyMatrix4(cotG.matrixWorld); out.push(nm[i]+' tire: '+cotTile(c)); });
+  el.innerHTML=out.join('<br>'); }
+function cotPlaceAt(p){ cotG.position.set(p.x,p.y,p.z); cotG.visible=true; document.getElementById('cot').setAttribute('aria-pressed',true); cotInfo(); render(); }
+function cotState(){ return {visible:cotG.visible,pos:[+(cotG.position.x/S).toFixed(5),+(cotG.position.y/S).toFixed(5),+(cotG.position.z/S).toFixed(5)],body:COT.body,holes:COT.holes,feet:COT.feet,mat:COT.mat}; }
+function cotLoad(c){ if(!c) return; ['body','holes','feet','mat'].forEach(k=>{ if(c[k]!=null){ COT[k]=!!c[k]; const b=document.getElementById(k==='mat'?'cotmat':'cot'+k); if(b) b.setAttribute('aria-pressed',COT[k]); } });
+  if(c.pos) cotG.position.set(c.pos[0]*S,c.pos[1]*S,c.pos[2]*S); cotG.visible=!!c.visible; document.getElementById('cot').setAttribute('aria-pressed',cotG.visible); buildCot(); }
+{ cotG.position.copy(W(2.5,2.6,0)); let cotPlacing=false;
+  const pickRay=e=>{ const rc=r.domElement.getBoundingClientRect(), R=new THREE.Raycaster();   // same picking as the figure (handles the doorbell fisheye too)
+    if(fish){ const va=rc.width/rc.height, fa=0.75; let qx=(e.clientX-rc.left)/rc.width, qy=1-(e.clientY-rc.top)/rc.height;
+      if(va>fa) qx=(qx-0.5)*va/fa+0.5; else qy=(qy-0.5)*fa/va+0.5;
+      const px=qx*600-300, py=(1-qy)*800-400, th=Math.hypot(px,py)/fishMat.uniforms.f.value, ph=Math.atan2(py,px);
+      const d=new THREE.Vector3(Math.sin(th)*Math.cos(ph),Math.sin(th)*Math.sin(ph),Math.cos(th)).applyMatrix3(fishMat.uniforms.Rt.value).normalize(); R.set(cubeCam.position.clone(),d); }
+    else R.setFromCamera(new THREE.Vector2((e.clientX-rc.left)/rc.width*2-1,-(e.clientY-rc.top)/rc.height*2+1),cam);
+    return R; }; const cb=document.getElementById('cot'), cpb=document.getElementById('cotplace');
+  cb.onclick=()=>{ cotG.visible=!cotG.visible; cb.setAttribute('aria-pressed',cotG.visible); cotInfo(); render(); };
+  cpb.onclick=()=>{ cotPlacing=!cotPlacing; cpb.setAttribute('aria-pressed',cotPlacing); if(cotPlacing&&placing) document.getElementById('place').click(); };
+  pb.addEventListener('click',()=>{ if(placing&&cotPlacing){ cotPlacing=false; cpb.setAttribute('aria-pressed',false); } });
+  [['cotbody','body'],['cotholes','holes'],['cotfeet','feet'],['cotmat','mat']].forEach(([id,k])=>{ const b=document.getElementById(id); b.onclick=()=>{ COT[k]=!COT[k]; b.setAttribute('aria-pressed',COT[k]); cotVis(); render(); }; });
+  let cdn=null; r.domElement.addEventListener('pointerdown',e=>{ cdn=[e.clientX,e.clientY]; });
+  r.domElement.addEventListener('pointerup',e=>{ if(!cotPlacing||!cdn||Math.hypot(e.clientX-cdn[0],e.clientY-cdn[1])>6) return; const hit=pickRay(e).intersectObjects(floors,false)[0]; if(hit) cotPlaceAt(hit.point); });
+  const sl=(id,k,fmt)=>{ const i=document.getElementById(id), sp=document.getElementById(id+'v'); const f=()=>{ COT[k]=+i.value; sp.textContent=fmt(COT[k]); if(k==='hd'){ cotG.rotation.y=COT.hd*Math.PI/180; cotInfo(); render(); } else buildCot(); }; i.addEventListener('input',f); sp.textContent=fmt(+i.value); };
+  sl('cothd','hd',v=>v+'°'); sl('cotbk','bk',v=>v+'°'); sl('cotpos','pos',v=>'P'+v+' '+COT_H[v-1]+'″'); sl('cotsw','sw',v=>v+'°'); sl('cotsh','sh',v=>(v>0?'+':'')+v+'″'); sl('cotwb','wb',v=>v+'″'); sl('cotth','th',v=>v.toFixed(1)+'″'); sl('cottf','tf',v=>v.toFixed(1)+'″');
+  document.getElementById('tsc').addEventListener('input',()=>buildCot());
+  // drag the cot: grab its body (any tool), or anywhere over its footprint when no tool is active; Shift-drag turns it
+  let cdrag=null; const flr=e=>pickRay(e).intersectObjects(floors,false)[0];
+  r.domElement.addEventListener('pointerdown',e=>{ if(!cotG.visible||cotPlacing||e.button>0) return;
+    const hits=pickRay(e).intersectObjects(cotG.children,true).filter(h=>{ for(let o=h.object;o&&o!==cotG;o=o.parent) if(!o.visible&&!h.object.userData.cpick) return false; return h.object.userData.cpick?!['tmeas','tpath','tmark','tblood'].some(id=>{ const b=document.getElementById(id); return b&&b.getAttribute('aria-pressed')==='true'; }):true; });
+    if(!hits.length) return; const f=flr(e); if(!f) return;
+    cdrag={off:cotG.position.clone().sub(f.point),rot:e.shiftKey,a0:Math.atan2(f.point.x-cotG.position.x,f.point.z-cotG.position.z),h0:COT.hd};
+    ctl.enabled=false; try{ r.domElement.setPointerCapture(e.pointerId); }catch(_){} e.stopImmediatePropagation(); e.preventDefault(); },true);
+  r.domElement.addEventListener('pointermove',e=>{ if(!cdrag) return; const f=flr(e); if(!f) return;
+    if(cdrag.rot){ const a=Math.atan2(f.point.x-cotG.position.x,f.point.z-cotG.position.z); let hd=Math.round(((cdrag.h0+(a-cdrag.a0)*180/Math.PI)%360+360)%360); const i=document.getElementById('cothd'); i.value=hd; i.dispatchEvent(new Event('input')); }
+    else { cotG.position.set(f.point.x+cdrag.off.x,f.point.y,f.point.z+cdrag.off.z); cotInfo(); render(); } });
+  const cup=()=>{ if(cdrag){ cdrag=null; ctl.enabled=!fish; } }; r.domElement.addEventListener('pointerup',cup); r.domElement.addEventListener('pointercancel',cup);
+  window.__cot={place:(a,b)=>cotPlaceAt(W(a,b,0)),COT,build:buildCot};
+  setTimeout(buildCot,0); }   // after render() is initialised
+// ---- Stryker Stair-PRO chair (6250 / 6251), approximate; axle at the origin, +z toward the front legs, inches
+const chrG=new THREE.Group(); chrG.visible=false; scene.add(chrG); window.__chrG=chrG;
+const CHR={hd:0,tilt:0,tr:19,wb:16.4,m6251:true,body:true,feet:true};
+const chrM={frame:new THREE.MeshStandardMaterial({color:0xe9c21c,metalness:0.3,roughness:0.5}),blk:new THREE.MeshStandardMaterial({color:0x1d1f22,roughness:0.6}),seat:new THREE.MeshStandardMaterial({color:0x26282c,roughness:0.7,side:THREE.DoubleSide})};
+function buildChr(){ chrG.traverse(o=>{ if(o.geometry) o.geometry.dispose(); }); chrG.clear();
+  const tag=(o,k)=>{ o.userData.ck=k; return o; }, T=CHR.tr/2, F=CHR.wb, tl=CHR.tilt*Math.PI/180;
+  // rear wheels stay on the floor; everything else tips about the axle
+  [1,-1].forEach(s=>{ const w=new THREE.Mesh(new THREE.CylinderGeometry(3*IN,3*IN,2*IN,32),cotM.tyre); w.rotation.z=Math.PI/2; w.position.copy(cv3(s*T,3,0)); chrG.add(tag(w,'body'));
+    const hb=new THREE.Mesh(new THREE.CylinderGeometry(1.1*IN,1.1*IN,2.15*IN,20),cotM.dark); hb.rotation.z=Math.PI/2; hb.position.copy(w.position); chrG.add(tag(hb,'body'));
+    const fp=new THREE.Mesh(new THREE.PlaneGeometry(2*IN,1.1*IN),cotM.foot); fp.rotation.x=-Math.PI/2; fp.position.copy(cv3(s*T,0.1,0)); fp.renderOrder=6; chrG.add(tag(fp,'feet')); });
+  const tg=new THREE.Group(); tg.position.copy(cv3(0,3,0)); tg.rotation.x=-tl; chrG.add(tg);
+  const v=(x,y,z)=>cv3(x,y-3,z), add=(o,k='body')=>{ tg.add(tag(o,k)); return o; }, tb=(a,b,r,m=chrM.frame)=>add(cotTube(a,b,r,m));
+  const P=T-1.6;   // uprights just inside the wheels
+  [1,-1].forEach(s=>{ tb(v(s*P,4.5,0.4),v(s*P,34,-3.8),0.6);                       // backrest posts
+    tb(v(s*(P-0.3),18.4,-1.6),v(s*(P-0.3),18.9,13.5),0.5);                         // seat side rails
+    tb(v(s*(P-0.3),18.4,12.7),v(s*(P-0.3),0.5,F),0.5);                             // front legs
+    tb(v(s*P,6.5,1.2),v(s*(P-0.3),5.7,F-1.6),0.55);                                // lower side bars
+    tb(v(s*(P-0.3),5.8,F-1.2),v(s*(P+1.2),5.8,F+4.8),0.45,chrM.blk);               // foot-end lift handles
+    const ft=CHR.m6251?null:add(new THREE.Mesh(new THREE.CylinderGeometry(0.55*IN,0.6*IN,0.5*IN,14),chrM.blk)); if(ft) ft.position.copy(v(s*(P-0.3),0.25,F));
+    if(CHR.m6251){ const cw=new THREE.Mesh(new THREE.CylinderGeometry(2*IN,2*IN,1.1*IN,24),chrM.blk); cw.rotation.z=Math.PI/2; cw.position.copy(v(s*(P-0.3),2,F+1.0)); add(cw);
+      tb(v(s*(P-0.3),4.6,F+0.1),v(s*(P-0.3),2,F+1.0),0.25,chrM.frame); } });
+  tb(v(-P,34,-3.8),v(P,34,-3.8),0.6); tb(v(-P,6.5,1.2),v(P,6.5,1.2),0.6); tb(v(-(P-0.3),18.9,13.5),v(P-0.3,18.9,13.5),0.5);
+  const st=new THREE.Mesh(new THREE.BoxGeometry((2*P-1)*IN,0.3*IN,14*IN),chrM.seat); st.position.copy(v(0,18.8,6)); st.rotation.x=-0.03; add(st);
+  const bk=new THREE.Mesh(new THREE.BoxGeometry((2*P-1)*IN,15*IN,0.25*IN),chrM.seat); bk.position.copy(v(0,27,-2.3)); bk.rotation.x=-0.15; add(bk);
+  // front contacts (only when the chair is level)
+  if(CHR.tilt<0.5) [1,-1].forEach(s=>{ const fp=new THREE.Mesh(CHR.m6251?new THREE.PlaneGeometry(1.1*IN,0.8*IN):new THREE.CircleGeometry(0.55*IN,16),cotM.foot); fp.rotation.x=-Math.PI/2; fp.position.copy(cv3(s*(P-0.3),0.1,F+(CHR.m6251?1.0:0))); fp.renderOrder=6; chrG.add(tag(fp,'feet')); });
+  const pk=new THREE.Mesh(new THREE.BoxGeometry((CHR.tr+2)*IN,34*IN,(F+6)*IN),new THREE.MeshBasicMaterial({colorWrite:false,depthWrite:false})); pk.position.copy(cv3(0,17,F/2)); pk.userData.cpick=true; chrG.add(pk);
+  chrG.traverse(o=>{ if(o.isMesh){ const k=o.userData.ck; o.castShadow=k==='body'; o.receiveShadow=o.castShadow; if(k!=='body'&&!o.userData.cpick) o.raycast=()=>{}; } });
+  chrVis(); chrInfo(); render(); }
+function chrVis(){ chrG.traverse(o=>{ const k=o.userData.ck; if(k) o.visible=!!CHR[k]; }); }
+function chrInfo(){ const el=document.getElementById('chrinfo'); if(!el) return; if(!chrG.visible){ el.textContent=''; return; } chrG.updateMatrixWorld(true);
+  const p=chrG.position, out=['Rear axle centre '+cotTile(p)+' (a '+(p.z/S).toFixed(2)+', b '+(-p.x/S).toFixed(2)+')'];
+  [['Left rear tire',CHR.tr/2],['Right rear tire',-CHR.tr/2]].forEach(([n,x])=>out.push(n+': '+cotTile(cv3(x,0,0).applyMatrix4(chrG.matrixWorld))));
+  out.push(CHR.tilt>=0.5?'Tipped back: only the rear wheels touch':(CHR.m6251?'Level: on all four wheels':'Level: resting on its front legs')); el.innerHTML=out.join('<br>'); }
+function chrPlaceAt(p){ chrG.position.set(p.x,p.y,p.z); chrG.visible=true; document.getElementById('chr').setAttribute('aria-pressed',true); chrInfo(); render(); }
+function chrState(){ return {visible:chrG.visible,pos:[+(chrG.position.x/S).toFixed(5),+(chrG.position.y/S).toFixed(5),+(chrG.position.z/S).toFixed(5)],m6251:CHR.m6251,body:CHR.body,feet:CHR.feet}; }
+function chrLoad(c){ if(!c) return; ['body','feet'].forEach(k=>{ if(c[k]!=null){ CHR[k]=!!c[k]; document.getElementById('chr'+k).setAttribute('aria-pressed',CHR[k]); } });
+  if(c.m6251!=null){ CHR.m6251=!!c.m6251; const b=document.getElementById('chrmod'); b.textContent=CHR.m6251?'Model: 6251 (front casters)':'Model: 6250 (front legs)'; }
+  if(c.pos) chrG.position.set(c.pos[0]*S,c.pos[1]*S,c.pos[2]*S); chrG.visible=!!c.visible; document.getElementById('chr').setAttribute('aria-pressed',chrG.visible); buildChr(); }
+{ chrG.position.copy(W(3.3,4.0,0)); let placingC=false;
+  const pickRay=e=>{ const rc=r.domElement.getBoundingClientRect(), R=new THREE.Raycaster();
+    if(fish){ const va=rc.width/rc.height, fa=0.75; let qx=(e.clientX-rc.left)/rc.width, qy=1-(e.clientY-rc.top)/rc.height;
+      if(va>fa) qx=(qx-0.5)*va/fa+0.5; else qy=(qy-0.5)*fa/va+0.5;
+      const px=qx*600-300, py=(1-qy)*800-400, th=Math.hypot(px,py)/fishMat.uniforms.f.value, ph=Math.atan2(py,px);
+      const d=new THREE.Vector3(Math.sin(th)*Math.cos(ph),Math.sin(th)*Math.sin(ph),Math.cos(th)).applyMatrix3(fishMat.uniforms.Rt.value).normalize(); R.set(cubeCam.position.clone(),d); }
+    else R.setFromCamera(new THREE.Vector2((e.clientX-rc.left)/rc.width*2-1,-(e.clientY-rc.top)/rc.height*2+1),cam);
+    return R; };
+  const cb=document.getElementById('chr'), cpb=document.getElementById('chrplace'), mb=document.getElementById('chrmod');
+  cb.onclick=()=>{ chrG.visible=!chrG.visible; cb.setAttribute('aria-pressed',chrG.visible); chrInfo(); render(); };
+  cpb.onclick=()=>{ placingC=!placingC; cpb.setAttribute('aria-pressed',placingC); };
+  mb.onclick=()=>{ CHR.m6251=!CHR.m6251; mb.textContent=CHR.m6251?'Model: 6251 (front casters)':'Model: 6250 (front legs)'; buildChr(); };
+  [['chrbody','body'],['chrfeet','feet']].forEach(([id,k])=>{ const b=document.getElementById(id); b.onclick=()=>{ CHR[k]=!CHR[k]; b.setAttribute('aria-pressed',CHR[k]); chrVis(); render(); }; });
+  let dn2=null; r.domElement.addEventListener('pointerdown',e=>{ dn2=[e.clientX,e.clientY]; });
+  r.domElement.addEventListener('pointerup',e=>{ if(!placingC||!dn2||Math.hypot(e.clientX-dn2[0],e.clientY-dn2[1])>6) return; const hit=pickRay(e).intersectObjects(floors,false)[0]; if(hit) chrPlaceAt(hit.point); });
+  const sl=(id,k,fmt)=>{ const i=document.getElementById(id), sp=document.getElementById(id+'v'); const f=()=>{ CHR[k]=+i.value; sp.textContent=fmt(CHR[k]); if(k==='hd'){ chrG.rotation.y=CHR.hd*Math.PI/180; chrInfo(); render(); } else buildChr(); }; i.addEventListener('input',f); sp.textContent=fmt(+i.value); };
+  sl('chrhd','hd',v=>v+'°'); sl('chrtilt','tilt',v=>v+'°'); sl('chrtr','tr',v=>v.toFixed(1)+'″'); sl('chrwb','wb',v=>v.toFixed(1)+'″');
+  document.getElementById('tsc').addEventListener('input',()=>buildChr());
+  let drag2=null; const flr=e=>pickRay(e).intersectObjects(floors,false)[0];
+  r.domElement.addEventListener('pointerdown',e=>{ if(!chrG.visible||placingC||e.button>0) return;
+    const toolOn=['tmeas','tpath','tmark','tblood'].some(id=>{ const b=document.getElementById(id); return b&&b.getAttribute('aria-pressed')==='true'; });
+    const hits=pickRay(e).intersectObjects(chrG.children,true).filter(h=>{ for(let o=h.object;o&&o!==chrG;o=o.parent) if(!o.visible&&!h.object.userData.cpick) return false; return h.object.userData.cpick?!toolOn:true; });
+    if(!hits.length) return; const f=flr(e); if(!f) return;
+    drag2={off:chrG.position.clone().sub(f.point),rot:e.shiftKey,a0:Math.atan2(f.point.x-chrG.position.x,f.point.z-chrG.position.z),h0:CHR.hd};
+    ctl.enabled=false; try{ r.domElement.setPointerCapture(e.pointerId); }catch(_){} e.stopImmediatePropagation(); e.preventDefault(); },true);
+  r.domElement.addEventListener('pointermove',e=>{ if(!drag2) return; const f=flr(e); if(!f) return;
+    if(drag2.rot){ const a=Math.atan2(f.point.x-chrG.position.x,f.point.z-chrG.position.z); const hd=Math.round(((drag2.h0+(a-drag2.a0)*180/Math.PI)%360+360)%360); const i=document.getElementById('chrhd'); i.value=hd; i.dispatchEvent(new Event('input')); }
+    else { chrG.position.set(f.point.x+drag2.off.x,f.point.y,f.point.z+drag2.off.z); chrInfo(); render(); } });
+  const up2=()=>{ if(drag2){ drag2=null; ctl.enabled=!fish; } }; r.domElement.addEventListener('pointerup',up2); r.domElement.addEventListener('pointercancel',up2);
+  window.__chr={place:(a,b)=>chrPlaceAt(W(a,b,0)),CHR,build:buildChr};
+  setTimeout(buildChr,0); }
 // panel toggle (phones)
 const tg=document.getElementById('toggle'), panel=document.getElementById('panel');
 tg.onclick=()=>{const c=panel.classList.toggle('collapsed'); tg.textContent=c?'Show':'Hide'; tg.setAttribute('aria-expanded',!c);};
@@ -372,7 +547,7 @@ window.__ready=()=>floors.length>0;
 const toolG=new THREE.Group(); scene.add(toolG);
 let curLayer='m'; const layerVis={m:1,p:1,k:1,b:1,grid:0}; const _tgAdd=toolG.add.bind(toolG);
 toolG.add=(...o)=>{ o.forEach(x=>{ if(!x.userData.layer) x.userData.layer=curLayer; }); return _tgAdd(...o); };
-const noPick=o=>{ for(let p=o;p;p=p.parent){ if(p===fig||p===toolG||p===bellG||p===night||p===sky||p===window.__hills) return true; } return false; };
+const noPick=o=>{ for(let p=o;p;p=p.parent){ if(p===fig||p===window.__cotG||p===window.__chrG||p===toolG||p===bellG||p===night||p===sky||p===window.__hills) return true; } return false; };
 function pickRay(e){ const rc=r.domElement.getBoundingClientRect(); const R=new THREE.Raycaster();
   if(fish){ const va=rc.width/rc.height, fa=0.75; let qx=(e.clientX-rc.left)/rc.width, qy=1-(e.clientY-rc.top)/rc.height;
     if(va>fa) qx=(qx-0.5)*va/fa+0.5; else qy=(qy-0.5)*fa/va+0.5;
@@ -664,7 +839,7 @@ const T3=v=>[+(v.x/S).toFixed(5),+(v.y/S).toFixed(5),+(v.z/S).toFixed(5)], V3=a=
 function sessionObj(){ const sl={}; document.querySelectorAll('input[type=range][id]').forEach(i=>sl[i.id]=+i.value);
   const pr=id=>{ const b=document.getElementById(id); return b?b.getAttribute('aria-pressed')==='true':null; };
   return {app:'PBATT',version:1,saved:new Date().toISOString(),sliders:sl,
-    view:{daylight:pr('ld'),cutaway:pr('cut'),moonPath:pr('mpath'),tileLabels:pr('grid'),footageMarks:pr('refs'),figure:{visible:fig.visible,pos:T3(fig.position)},camera:{pos:T3(cam.position),target:T3(ctl.target)}},
+    view:{daylight:pr('ld'),cutaway:pr('cut'),moonPath:pr('mpath'),tileLabels:pr('grid'),footageMarks:pr('refs'),figure:{visible:fig.visible,pos:T3(fig.position)},cot:cotState(),chair:chrState(),camera:{pos:T3(cam.position),target:T3(ctl.target)}},
     layers:{...layerVis},
     measure:meas.map(m=>[T3(m.objs[0].position),T3(m.objs[1].position)]),
     paths:paths.map(P=>({pts:P.pts.map(T3),pivot:P.handles.map(h=>h.userData.ptype||null),reverse:P.handles.map(h=>!!h.userData.rev),axle:P.axle||0,stamps:!!P.stamps})),
@@ -675,6 +850,7 @@ function loadSession(o){ if(!o||o.app!=='PBATT') throw new Error('not a PBATT se
   const V=o.view||{}; const tog=(id,want)=>{ const b=document.getElementById(id); if(b&&want!=null&&(b.getAttribute('aria-pressed')==='true')!==!!want) b.click(); };
   if(V.daylight!=null) document.getElementById(V.daylight?'ld':'lm').click(); tog('cut',V.cutaway); tog('mpath',V.moonPath); tog('grid',V.tileLabels); tog('refs',V.footageMarks);
   if(V.figure){ fig.visible=!!V.figure.visible; fig.position.copy(V3(V.figure.pos)); const fb_=document.getElementById('fig'); if(fb_) fb_.setAttribute('aria-pressed',fig.visible); }
+  if(V.cot) cotLoad(V.cot); if(V.chair) chrLoad(V.chair);
   (o.measure||[]).forEach(([a,b])=>{ addMeasPoint(V3(a)); addMeasPoint(V3(b)); });
   (o.paths||[]).forEach(p=>{ const P=newPath(); p.pts.forEach(q=>addHandle(P,V3(q))); P.handles.forEach((h,k)=>{ if(p.pivot&&p.pivot[k]) setPType(h,p.pivot[k]); if(p.reverse&&p.reverse[k]) setRev(h,true); }); P.axle=p.axle||0; P.stamps=!!p.stamps; rebuildPath(P); });
   (o.imprints||[]).forEach(q=>addMark(V3(q)));
