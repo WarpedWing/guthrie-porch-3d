@@ -123,7 +123,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 <li><b>Second wheel:</b> shows where the other wheel on the same axle would run, on the left or right of the active path as seen walking from its first point. <b>Wheel spacing</b> sets the distance between the wheel centres. Wherever the drawn path bends more tightly than the wheel spacing (a radius under, say, 16″ for a 16″ axle), the other wheel must briefly roll backward; that stretch is amber. This is geometry, not an error: a hand truck does it whenever it turns that sharply. Pale yellow is the sweep at a pivot point. Hand-placed bends are often sharper than the real route, so smoothing a bend usually clears the amber. Red means that wheel would hit a wall, pillar or bed.</li>
 <li><b>Pivot and Reverse:</b> tap a path point (a white ring shows it's selected). <b>Pivot</b> cycles how the truck turns there: <b>on wheel 1</b> (the wheel whose path you drew stays put, amber ring), <b>on wheel 2</b> (the other wheel stays put and wheel 1 swings round it, orange ring), or <b>spin</b> (the truck twists about the middle of its axle and the wheels roll opposite ways, purple ring). <b>Reverse</b> (cyan ring) makes the truck back up from that point without turning: draw the next points back the way it came. Each wheel's stamps count its actual rolling, so they run backward while it rolls backward and a patch can print twice. Pivots on wheel 2 and spins need a wheel spacing and side, so set <b>Second wheel</b> first (it assumes left if off). Paler stretches are pivots; amber means that wheel is rolling backward.</li>
 <li><b>Second wheel stamps:</b> with Second wheel and Wheel stamps both on, the other wheel gets its own stamps in pink, counted from the distance it actually rolls. Where it rolls backward the count unwinds (shown with −), so it can print the same patch twice.</li>
-<li><b>Model</b> switches playback between bare wheels and the stair chair. The chair rolls with its rear wheels on the path (with Second wheel on, its rear track takes the Wheel spacing), faces the way the truck faces, and its front casters swivel like real trailing casters, so you can see them swing round when the chair reverses or pivots.</li>
+<li><b>Model</b> switches playback between bare wheels and the stair chair. Wheel 1 (the drawn path) is one rear wheel and the other sits <b>Wheel spacing</b> away on the second-wheel side, whether or not Second wheel is shown; the rear tires take the <b>Wheel diameter</b> and <b>Tire width</b>. <b>Caster paths</b> draws where the 6251's front casters roll for each path (green), using the chair's Wheelbase. The chair rolls with its rear wheels on the path (with Second wheel on, its rear track takes the Wheel spacing), faces the way the truck faces, and its front casters swivel like real trailing casters, so you can see them swing round when the chair reverses or pivots.</li>
 <li><b>Play</b> rolls a wheel (two with Second wheel on) along the active path at about 2 ft/s, at the set diameter and tire width; the red mark on the tire shows it turning, including backward on reverses and pivots. Drag <b>Position</b> to scrub.</li>
 <li><b>Path details</b> (segments, tiles, stamps and so on) are folded under each path's <b>Details</b>.</li>
 <li><b>Stamp zero</b> slides the 0 mark (and every stamp with it) forward or back along the path by up to one full tire turn, for when the start point isn't where the tire's mark first touched.</li>
@@ -147,7 +147,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
       <button id="tmeas" aria-pressed="false">Measure</button><button id="tpath" aria-pressed="false">Wheel path</button><button id="tmark" aria-pressed="false">Mark imprint</button><button id="tblood" aria-pressed="false">Blood path</button></div></div>
     <div class="tsec" data-for="path" hidden><div class="lbl">Wheel path</div><div class="row"><button id="tnew">New path</button><button id="taxle">Second wheel: off</button><button id="tstamp">Wheel stamps: off</button><button id="tpivot" disabled>Pivot: off</button><button id="trev" disabled>Reverse: off</button></div>
       <div class="srow"><label for="tw">Tire width</label><input id="tw" type="range" min="0.5" max="4" step="0.25" value="1.5"><span id="twv">1.5″</span></div></div>
-    <div class="tsec" data-for="path" hidden><div class="srow"><label for="td">Wheel diameter</label><input id="td" type="range" min="3" max="12" step="0.05" value="6.1"><span id="tdv">6.1″</span></div><div class="srow"><label for="tg">Wheel spacing</label><input id="tg" type="range" min="8" max="26" step="0.25" value="16"><span id="tgv">16″</span></div><div class="srow"><label for="tz">Stamp zero</label><input id="tz" type="range" min="-1" max="1" step="0.01" value="0"><span id="tzv">0 rev</span></div><div class="row" style="margin-top:8px;align-items:center"><button id="tplayb" disabled>▶ Play</button><button id="tpbm">Model: wheels</button></div><div class="srow"><label for="tplay">Position</label><input id="tplay" type="range" min="0" max="1000" step="1" value="0" disabled></div></div>
+    <div class="tsec" data-for="path" hidden><div class="srow"><label for="td">Wheel diameter</label><input id="td" type="range" min="3" max="12" step="0.05" value="6.1"><span id="tdv">6.1″</span></div><div class="srow"><label for="tg">Wheel spacing</label><input id="tg" type="range" min="8" max="26" step="0.25" value="16"><span id="tgv">16″</span></div><div class="srow"><label for="tz">Stamp zero</label><input id="tz" type="range" min="-1" max="1" step="0.01" value="0"><span id="tzv">0 rev</span></div><div class="row" style="margin-top:8px;align-items:center"><button id="tplayb" disabled>▶ Play</button><button id="tpbm">Model: wheels</button><button id="tcast" aria-pressed="false">Caster paths</button></div><div class="srow"><label for="tplay">Position</label><input id="tplay" type="range" min="0" max="1000" step="1" value="0" disabled></div></div>
     <div class="tsec" data-for="mark" hidden><div class="row"><button id="tcopy" hidden>Copy imprint list</button></div>
       <textarea id="tcopytxt" hidden rows="3" style="width:100%;font:11px var(--mono);background:#0c101a;color:var(--fg);border:1px solid var(--line);border-radius:6px"></textarea></div>
     <div class="tsec" data-for="blood" hidden><div class="lbl">Blood path</div><div class="row"><button id="tbnew">New blood path</button></div></div>
@@ -255,8 +255,8 @@ function buildFig(){ fig.clear(); const H=FIG_IN*IN;
   fig.add(body,head); fig.traverse(o=>{if(o.isMesh)o.castShadow=true}); }
 buildFig(); const FOOT=[4.85,1.5]; fig.position.copy(W(FOOT[0],FOOT[1],0)); scene.add(fig);
 let floors=[];
-window.MOON=await (await fetch('moon.json?v=117')).json();
-new GLTFLoader().load('porch.glb?v=117',g=>{
+window.MOON=await (await fetch('moon.json?v=118')).json();
+new GLTFLoader().load('porch.glb?v=118',g=>{
   g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=!/porch_floor|gravel|walkway|yard|ground|doormat|B6_C6|tile_edge|drive|road|stepstone|stone_path/.test(o.name);o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
     if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=/hires/.test(o.name)?3:/video/.test(o.name)?1:2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
@@ -452,6 +452,7 @@ function chrLoad(c){ if(!c) return; ['body','feet','holes'].forEach(k=>{ if(c[k]
   const sl=(id,k,fmt)=>{ const i=document.getElementById(id), sp=document.getElementById(id+'v'); const f=()=>{ CHR[k]=+i.value; sp.textContent=fmt(CHR[k]); if(k==='hd'){ chrG.rotation.y=CHR.hd*Math.PI/180; chrInfo(); render(); } else buildChr(); }; i.addEventListener('input',f); sp.textContent=fmt(+i.value); };
   sl('chrhd','hd',v=>v+'°'); sl('chrtilt','tilt',v=>v+'°'); sl('chrtr','tr',v=>v.toFixed(1)+'″'); sl('chrwb','wb',v=>v.toFixed(1)+'″');
   document.getElementById('tsc').addEventListener('input',()=>buildChr());
+  ['chrwb','chrmod'].forEach(id=>document.getElementById(id).addEventListener(id==='chrmod'?'click':'input',()=>{ if(showCasters) paths.forEach(rebuildPath); }));
   let drag2=null; const flr=e=>pickRay(e).intersectObjects(floors,false)[0];
   r.domElement.addEventListener('pointerdown',e=>{ if(!chrG.visible||placingC||CHR.lock||e.button>0) return;
     const toolOn=['tmeas','tpath','tmark','tblood'].some(id=>{ const b=document.getElementById(id); return b&&b.getAttribute('aria-pressed')==='true'; });
@@ -641,6 +642,26 @@ let gauge=16, wheelD=6.1;
 function minRadius(Q){ const k=4; let m=Infinity; for(let i=k;i<Q.length-k;i++){ const A=Q[i-k],B=Q[i],C=Q[i+k];
   const a=Math.hypot(B.x-C.x,B.z-C.z), b=Math.hypot(A.x-C.x,A.z-C.z), c=Math.hypot(A.x-B.x,A.z-B.z), ar=Math.abs((B.x-A.x)*(C.z-A.z)-(C.x-A.x)*(B.z-A.z))/2;
   if(a<1e-4||c<1e-4){ m=0; continue; } if(ar>1e-12){ const r_=a*b*c/(4*ar); if(r_<m) m=r_; } } return m; }
+// ---- stair chair on a wheel path: wheel 1 rides the drawn path, the other rear wheel sits Wheel spacing to the second-wheel side.
+// Front casters are trailing casters: each contact point is dragged 1" behind its pivot over the leg.
+var showCasters=false;   // var: these live inside a block but are used by the playback code too
+var chairSim=function(D){ const track=gauge, N=D.W1.length, yaw=[], cen=[], P_=track/2-1.6-0.3, F=CHR.wb, tr=1.0*IN, sims=[[],[]], dist=[[0],[0]];
+  for(let i=0;i<N;i++){ const h=D.H[i].clone(); h.y=0; if(h.lengthSq()<1e-12&&i) h.copy(D.H[i-1]); h.normalize(); const y=Math.atan2(h.x,h.z); yaw.push(y);
+    const c=D.W1[i].clone().add(D.W2v[i]).multiplyScalar(0.5); cen.push(c);
+    [1,-1].forEach((sg,k)=>{ const lx=sg*P_*IN, lz=F*IN, px=c.x+lx*Math.cos(y)+lz*Math.sin(y), pz=c.z-lx*Math.sin(y)+lz*Math.cos(y);
+      const cp=i?sims[k][i-1].c:{x:px-tr*Math.sin(y),z:pz-tr*Math.cos(y)};   // start trailing straight behind
+      const dx=cp.x-px, dz=cp.z-pz, L=Math.hypot(dx,dz)||1, nc={x:px+dx/L*tr,z:pz+dz/L*tr};
+      if(i){ const pc=sims[k][i-1].c; dist[k].push(dist[k][i-1]+Math.hypot(nc.x-pc.x,nc.z-pc.z)); }
+      sims[k].push({c:nc,sw:Math.atan2(nc.x-px,nc.z-pz)-y}); }); }
+  return {yaw,cen,sims,dist,track}; }
+const castMat=new THREE.MeshBasicMaterial({color:0x34d399,transparent:true,opacity:0.45,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-4});
+function casterRibbons(P,cs){ const hw=1.1*IN/2;
+  cs.sims.forEach(arr=>{ const pos=[], idx=[]; let n=0;
+    for(let i=0;i<arr.length;i++){ const a=arr[Math.max(0,i-1)].c, b=arr[Math.min(arr.length-1,i+1)].c; let tx=b.x-a.x, tz=b.z-a.z, L=Math.hypot(tx,tz);
+      if(L<1e-7){ const y=cs.yaw[i]+arr[i].sw; tx=Math.sin(y); tz=Math.cos(y); L=1; } const nx=-tz/L, nz=tx/L, q=arr[i].c, yy=surfaceY(q.x,q.z,cs.cen[i].y)+0.005;
+      pos.push(q.x+nx*hw,yy,q.z+nz*hw,q.x-nx*hw,yy,q.z-nz*hw); if(i){ const k=2*(i-1); idx.push(k,k+1,k+3,k,k+3,k+2); } }
+    const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); g.setIndex(idx);
+    const me=new THREE.Mesh(g,castMat); me.renderOrder=9; me.raycast=()=>{}; toolG.add(me); P.ax.push(me); }); }
 function rebuildPath(P){ curLayer='p'; if(P.ribbon){toolG.remove(P.ribbon); P.ribbon.geometry.dispose(); P.ribbon=null;} if(P.ax){ P.ax.forEach(o=>{toolG.remove(o); o.geometry.dispose();}); } P.ax=[]; if(P.stL){ P.stL.forEach(delLabel); } P.stL=[]; P.stats=null; P.samples=[];
   P.segLabels.forEach(delLabel); P.segLabels.length=0;
   if(P.pts.length<2){ updateOut(); render(); return; }
@@ -690,7 +711,8 @@ function rebuildPath(P){ curLayer='p'; if(P.ribbon){toolG.remove(P.ribbon); P.ri
   const rollQ=W1.filter((q,i)=>poses[i].k==='r');
   P.stats={len,minR:minRadius(rollQ),tiles:[...tiles],segs,pivots,revs,back1:back1/N};
   { const r1=[0], r2=[0], T=[0]; for(let i=1;i<=N;i++){ r1.push(r1[i-1]+d1[i]); r2.push(r2[i-1]+d2[i]); T.push(T[i-1]+Math.max(W1[i].distanceTo(W1[i-1]),P.axle?W2[i].distanceTo(W2[i-1]):0,1e-5)); }
-    P._pb={W1,W2:P.axle?W2:null,H:poses.map(o=>o.h),r1,r2,T}; }
+    P._pb={W1,W2:P.axle?W2:null,W2v:W2,H:poses.map(o=>o.h),r1,r2,T}; }
+  if(showCasters&&CHR.m6251){ const cs=chairSim(P._pb); casterRibbons(P,cs); }
   if(P.axle){ P.ax.push(band(W2,d2,base.clone().lerp(new THREE.Color(0xffffff),0.35),true,axMat,9)); toolG.add(P.ax[P.ax.length-1]);
     const rp=[]; knots.forEach(o=>{ const q=o.p.clone().addScaledVector(nrm(o.h),sg*G); q.y=surfaceY(q.x,q.z,o.p.y)+0.006; rp.push(o.p.x,o.p.y+0.006,o.p.z,q.x,q.y,q.z); });
     const gr=new THREE.BufferGeometry(); gr.setAttribute('position',new THREE.Float32BufferAttribute(rp,3)); const rl=new THREE.LineSegments(gr,new THREE.LineBasicMaterial({color:P.color,depthTest:false,transparent:true,opacity:0.55})); rl.renderOrder=10; toolG.add(rl); P.ax.push(rl);
@@ -780,8 +802,8 @@ document.getElementById('tpivot').onclick=()=>{ if(!selH||!selP) return; const o
 document.getElementById('trev').onclick=()=>{ if(!selH||!selP) return; setRev(selH,!selH.userData.rev); rebuildPath(selP); pivBtn(); };
 document.getElementById('tstamp').onclick=()=>{ const P=paths[active]; if(!P) return; P.stamps=!P.stamps; rebuildPath(P); };
 let stampZero=0; document.getElementById('tz').addEventListener('input',e=>{ stampZero=+e.target.value; document.getElementById('tzv').textContent=(stampZero>0?'+':'')+stampZero.toFixed(2)+' rev'; paths.forEach(P=>{ if(P.stamps) rebuildPath(P); }); });
-document.getElementById('td').addEventListener('input',e=>{ wheelD=+e.target.value; document.getElementById('tdv').textContent=wheelD+'″'; paths.forEach(P=>{ if(P.stamps) rebuildPath(P); }); });
-document.getElementById('tg').addEventListener('input',e=>{ gauge=+e.target.value; document.getElementById('tgv').textContent=gauge+'″'; paths.forEach(P=>{ if(P.axle) rebuildPath(P); }); grooves.forEach(grooveGeom); updateOut(); render(); });
+document.getElementById('td').addEventListener('input',e=>{ wheelD=+e.target.value; setTimeout(()=>window.__pbRebuild&&window.__pbRebuild(),0); document.getElementById('tdv').textContent=wheelD+'″'; paths.forEach(P=>{ if(P.stamps) rebuildPath(P); }); });
+document.getElementById('tg').addEventListener('input',e=>{ setTimeout(()=>window.__pbRebuild&&window.__pbRebuild(),0); gauge=+e.target.value; document.getElementById('tgv').textContent=gauge+'″'; paths.forEach(P=>{ if(P.axle||showCasters) rebuildPath(P); }); grooves.forEach(grooveGeom); updateOut(); render(); });
 { const dlg=document.getElementById('help'); document.querySelectorAll('.helpb').forEach(b=>b.onclick=()=>{ dlg.showModal(); if(b.dataset.sec) document.getElementById('help-'+b.dataset.sec).scrollIntoView({block:'start'}); else dlg.scrollTop=0; }); dlg.querySelector('.x').onclick=()=>dlg.close(); dlg.addEventListener('click',e=>{ if(e.target===dlg) dlg.close(); }); }
 document.getElementById('tnew').onclick=()=>{ newPath(); if(tool!=='path') setTool('path'); };
 document.getElementById('tclear').onclick=()=>{ selH=null; selP=null; setTimeout(pivBtn,0); toolG.clear(); labels.filter(l=>!l.fixed).forEach(l=>l.el.remove()); { const keep=labels.filter(l=>l.fixed); labels.length=0; labels.push(...keep); } meas.length=0; mPend=null; paths.length=0; active=-1; marks.length=0; hist.length=0; grooves.length=0; gPend=null; bpaths.length=0; bact=-1; updateOut(); render(); };
@@ -793,7 +815,7 @@ document.getElementById('tundo').onclick=()=>{
     else if(e.t==='g'){ if(gPend===e.d){ toolG.remove(gPend); gPend=null; render(); return; } const G=grooves.find(G=>G.objs[1]===e.d); if(G){ removeGroove(G); if(!gPend){ gPend=G.objs[0]; toolG.add(gPend); } render(); return; } }
     else { if(mPend&&mPend.d===e.d){ toolG.remove(mPend.d); mPend=null; updateOut(); render(); return; }
       const m=meas.find(m=>m.objs[1]===e.d); if(m){ removeMeas(m); if(!mPend){ toolG.add(m.objs[0]); mPend={p:m.objs[0].position.clone(),d:m.objs[0]}; } render(); return; } } } };
-document.getElementById('tw').addEventListener('input',e=>{ tireIn=+e.target.value; document.getElementById('twv').textContent=tireIn+'″'; paths.forEach(rebuildPath); });
+document.getElementById('tw').addEventListener('input',e=>{ setTimeout(()=>window.__pbRebuild&&window.__pbRebuild(),0); tireIn=+e.target.value; document.getElementById('twv').textContent=tireIn+'″'; paths.forEach(rebuildPath); });
 document.getElementById('tcopy').onclick=async()=>{ const S_=S; const rows=marks.map((m,i)=>({n:i+1,row_a:+(m.d.position.z/S_).toFixed(3),col_b:+(-m.d.position.x/S_).toFixed(3),
     x_in:+(-m.d.position.x/IN).toFixed(2),y_in:+(m.d.position.z/IN).toFixed(2)}));
   const txt=JSON.stringify(rows); const b=document.getElementById('tcopy');
@@ -937,24 +959,17 @@ document.getElementById('tfile').onchange=async e=>{ const f=e.target.files[0]; 
     const mk=new THREE.Mesh(new THREE.BoxGeometry(w*1.08,r*0.18,r*0.18),new THREE.MeshBasicMaterial({color:0xff3b3b})); mk.position.y=r*0.97; spin.add(mk);   // red mark shows rotation
     g.userData={spin,r}; g.traverse(o=>{ o.raycast=()=>{}; }); pbG.add(g); return g; }
   let pbChair=false, CH=null, casterSim=null;
+  document.getElementById('tcast').onclick=e=>{ showCasters=!showCasters; e.target.setAttribute('aria-pressed',showCasters); paths.forEach(rebuildPath); };
+  window.__pbRebuild=()=>{ if(pbG.visible){ build(); place(t); } };
   document.getElementById('tpbm').onclick=e=>{ pbChair=!pbChair; e.target.textContent='Model: '+(pbChair?'stair chair':'wheels'); if(pbG.visible){ build(); place(t); } };
-  function chairTrack(D){ return D.W2?D.W1[0].distanceTo(D.W2[0])/IN:CHR.tr; }
-  function buildChair(D){ CH=new THREE.Group(); const C={...CHR,tilt:0,hd:0,tr:chairTrack(D),body:true}; buildChr(CH,C); pbG.add(CH);
-    // simulate the front casters over the whole path once: each contact point is dragged behind its pivot (trailing caster)
-    const N=D.W1.length, yaw=[], cen=[], P_=C.tr/2-1.6-0.3, F=C.wb, tr=1.0*IN, sims=[[],[]], dist=[[0],[0]];
-    for(let i=0;i<N;i++){ const h=D.H[i].clone(); h.y=0; if(h.lengthSq()<1e-12&&i) h.copy(D.H[i-1]); h.normalize(); const y=Math.atan2(h.x,h.z); yaw.push(y);
-      const c=D.W2?D.W1[i].clone().add(D.W2[i]).multiplyScalar(0.5):D.W1[i].clone(); cen.push(c);
-      [1,-1].forEach((sg,k)=>{ const lx=sg*P_*IN, lz=F*IN, px=c.x+lx*Math.cos(y)+lz*Math.sin(y), pz=c.z-lx*Math.sin(y)+lz*Math.cos(y);
-        let cp=i?sims[k][i-1].c:{x:px-tr*Math.sin(y),z:pz-tr*Math.cos(y)};   // start trailing straight behind
-        let dx=cp.x-px, dz=cp.z-pz, L=Math.hypot(dx,dz)||1; const nc={x:px+dx/L*tr,z:pz+dz/L*tr};
-        if(i){ const pc=sims[k][i-1].c; dist[k].push(dist[k][i-1]+Math.hypot(nc.x-pc.x,nc.z-pc.z)); }
-        sims[k].push({c:nc,sw:Math.atan2(nc.x-px,nc.z-pz)-y}); }); }
-    casterSim={yaw,cen,sims,dist,track:C.tr}; }
+  function buildChair(D){ CH=new THREE.Group(); const C={...CHR,tilt:0,hd:0,tr:gauge,body:true}; buildChr(CH,C); pbG.add(CH);
+    CH.traverse(o=>{ if(o.userData.rear){ o.scale.set(Math.max(tireIn,0.5)/2,wheelD/6,wheelD/6); o.position.y=wheelD/2*IN; } });   // the path's Wheel diameter and Tire width
+    casterSim=chairSim(D); }
   function placeChair(D,i,u){ const S_=casterSim, lerp=(a,b)=>a+(b-a)*u, y=S_.yaw[i-1]+Math.atan2(Math.sin(S_.yaw[i]-S_.yaw[i-1]),Math.cos(S_.yaw[i]-S_.yaw[i-1]))*u;
     const c=S_.cen[i-1].clone().lerp(S_.cen[i],u); CH.position.copy(c); CH.rotation.set(0,y,0); CH.updateMatrixWorld(true);
     const lx=new THREE.Vector3(Math.cos(y),0,-Math.sin(y)), w1=D.W1[i-1].clone().lerp(D.W1[i],u), s1=Math.sign(w1.clone().sub(c).dot(lx))||1;
-    CH.traverse(o=>{ if(o.userData.rear){ const rr=(D.W2&&o.userData.rear!==s1)?lerp(D.r2[i-1],D.r2[i]):lerp(D.r1[i-1],D.r1[i]); o.rotation.x=rr/(3*IN); }
-      if(o.userData.caster){ const k=o.userData.caster>0?0:1, a=S_.sims[k][i-1].sw, b=S_.sims[k][i].sw; o.rotation.y=Math.PI+a+Math.atan2(Math.sin(b-a),Math.cos(b-a))*u; o.userData.spin.rotation.x=lerp(S_.dist[k][i-1],S_.dist[k][i])/(2*IN); } }); }
+    CH.traverse(o=>{ if(o.userData.rear){ const rr=o.userData.rear!==s1?lerp(D.r2[i-1],D.r2[i]):lerp(D.r1[i-1],D.r1[i]); o.rotation.x=rr/(wheelD/2*IN); }
+      if(o.userData.caster){ const k=o.userData.caster>0?0:1, a=S_.sims[k][i-1].sw, b=S_.sims[k][i].sw; o.rotation.y=a+Math.atan2(Math.sin(b-a),Math.cos(b-a))*u; o.userData.spin.rotation.x=lerp(S_.dist[k][i-1],S_.dist[k][i])/(2*IN); } }); }
   function build(){ pbG.clear(); W=[]; axle=null; CH=null; const P=paths[active]; if(!P||!P._pb) return false; if(pbChair){ buildChair(P._pb); return true; } W.push(wheel()); if(P._pb.W2){ W.push(wheel()); axle=new THREE.Mesh(new THREE.CylinderGeometry(0.008,0.008,1,10),axM); axle.raycast=()=>{}; pbG.add(axle); } return true; }
   function place(f){ const P=paths[active]; if(!P||!P._pb){ pbG.visible=false; render(); return; } const D=P._pb, T=D.T, tot=T[T.length-1], x=f*tot;
     let i=1; while(i<T.length-1&&T[i]<x) i++; const u=Math.min(1,Math.max(0,(x-T[i-1])/Math.max(1e-9,T[i]-T[i-1])));
@@ -970,7 +985,7 @@ document.getElementById('tfile').onchange=async e=>{ const f=e.target.files[0]; 
   pb.onclick=()=>{ if(playing){ stop(); return; } if(!build()) return; if(t>=1) t=0; playing=true; pb.textContent='❚❚ Pause'; last=performance.now(); requestAnimationFrame(tick); };
   sl.addEventListener('input',()=>{ if(!pbG.children.length&&!build()) return; t=+sl.value/1000; place(t); if(!playing) hideSoon(1200); });
   window.__pbRefresh=()=>{ const ok=!!(paths[active]&&paths[active]._pb); pb.disabled=!ok; sl.disabled=!ok; document.querySelectorAll('#tplay ~ .stepb, .stepw:has(#tplay) .stepb').forEach(b=>b.disabled=!ok); if(!ok){ stop(); pbG.visible=false; } else if(pbG.visible&&playing){ build(); place(t); } };
-  window.__pb={place:f=>{ build(); t=f; place(f); }}; }
+  window.__pb={place:f=>{ build(); t=f; place(f); },dbg:()=>{ const P=paths[active], D=P._pb; return {ch:CH&&CH.position.toArray().map(v=>+(v/S).toFixed(2)), w1:D.W1[0].toArray().map(v=>+(v/S).toFixed(2)), w2:D.W2v[0].toArray().map(v=>+(v/S).toFixed(2)), cen0:casterSim&&casterSim.cen[0].toArray().map(v=>+(v/S).toFixed(2)), n:D.W1.length, kids:pbG.children.length}; }}; }
 window.__rescale=()=>{ paths.forEach(rebuildPath); meas.forEach(m=>{ m.label.el.textContent=fmtIn(m.dist); }); grooves.forEach(grooveGeom); updateOut(); render(); };
 window.__tool={sessionObj:()=>sessionObj(),loadSession:o=>loadSession(o),addBloodAB:(a,b,ext)=>{ const v=new THREE.Vector3(-b*S,0,a*S); v.y=surfaceY(v.x,v.z,0.05); addBloodPoint(v,ext); },bpaths,setLayer,pivotIdx:(k,ty)=>{ const P=paths[active]; select(P,P.handles[k]); setPType(P.handles[k],ty||'L'); rebuildPath(P); pivBtn(); },revIdx:(k)=>{ const P=paths[active]; select(P,P.handles[k]); setRev(P.handles[k],true); rebuildPath(P); pivBtn(); },addAB:(a,b)=>{ const v=new THREE.Vector3(-b*S,0,a*S); v.y=surfaceY(v.x,v.z,0.05); addPathPoint(v); },grooves,setTool,addPathPoint,addMeasPoint,addMark,newPath,marks,paths};
 }
