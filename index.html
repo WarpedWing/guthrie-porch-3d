@@ -129,7 +129,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 <li><b>Play</b> rolls a wheel (two with Second wheel on) along the active path at about 2 ft/s, at the set diameter and tire width; the red mark on the tire shows it turning, including backward on reverses and pivots. Drag <b>Position</b> to scrub.</li>
 <li><b>Path details</b> (segments, tiles, stamps and so on) are folded under each path's <b>Details</b>. Each path's <b>Hide</b>/<b>Show</b> button hides or shows that path's track, points and labels; adding a point to a hidden path shows it again.</li>
 <li><b>Keep model</b> leaves the playback wheels or chair on screen after playback stops or you finish scrubbing, for demos.</li>
-<li><b>Stamp zero</b> slides the 0 mark (and every stamp with it) forward or back along the path by up to one full tire turn, for when the start point isn't where the tire's mark first touched.</li>
+<li><b>Stamp zero</b> slides the 0 mark (and every stamp with it) forward or back along the path by up to one full tire turn, for when the start point isn't where the tire's mark first touched. Each wheel path keeps its own Stamp zero: the slider shows and changes the active path's.</li>
 <li><b>Wheel stamps:</b> 0 marks the start, and reappears if the wheel rolls back past it. Stamps mark where a tire of the set <b>Wheel diameter</b> touches the floor as it rolls along the active path, starting from its first point (put that where the wheel stood, under the axle). Half turns (½, 1½, …) show where a spot that started on top of the tire lands; whole turns (1, 2, …) show where the spot that started on the floor lands again.</li>
 <li><b>Blood path:</b> a thin line for tracing blood trails, with a dot at the start and an arrow at the end. Tap open ground twice to draw a new line (first tap is the start, second the end). Tap or drag the line itself to add a bend; drag a point to move it; double-tap a point to delete it. Shift-tap extends the current line instead of starting a new one.</li>
 <li><b>Arrows</b> along wheel tracks show which way the truck faces: white when that wheel is rolling forward, amber when it's rolling backward.</li>
@@ -656,7 +656,7 @@ function surfaceY(x,z,yHint){ down_.set(new THREE.Vector3(x,yHint+0.6,z),new THR
   const h=down_.intersectObjects(scene.children,true).find(h=>h.object.isMesh&&h.object.visible&&!noPick(h.object)&&!(h.object.material&&h.object.material.colorWrite===false));
   return h?h.point.y:yHint; }
 const paths=[]; let active=-1; const arrowMat=new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.DoubleSide,depthTest:false,transparent:true,opacity:0.9}); const axMat=new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:0.6,side:THREE.DoubleSide,depthWrite:false,depthTest:false});
-function newPath(){ const c=COLORS[paths.length%COLORS.length]; const P={pts:[],handles:[],ribbon:null,samples:[],segLabels:[],stats:null,color:c,
+function newPath(){ const c=COLORS[paths.length%COLORS.length]; const P={pts:[],handles:[],ribbon:null,samples:[],segLabels:[],stats:null,color:c,tz:0,
   hMat:new THREE.MeshBasicMaterial({color:new THREE.Color(c).lerp(new THREE.Color(0xffffff),0.5),depthTest:false,transparent:true,opacity:0.55,depthWrite:false}),
   ribMat:new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.4,side:THREE.DoubleSide,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-4})};
   paths.push(P); active=paths.length-1; updateOut(); return P; }
@@ -764,11 +764,11 @@ function rebuildPath(P){ curLayer='p'; curPath=P; if(P.ribbon){toolG.remove(P.ri
     if(pos.length){ const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); g.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
       const me=new THREE.Mesh(g,arrowMat); me.renderOrder=11; toolG.add(me); P.ax.push(me); } }
   if(P.stamps){ const C=Math.PI*wheelD*IN, half=C/2, sp=[], cl=[], L_=tireIn*IN*1.6+0.02;
-    function stamps(W,d,cA,cB,hexA,hexB){ let s0=-stampZero*C, cnt=0;   // stampZero shifts the 0 mark along the path by that many tire turns
+    function stamps(W,d,cA,cB,hexA,hexB){ const sz=+P.tz||0; let s0=-sz*C, cnt=0;   // this path's Stamp zero (P.tz) shifts the 0 mark along the path by that many tire turns
       const put=(p,nn,k)=>{ p.y=surfaceY(p.x,p.z,p.y)+0.006; const e1=p.clone().addScaledVector(nn,L_/2), e2=p.clone().addScaledVector(nn,-L_/2); sp.push(e1.x,e1.y,e1.z,e2.x,e2.y,e2.z);
         const c=k%2?cA:cB; cl.push(c.r,c.g,c.b,c.r,c.g,c.b); const ak=Math.abs(k);
         const lb=addLabel(e1,(k<0?'−':'')+(ak%2?(ak>1?((ak-1)/2)+'½':'½'):String(ak/2))); lb.el.classList.add('stp'); lb.el.style.color=k%2?hexA:hexB; P.stL.push(lb); cnt++; };
-      if(Math.abs(stampZero)<1e-6) put(W[0].clone(),nrm(poses[0].h),0);   // the starting point: where this wheel's patch touched the floor at the start
+      if(Math.abs(sz)<1e-6) put(W[0].clone(),nrm(poses[0].h),0);   // the starting point: where this wheel's patch touched the floor at the start
       for(let j=1;j<=N;j++){ const s1=s0+d[j]; const k0=Math.floor(s0/half+1e-9), k1=Math.floor(s1/half+1e-9); const ks=[];
         if(k1>k0) for(let k=k0+1;k<=k1;k++) ks.push(k); else if(k1<k0) for(let k=k0;k>k1;k--) ks.push(k);
         for(const k of ks){ if(Math.abs(s1-s0)<1e-9) continue; const f=(k*half-s0)/(s1-s0); put(W[j-1].clone().lerp(W[j],f),nrm(poses[j].h),k); }
@@ -829,7 +829,7 @@ function updateOut(){ let h='';
   if(grooves.length) h+=`<dl><dt>Groove lines</dt><dd>${grooves.length}</dd></dl>`;
   if(marks.length) h+=`<dl><dt>Imprints marked</dt><dd>${marks.length}</dd></dl>`;
   if(bpaths.some(B=>B.pts.length)) h+=`<dl><dt>Blood paths</dt><dd>${bpaths.filter(B=>B.pts.length).length}</dd></dl>`;
-  out.innerHTML=h; const ap=paths[active]; document.getElementById('taxle').textContent='Second wheel: '+(!ap||!ap.axle?'off':ap.axle>0?'right':'left'); document.getElementById('tstamp').textContent='Wheel stamps: '+(ap&&ap.stamps?'on':'off'); document.getElementById('tstamp').setAttribute('aria-pressed',!!(ap&&ap.stamps)); pivBtn(); document.getElementById('tcopy').hidden=!marks.length; if(window.__pbRefresh) window.__pbRefresh(); }
+  out.innerHTML=h; const ap=paths[active]; document.getElementById('taxle').textContent='Second wheel: '+(!ap||!ap.axle?'off':ap.axle>0?'right':'left'); document.getElementById('tstamp').textContent='Wheel stamps: '+(ap&&ap.stamps?'on':'off'); document.getElementById('tstamp').setAttribute('aria-pressed',!!(ap&&ap.stamps)); { const tzI=document.getElementById('tz'), v=(ap&&+ap.tz)||0; if(tzI&&+tzI.value!==v){ tzI.value=v; tzLbl(v); } } pivBtn(); document.getElementById('tcopy').hidden=!marks.length; if(window.__pbRefresh) window.__pbRefresh(); }
 // --- buttons
 const bm=document.getElementById('tmeas'), bp=document.getElementById('tpath'), bk=document.getElementById('tmark'), bbl=document.getElementById('tblood');
 function setTool(t){ tool=(tool===t)?'none':t; bm.setAttribute('aria-pressed',tool==='measure'); bp.setAttribute('aria-pressed',tool==='path'); bk.setAttribute('aria-pressed',tool==='mark'); bg.setAttribute('aria-pressed',tool==='groove'); bbl.setAttribute('aria-pressed',tool==='blood'); if(TL[tool]&&!layerVis[TL[tool]]) setLayer(TL[tool],true);
@@ -846,7 +846,8 @@ document.getElementById('tpivot').onclick=()=>{ if(!selH||!selP) return; const o
 document.getElementById('ttiltpt').onclick=()=>{ if(!selH||!selP) return; const ord=[null,'up','down']; setTiltMark(selH,ord[(ord.indexOf(selH.userData.tilt||null)+1)%3]); rebuildPath(selP); pivBtn(); if(window.__pbRebuild) window.__pbRebuild(); };
 document.getElementById('trev').onclick=()=>{ if(!selH||!selP) return; setRev(selH,!selH.userData.rev); rebuildPath(selP); pivBtn(); };
 document.getElementById('tstamp').onclick=()=>{ const P=paths[active]; if(!P) return; P.stamps=!P.stamps; rebuildPath(P); };
-let stampZero=0; document.getElementById('tz').addEventListener('input',e=>{ stampZero=+e.target.value; document.getElementById('tzv').textContent=(stampZero>0?'+':'')+stampZero.toFixed(2)+' rev'; paths.forEach(P=>{ if(P.stamps) rebuildPath(P); }); });
+const tzLbl=v=>{ document.getElementById('tzv').textContent=(v>0?'+':'')+(+v).toFixed(2)+' rev'; };   // Stamp zero belongs to each path: the slider edits the active path's own value
+document.getElementById('tz').addEventListener('input',e=>{ const v=+e.target.value; tzLbl(v); const P=paths[active]; if(!P) return; P.tz=v; if(P.stamps) rebuildPath(P); });
 document.getElementById('td').addEventListener('input',e=>{ wheelD=+e.target.value; setTimeout(()=>window.__pbRebuild&&window.__pbRebuild(),0); document.getElementById('tdv').textContent=wheelD+'″'; paths.forEach(P=>{ if(P.stamps) rebuildPath(P); }); });
 document.getElementById('tg').addEventListener('input',e=>{ setTimeout(()=>window.__pbRebuild&&window.__pbRebuild(),0); gauge=+e.target.value; document.getElementById('tgv').textContent=gauge+'″'; paths.forEach(P=>{ if(P.axle||showCasters) rebuildPath(P); }); grooves.forEach(grooveGeom); updateOut(); render(); });
 { const dlg=document.getElementById('help'); document.querySelectorAll('.helpb').forEach(b=>b.onclick=()=>{ dlg.showModal(); if(b.dataset.sec) document.getElementById('help-'+b.dataset.sec).scrollIntoView({block:'start'}); else dlg.scrollTop=0; }); dlg.querySelector('.x').onclick=()=>dlg.close(); dlg.addEventListener('click',e=>{ if(e.target===dlg) dlg.close(); }); }
@@ -948,7 +949,8 @@ function sessionObj(){ const sl={}; document.querySelectorAll('input[type=range]
     view:{daylight:pr('ld'),cutaway:pr('cut'),moonPath:pr('mpath'),tileLabels:pr('grid'),footageMarks:pr('refs'),figure:{visible:fig.visible,pos:T3(fig.position)},chair:chrState(),spray:sprState(),camera:{pos:T3(cam.position),target:T3(ctl.target)}},
     layers:{...layerVis},
     measure:meas.map(m=>[T3(m.objs[0].position),T3(m.objs[1].position)]),
-    paths:paths.map(P=>({pts:P.pts.map(T3),pivot:P.handles.map(h=>h.userData.ptype||null),poff:P.handles.map(h=>h.userData.poff||0),tilt:P.handles.map(h=>h.userData.tilt||null),tdeg:P.handles.map(h=>h.userData.tdeg||null),hidden:!!P.hidden,reverse:P.handles.map(h=>!!h.userData.rev),axle:P.axle||0,stamps:!!P.stamps})),
+    paths:paths.map(P=>({pts:P.pts.map(T3),pivot:P.handles.map(h=>h.userData.ptype||null),poff:P.handles.map(h=>h.userData.poff||0),tilt:P.handles.map(h=>h.userData.tilt||null),tdeg:P.handles.map(h=>h.userData.tdeg||null),hidden:!!P.hidden,reverse:P.handles.map(h=>!!h.userData.rev),axle:P.axle||0,stamps:!!P.stamps,tz:+P.tz||0})),
+    playback:{model:document.getElementById('tpbm').textContent.includes('chair')?'chair':'wheels',keep:pr('tkeep'),casters:pr('tcast'),startTipped:pr('ttilt')},
     imprints:marks.map(m=>T3(m.d.position)), blood:bpaths.map(B=>B.pts.map(T3))}; }
 function loadSession(o){ if(!o||o.app!=='PBATT') throw new Error('not a PBATT session file');
   document.getElementById('tclear').onclick();
@@ -958,7 +960,8 @@ function loadSession(o){ if(!o||o.app!=='PBATT') throw new Error('not a PBATT se
   if(V.figure){ fig.visible=!!V.figure.visible; fig.position.copy(V3(V.figure.pos)); const fb_=document.getElementById('fig'); if(fb_) fb_.setAttribute('aria-pressed',fig.visible); }
   if(V.chair) chrLoad(V.chair); if(V.spray) sprLoad(V.spray);
   (o.measure||[]).forEach(([a,b])=>{ addMeasPoint(V3(a)); addMeasPoint(V3(b)); });
-  (o.paths||[]).forEach(p=>{ const P=newPath(); p.pts.forEach(q=>addHandle(P,V3(q))); P.handles.forEach((h,k)=>{ if(p.pivot&&p.pivot[k]){ if(p.poff) h.userData.poff=p.poff[k]; setPType(h,p.pivot[k]); } if(p.tdeg&&p.tdeg[k]) h.userData.tdeg=p.tdeg[k]; if(p.tilt&&p.tilt[k]) setTiltMark(h,p.tilt[k]); if(p.reverse&&p.reverse[k]) setRev(h,true); }); P.axle=p.axle||0; P.stamps=!!p.stamps; P.hidden=!!p.hidden; rebuildPath(P); });
+  (o.paths||[]).forEach(p=>{ const P=newPath(); p.pts.forEach(q=>addHandle(P,V3(q))); P.handles.forEach((h,k)=>{ if(p.pivot&&p.pivot[k]){ if(p.poff) h.userData.poff=p.poff[k]; setPType(h,p.pivot[k]); } if(p.tdeg&&p.tdeg[k]) h.userData.tdeg=p.tdeg[k]; if(p.tilt&&p.tilt[k]) setTiltMark(h,p.tilt[k]); if(p.reverse&&p.reverse[k]) setRev(h,true); }); P.axle=p.axle||0; P.stamps=!!p.stamps; P.hidden=!!p.hidden; P.tz=p.tz!=null?+p.tz:(+((o.sliders||{}).tz)||0); rebuildPath(P); });   // older files had one Stamp zero for every path
+  if(o.playback){ const pb_=o.playback, mb=document.getElementById('tpbm'); if((pb_.model==='chair')!==mb.textContent.includes('chair')) mb.click(); tog('tcast',pb_.casters); tog('ttilt',pb_.startTipped); tog('tkeep',pb_.keep); }
   (o.imprints||[]).forEach(q=>addMark(V3(q)));
   (o.blood||[]).forEach(pts=>{ const B=newBlood(); pts.forEach(q=>addBloodHandle(B,V3(q))); rebuildBlood(B); });
   Object.entries(o.layers||{}).forEach(([l,v])=>{ if(l==='grid'||l==='ref') return; setLayer(l,!!v); });
