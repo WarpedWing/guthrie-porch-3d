@@ -265,7 +265,7 @@ new GLTFLoader().load('porch.glb?v=119',g=>{
   g.scene.traverse(o=>{ if(o.isMesh){o.castShadow=!/porch_floor|gravel|walkway|yard|ground|doormat|B6_C6|tile_edge|drive|road|stepstone|stone_path/.test(o.name);o.receiveShadow=true; if(o.material){o.material.side=THREE.DoubleSide; if(o.material.map)o.material.map.anisotropy=8;}
     if(/porch_floor|B6_C6|gravel|walkway|doormat|yard/.test(o.name))floors.push(o); if(/drive|road/.test(o.name)){o.receiveShadow=false;} if(/B6_C6/.test(o.name)){o.castShadow=false;o.material.depthWrite=false;o.renderOrder=/hires/.test(o.name)?3:/video/.test(o.name)?1:2;}}});
   let sd=null; g.scene.traverse(o=>{if(o.name==='security_door'&&!sd)sd=o}); window.__sd=sd;
-  scene.add(g.scene); document.getElementById('loading').hidden=true; setView('yard'); setCut(false); render();
+  scene.add(g.scene); document.getElementById('loading').hidden=true; setTimeout(()=>{ try{ buildSurfGrid(); }catch(_){} },300); setView('yard'); setCut(false); render();
 },undefined,e=>{document.getElementById('loading').textContent='The model could not be loaded: '+(e.message||e)});
 // moon
 const M=window.MOON, slider=document.getElementById('slider');
@@ -652,9 +652,35 @@ function delLabel(L){ L.el.remove(); const i=labels.indexOf(L); if(i>=0) labels.
 const COLORS=[0x4cc9f0,0xf72585,0x80ed99,0xffb703,0xb388ff,0xff7b54]; let tireIn=1.5;
 const hGeo=new THREE.SphereGeometry(0.014,16,12);
 const down_=new THREE.Raycaster();
-function surfaceY(x,z,yHint){ down_.set(new THREE.Vector3(x,yHint+0.6,z),new THREE.Vector3(0,-1,0));
+function surfaceYRay(x,z,yHint){ down_.set(new THREE.Vector3(x,yHint+0.6,z),new THREE.Vector3(0,-1,0));   // reference version: a ray against the whole scene
   const h=down_.intersectObjects(scene.children,true).find(h=>h.object.isMesh&&h.object.visible&&!noPick(h.object)&&!(h.object.material&&h.object.material.colorWrite===false));
   return h?h.point.y:yHint; }
+// Fast floor height: the static scene's triangles are bucketed once into a 2-D grid (x,z); a lookup tests only the few triangles in its cell
+// with a vertical ray, keeping the highest surface below the ray's start, exactly as the reference ray does. The moving security door and any
+// instanced meshes are still ray-cast normally.
+const SG={ready:false};
+function buildSurfGrid(){ if(SG.ready||!floors.length) return SG.ready; { let p=floors[0]; while(p.parent) p=p.parent; if(p!==scene) return false; } scene.updateMatrixWorld(true); const CELL=0.06, tris=[], mesh=[], cells=new Map(), meshes=[], dyn=[], big=new Map();
+  const sd=window.__sd, inSd=o=>{ for(let p=o;p;p=p.parent) if(p===sd) return true; return false; };
+  scene.traverse(o=>{ if(!o.isMesh||noPick(o)) return; if(o.isInstancedMesh||o.isSkinnedMesh||inSd(o)||o.raycast!==THREE.Mesh.prototype.raycast){ dyn.push(o); return; }
+    const g=o.geometry, pa=g&&g.attributes&&g.attributes.position; if(!pa) return; const ix=g.index, n=ix?ix.count:pa.count, mi=meshes.length; meshes.push(o);
+    const v=[new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3()], dr=g.drawRange, s0=Math.max(0,dr.start), s1=Math.min(n,dr.start+dr.count);
+    for(let k=s0;k+2<s1;k+=3){ for(let j=0;j<3;j++){ const vi=ix?ix.getX(k+j):k+j; v[j].fromBufferAttribute(pa,vi).applyMatrix4(o.matrixWorld); }
+      const ax=v[0].x,az=v[0].z,bx=v[1].x,bz=v[1].z,cx=v[2].x,cz=v[2].z; if(Math.abs((bz-cz)*(ax-cx)+(cx-bx)*(az-cz))<1e-14) continue;   // edge-on to a vertical ray
+      const t=tris.length/9; tris.push(ax,v[0].y,az,bx,v[1].y,bz,cx,v[2].y,cz); mesh.push(mi);
+      const i0=Math.floor(Math.min(ax,bx,cx)/CELL), i1=Math.floor(Math.max(ax,bx,cx)/CELL), k0=Math.floor(Math.min(az,bz,cz)/CELL), k1=Math.floor(Math.max(az,bz,cz)/CELL);
+      if((i1-i0+1)*(k1-k0+1)>256){ const C2=1.0; for(let i=Math.floor(Math.min(ax,bx,cx)/C2);i<=Math.floor(Math.max(ax,bx,cx)/C2);i++) for(let kk=Math.floor(Math.min(az,bz,cz)/C2);kk<=Math.floor(Math.max(az,bz,cz)/C2);kk++){ const key=i*100003+kk; let a=big.get(key); if(!a){ a=[]; big.set(key,a); } a.push(t); } continue; }   // large triangles (open ground) go in a coarse grid
+      for(let i=i0;i<=i1;i++) for(let kk=k0;kk<=k1;kk++){ const key=i*100003+kk; let a=cells.get(key); if(!a){ a=[]; cells.set(key,a); } a.push(t); } } });
+  SG.tris=new Float64Array(tris); SG.mesh=new Int32Array(mesh); SG.meshes=meshes; SG.dyn=dyn; SG.CELL=CELL; SG.big=new Map(); big.forEach((a,k)=>SG.big.set(k,Int32Array.from(a))); SG.cells=new Map(); cells.forEach((a,k)=>SG.cells.set(k,Int32Array.from(a)));
+  SG.ready=true; return true; }
+const _o=new THREE.Vector3(), _dn=new THREE.Vector3(0,-1,0);
+function surfaceY(x,z,yHint){ if(!SG.ready&&!buildSurfGrid()) return surfaceYRay(x,z,yHint);
+  const oy=yHint+0.6, T=SG.tris, cell=SG.cells.get(Math.floor(x/SG.CELL)*100003+Math.floor(z/SG.CELL)); let best=-Infinity;
+  const coarse=SG.big.get(Math.floor(x)*100003+Math.floor(z)); for(const L of [cell,coarse]) if(L) for(let q=0;q<L.length;q++){ const t=L[q]*9, ax=T[t],az=T[t+2],bx=T[t+3],bz=T[t+5],cx=T[t+6],cz=T[t+8];
+    const d=(bz-cz)*(ax-cx)+(cx-bx)*(az-cz), a=((bz-cz)*(x-cx)+(cx-bx)*(z-cz))/d, b=((cz-az)*(x-cx)+(ax-cx)*(z-cz))/d, c=1-a-b, e=-1e-9;
+    if(a<e||b<e||c<e) continue; const y=a*T[t+1]+b*T[t+4]+c*T[t+7]; if(y>oy||y<=best) continue;
+    const m=SG.meshes[SG.mesh[L[q]]]; if(!m.visible||(m.material&&m.material.colorWrite===false)) continue; best=y; }
+  if(SG.dyn.length){ down_.set(_o.set(x,oy,z),_dn); const h=down_.intersectObjects(SG.dyn,false).find(h=>h.object.visible&&!(h.object.material&&h.object.material.colorWrite===false)); if(h&&h.point.y>best) best=h.point.y; }
+  return best>-Infinity?best:yHint; }
 const paths=[]; let active=-1; const arrowMat=new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.DoubleSide,depthTest:false,transparent:true,opacity:0.9}); const axMat=new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:0.6,side:THREE.DoubleSide,depthWrite:false,depthTest:false});
 function newPath(){ const c=COLORS[paths.length%COLORS.length]; const P={pts:[],handles:[],ribbon:null,samples:[],segLabels:[],stats:null,color:c,tz:0,
   hMat:new THREE.MeshBasicMaterial({color:new THREE.Color(c).lerp(new THREE.Color(0xffffff),0.5),depthTest:false,transparent:true,opacity:0.55,depthWrite:false}),
@@ -895,9 +921,9 @@ r.domElement.addEventListener('pointermove',e=>{ if(!drag) return; const hit=pic
   else if(drag.kind==='g'){ drag.G.objs[drag.j].position.copy(hit.point); grooveGeom(drag.G); render(); }
   else if(drag.kind==='bh'){ const B=bpaths[drag.bi]; B.pts[drag.k].copy(hit.point); B.handles[drag.k].position.copy(hit.point); rebuildBlood(B); }
   else if(drag.kind==='k'){ const m=marks[drag.i]; m.d.position.copy(hit.point); m.L.p.copy(hit.point); render(); }
-  else { const P=paths[drag.pi]; P.pts[drag.k].copy(hit.point); P.handles[drag.k].position.copy(hit.point); rebuildPath(P); } });
+  else { const P=paths[drag.pi]; P.pts[drag.k].copy(hit.point); P.handles[drag.k].position.copy(hit.point); if(!P._raf) P._raf=requestAnimationFrame(()=>{ P._raf=0; rebuildPath(P); }); } });   /* at most one rebuild per frame while dragging */
 r.domElement.addEventListener('pointerup',e=>{
-  if(drag){ const g=drag; drag=null; ctl.enabled=!fish;
+  if(drag){ const g=drag; drag=null; ctl.enabled=!fish; if(g.pi!=null&&paths[g.pi]&&paths[g.pi]._raf){ const P=paths[g.pi]; cancelAnimationFrame(P._raf); P._raf=0; rebuildPath(P); }   /* finish a pending drag rebuild now */
     if(dn&&Math.hypot(e.clientX-dn[0],e.clientY-dn[1])<=8&&(g.kind==='h'||g.kind==='k'||g.kind==='m'||g.kind==='g'||g.kind==='bh')){
       const o=g.kind==='bh'?bpaths[g.bi].handles[g.k]:g.kind==='h'?paths[g.pi].handles[g.k]:g.kind==='k'?marks[g.i]:g.kind==='g'?g.G:g.m, now=performance.now();
       if(lastTap&&lastTap.o===o&&now-lastTap.t<450){ lastTap=null; if(g.kind==='bh') removeBloodHandle(bpaths[g.bi],o); else if(g.kind==='h') removeHandle(paths[g.pi],o); else if(g.kind==='k') removeMark(o); else if(g.kind==='g') removeGroove(o); else removeMeas(o); }
@@ -1043,6 +1069,7 @@ document.getElementById('tfile').onchange=async e=>{ const f=e.target.files[0]; 
   window.__pbRefresh=()=>{ const ok=!!(paths[active]&&paths[active]._pb); pb.disabled=!ok; sl.disabled=!ok; document.querySelectorAll('#tplay ~ .stepb, .stepw:has(#tplay) .stepb').forEach(b=>b.disabled=!ok); if(!ok){ stop(); pbG.visible=false; } else if(pbG.visible&&(playing||keepM)){ build(); place(t); } };
   window.__pb={tryBuild:()=>{ try{ const P=paths[active]; const r=build(); return JSON.stringify({r,active,np:paths.length,pb:!!(P&&P._pb),pbChair,kids:pbG.children.length,ch:CH?CH.children.length:null}); }catch(e){ return e.stack; } },place:f=>{ build(); t=f; place(f); },dbg:()=>{ const P=paths[active], D=P._pb; return {ch:CH&&CH.position.toArray().map(v=>+(v/S).toFixed(2)), w1:D.W1[0].toArray().map(v=>+(v/S).toFixed(2)), w2:D.W2v[0].toArray().map(v=>+(v/S).toFixed(2)), cen0:casterSim&&casterSim.cen[0].toArray().map(v=>+(v/S).toFixed(2)), n:D.W1.length, kids:pbG.children.length, tiltDeg:CH&&CH.userData.tg?+(-CH.userData.tg.rotation.x*180/Math.PI).toFixed(1):null, vis:pbG.visible, chkids:CH?CH.children.length:null, pbkids:pbG.children.map(c=>c.children.length), same:pbG.children[0]===CH, chvis:CH?CH.visible:null, meshes:CH?(()=>{let n=0,v=0;CH.traverse(o=>{if(o.isMesh){n++; let ok=true; for(let q=o;q;q=q.parent) if(!q.visible) ok=false; if(ok)v++;}}); return [n,v];})():null}; }}; }
 window.__rescale=()=>{ paths.forEach(rebuildPath); meas.forEach(m=>{ m.label.el.textContent=fmtIn(m.dist); }); grooves.forEach(grooveGeom); updateOut(); render(); };
+window.__surf={surfaceY:(x,z,h)=>surfaceY(x,z,h),surfaceYRay:(x,z,h)=>surfaceYRay(x,z,h),SG};
 window.__tool={sessionObj:()=>sessionObj(),loadSession:o=>loadSession(o),addBloodAB:(a,b,ext)=>{ const v=new THREE.Vector3(-b*S,0,a*S); v.y=surfaceY(v.x,v.z,0.05); addBloodPoint(v,ext); },bpaths,setLayer,pivotIdx:(k,ty)=>{ const P=paths[active]; select(P,P.handles[k]); setPType(P.handles[k],ty||'L'); rebuildPath(P); pivBtn(); },revIdx:(k)=>{ const P=paths[active]; select(P,P.handles[k]); setRev(P.handles[k],true); rebuildPath(P); pivBtn(); },addAB:(a,b)=>{ const v=new THREE.Vector3(-b*S,0,a*S); v.y=surfaceY(v.x,v.z,0.05); addPathPoint(v); },grooves,setTool,addPathPoint,addMeasPoint,addMark,newPath,marks,paths};
 }
 
