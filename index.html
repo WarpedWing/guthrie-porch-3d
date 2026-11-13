@@ -108,6 +108,22 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 #help p,#help ul{margin:0 0 6px} #help ul{padding-left:18px} #help li{margin:2px 0} #help b{font-weight:600}
 #help .x{position:sticky;top:0;float:right}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* collapsible sections in the side panel (everything below View options) */
+#panel .acc{border-top:1px solid var(--line);margin-top:2px}
+#panel .acc > .lbl{display:none}
+#panel button.acc-h{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:8px;padding:11px 2px 10px;cursor:pointer;font:600 11.5px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--fg)}
+#panel button.acc-h:focus-visible{outline:2px solid var(--moon);outline-offset:2px;border-radius:4px}
+#panel button.acc-h .chev{margin-left:auto;width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);margin-right:4px;transform:translateY(-2px) rotate(45deg);transition:transform .15s ease}
+#panel .acc.closed button.acc-h .chev{transform:rotate(-45deg)}
+#panel .acc-chip{font:500 10px/1 var(--mono);letter-spacing:.04em;text-transform:none;padding:3px 6px;border-radius:999px;background:var(--moon);color:#0b1020}
+#panel .acc-chip[hidden]{display:none}
+#panel .acc-b{padding-bottom:10px}
+#panel .acc.closed .acc-b{display:none}
+#panel .acc-ctl{display:flex;justify-content:flex-end;gap:12px;margin-top:6px}
+#panel .acc-ctl button{all:unset;cursor:pointer;font:500 11px var(--sans);color:var(--muted)}
+#panel .acc-ctl button:hover,#panel .acc-ctl button:focus-visible{color:var(--fg)}
+@media (prefers-reduced-motion: reduce){ #panel button.acc-h .chev{transition:none} }
 </style>
 </head>
 <body>
@@ -118,7 +134,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 <p>In moonlight, the cut-away roof and arch still cast their shadows, so the moonlit edge stays accurate. In daylight with the cutaway on, the sun is placed straight overhead so the whole floor is evenly lit for close inspection.</p>
 <h3 id="help-tools">Measure &amp; path tools</h3>
 <ul>
-<li><b>Measure:</b> tap two points. Drag an end to adjust it.</li>
+<li><b>Measure:</b> tap two points. Drag an end to adjust it; the crosshair's centre dot is the measuring point. <b>Units</b> switches measurements and path lengths between inches (to 0.01″) and millimetres (to 0.1 mm).</li>
 <li><b>Wheel path:</b> tap to add points, then drag a point, or drag the line itself to bend it. <b>New path</b> starts another path in a new colour. <b>Tire width</b> sets the band width.</li>
 <li><b>Second wheel:</b> shows where the other wheel on the same axle would run, on the left or right of the active path as seen walking from its first point. <b>Wheel spacing</b> sets the distance between the wheel centres. Wherever the drawn path bends more tightly than the wheel spacing (a radius under, say, 16″ for a 16″ axle), the other wheel must briefly roll backward; that stretch is amber. This is geometry, not an error: a hand truck does it whenever it turns that sharply. Pale yellow is the sweep at a pivot point. Hand-placed bends are often sharper than the real route, so smoothing a bend usually clears the amber. Red means that wheel would hit a wall, pillar or bed.</li>
 <li><b>Pivot point</b> (shown when a pivot is selected) puts the turning point anywhere along the axle line, in inches from wheel 1 toward wheel 2 (0 = on wheel 1, the wheel spacing = on wheel 2, negative = outside wheel 1). Small values make wheel 1 run a tight arc of that radius: it twists more than it rolls, so its tread smears.</li>
@@ -127,7 +143,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 <li><b>Second wheel stamps:</b> with Second wheel and Wheel stamps both on, the other wheel gets its own stamps in pink, counted from the distance it actually rolls. Where it rolls backward the count unwinds (shown with −), so it can print the same patch twice.</li>
 <li><b>Model</b> switches playback between bare wheels and the stair chair. Choosing it sets Tire width to 2″, Wheel diameter to 6″ and Wheel spacing to the chair's Rear track (17.5″), so the tracks, stamps and Second wheel match the chair (switching back restores your settings). Wheel 1 (the drawn path) is one rear wheel and the other sits Wheel spacing away on the second-wheel side. <b>Caster paths</b> draws where the 6251's front casters roll for each path (green), using the chair's Wheelbase. The chair rolls with its rear wheels on the path (with Second wheel on, its rear track takes the Wheel spacing), faces the way the truck faces, and its front casters swivel like real trailing casters, so you can see them swing round when the chair reverses or pivots.</li>
 <li><b>Play</b> rolls a wheel (two with Second wheel on) along the active path at about 2 ft/s, at the set diameter and tire width; the red mark on the tire shows it turning, including backward on reverses and pivots. Drag <b>Position</b> to scrub.</li>
-<li><b>Path details</b> (segments, tiles, stamps and so on) are folded under each path's <b>Details</b>. Each path's <b>Hide</b>/<b>Show</b> button hides or shows that path's track, points and labels; adding a point to a hidden path shows it again.</li>
+<li><b>Path details</b> (segments, tiles, stamps and so on) are folded under each path's <b>Details</b>. Each path's eye icon hides or shows that path's track, points and labels; a hidden path can't be grabbed or bent. <b>Select</b> makes a path the active one (the active path shows <b>Selected</b>).</li>
 <li><b>Keep model</b> leaves the playback wheels or chair on screen after playback stops or you finish scrubbing, for demos.</li>
 <li><b>Stamp zero</b> slides the 0 mark (and every stamp with it) forward or back along the path by up to one full tire turn, for when the start point isn't where the tire's mark first touched. Each wheel path keeps its own Stamp zero: the slider shows and changes the active path's.</li>
 <li><b>Wheel stamps:</b> 0 marks the start, and reappears if the wheel rolls back past it. Stamps mark where a tire of the set <b>Wheel diameter</b> touches the floor as it rolls along the active path, starting from its first point (put that where the wheel stood, under the axle). Half turns (½, 1½, …) show where a spot that started on top of the tire lands; whole turns (1, 2, …) show where the spot that started on the floor lands again.</li>
@@ -135,6 +151,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
 <li><b>Arrows</b> along wheel tracks show which way the truck faces: white when that wheel is rolling forward, amber when it's rolling backward.</li>
 <li><b>Show</b> buttons hide or show each layer. <b>Save</b> downloads a session file (all paths, pins, measurements and settings); <b>Load</b> restores one.</li>
 <li><b>Sliders:</b> use the ‹ › buttons (hold to repeat), the mouse wheel, or the arrow keys for single steps; click the value to type an exact number.</li>
+<li><b>Stain glow</b> (left panel) lights up measured drop stains by size, like selective luminol: <b>Large</b> 13–19 mm in blue, <b>Medium</b> 8–12 mm in green, <b>Small</b> 2–7 mm in pink. Toggle each band to see the trail it forms; <b>Darken scene</b> dims everything else and <b>Glow size</b> enlarges the halos. It starts with the 56 stains measured on the porch; <b>Use my measurements</b> replaces them with your current Measure lines (each measured across a stain).</li>
 <li><b>Mark imprint:</b> tap each imprint to drop a numbered pin, then <b>Copy imprint list</b> to copy their positions.</li>
 <li><b>Editing:</b> double-tap any point or pin to delete it; a measure end deletes the whole measurement. <b>Undo point</b> removes the last thing you added.</li>
 </ul>
@@ -156,7 +173,7 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
     <div class="tsec" data-for="mark" hidden><div class="row"><button id="tcopy" hidden>Copy imprint list</button></div>
       <textarea id="tcopytxt" hidden rows="3" style="width:100%;font:11px var(--mono);background:#0c101a;color:var(--fg);border:1px solid var(--line);border-radius:6px"></textarea></div>
     <div class="tsec" data-for="blood" hidden><div class="lbl">Blood path</div><div class="row"><button id="tbnew">New blood path</button></div></div>
-    <div class="row tedit"><button id="tundo">Undo point</button><button id="tclear">Clear all</button><button id="tsave">Save</button><button id="tload">Load</button><input id="tfile" type="file" accept=".json,application/json" hidden></div>
+    <div class="row tedit"><button id="tunit" title="Units for measurements and path lengths">Units: inches</button><button id="tundo">Undo point</button><button id="tclear">Clear all</button><button id="tsave">Save</button><button id="tload">Load</button><input id="tfile" type="file" accept=".json,application/json" hidden></div>
     <div class="tsec"><div class="lbl">Show</div><div class="row" id="tlayers"><button data-l="m" aria-pressed="true">Measure</button><button data-l="p" aria-pressed="true">Wheel paths</button><button data-l="k" aria-pressed="true">Imprints</button><button data-l="b" aria-pressed="true">Blood paths</button></div></div>
     <div id="tout"></div></div>
 </aside>
@@ -193,6 +210,11 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
     <button id="chr" aria-pressed="false">Show chair</button><button id="chrplace" aria-pressed="false">Tap floor to place</button><button id="chrbody" aria-pressed="true">Chair body</button><button id="chrfeet" aria-pressed="true">Wheel footprints</button><button id="chrholes" aria-pressed="true">Footplate holes on floor</button><button id="chrmod" aria-pressed="false">Model: 6251 (front casters)</button><button id="chrlock" aria-pressed="false">Lock in place</button><button id="chrwl">Left wheel: aftermarket</button><button id="chrwr">Right wheel: aftermarket</button></div>
     <div style="margin-top:8px"></div><div class="row" style="align-items:center;gap:10px"><label for="chrhd" style="font-size:12px;color:var(--muted);width:76px">Heading</label><input id="chrhd" type="range" min="0" max="359" step="1" value="0" style="flex:1"><span id="chrhdv" style="font:500 13px var(--mono);width:58px;text-align:right">0°</span></div><div class="row" style="align-items:center;gap:10px"><label for="chrtilt" style="font-size:12px;color:var(--muted);width:76px">Tip back</label><input id="chrtilt" type="range" min="0" max="45" step="1" value="0" style="flex:1"><span id="chrtiltv" style="font:500 13px var(--mono);width:58px;text-align:right">0°</span></div><div class="row" style="align-items:center;gap:10px"><label for="chrtr" style="font-size:12px;color:var(--muted);width:76px">Rear track</label><input id="chrtr" type="range" min="15" max="21" step="0.1" value="17.5" style="flex:1"><span id="chrtrv" style="font:500 13px var(--mono);width:58px;text-align:right">17.5″</span></div><div class="row" style="align-items:center;gap:10px"><label for="chrwb" style="font-size:12px;color:var(--muted);width:76px">Wheelbase</label><input id="chrwb" type="range" min="13" max="20" step="0.1" value="16.4" style="flex:1"><span id="chrwbv" style="font:500 13px var(--mono);width:58px;text-align:right">16.4″</span></div><div class="row"><button id="chrprof">Frame tubes: rectangular</button></div><div class="row" id="chrfrow" style="align-items:center;gap:10px"><label for="chrfw" style="font-size:12px;color:var(--muted);width:76px">Tube width</label><input id="chrfw" type="range" min="0.4" max="2.5" step="0.05" value="1.9" style="flex:1"><span id="chrfwv" style="font:500 13px var(--mono);width:58px;text-align:right">1.90″</span></div><div class="row" id="chrfrow2" style="align-items:center;gap:10px"><label for="chrfd" style="font-size:12px;color:var(--muted);width:76px">Tube depth</label><input id="chrfd" type="range" min="0.4" max="2.5" step="0.05" value="1.25" style="flex:1"><span id="chrfdv" style="font:500 13px var(--mono);width:58px;text-align:right">1.25″</span></div>
     <div id="chrinfo" style="font:500 11.5px var(--mono);color:var(--muted);margin-top:6px;line-height:1.45"></div></div>
+  <div><div class="lbl">Stain glow</div><div class="row">
+    <button id="sgL" aria-pressed="false"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#39c6ff;margin-right:6px;box-shadow:0 0 6px #39c6ff"></span>Large 13–19 mm</button><button id="sgM" aria-pressed="false"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#7dff8a;margin-right:6px;box-shadow:0 0 6px #7dff8a"></span>Medium 8–12 mm</button><button id="sgS" aria-pressed="false"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#ff6ad5;margin-right:6px;box-shadow:0 0 6px #ff6ad5"></span>Small 2–7 mm</button><button id="sgDim" aria-pressed="false">Darken scene</button></div>
+    <div style="margin-top:8px"></div><div class="row" style="align-items:center;gap:10px"><label for="sgSz" style="font-size:12px;color:var(--muted);width:76px">Glow size</label><input id="sgSz" type="range" min="1" max="12" step="0.5" value="6" style="flex:1"><span id="sgSzv" style="font:500 13px var(--mono);width:58px;text-align:right">6×</span></div>
+    <div class="row"><button id="sgFrom">Use my measurements</button><button id="sgDef">Restore 56 measured stains</button></div>
+    <div id="sginfo" style="font:500 11.5px var(--mono);color:var(--muted);margin-top:6px;line-height:1.45"></div></div>
   <div><div class="lbl">Doorbell camera</div><div class="row"><button id="bell" aria-pressed="true">Show doorbell</button><button id="glow" aria-pressed="false">Person detected (glow)</button><button data-v="perp">Suspect's eye view</button><button id="irb" aria-pressed="true">IR night vision (doorbell view)</button></div></div>
   <div><div class="lbl">Scale</div>
     <div class="row" style="align-items:center;gap:10px"><label for="tsc" style="font-size:12px;color:var(--muted);width:76px">Tile spacing</label><input id="tsc" type="range" min="11.8" max="12.8" step="0.05" value="12.2" style="flex:1"><span id="tscv" style="font:500 13px var(--mono);width:52px;text-align:right">12.20″</span></div></div>
@@ -200,6 +222,28 @@ dt{color:var(--muted)} dd{margin:0;font-family:var(--mono);font-variant-numeric:
     <div class="row" style="align-items:center;gap:10px"><input id="door" type="range" min="0" max="90" step="1" value="0" aria-label="Security door angle" style="flex:1"><span id="doorv" style="font:500 13px var(--mono);width:52px;text-align:right">0°</span></div></div>
   <p class="note"><b>Images:</b> NewsNation, Fox News Digital, BBC News, Just Jared (justjared.com). Used for non-commercial analysis; images remain the property of their owners. Model: WarpedWing Labs.</p>
 </aside>
+<script>
+// Side panel: sections below View options fold into collapsible headers; open/closed state is remembered per viewer.
+(function(){ const panel=document.getElementById('panel'); if(!panel) return;
+  const order=['Figure','Spatter source','Stair chair','Stain glow','Doorbell camera','Scale','Security door'];
+  const chipOf={ 'Figure':()=>pr('fig'), 'Spatter source':()=>pr('spr'), 'Stair chair':()=>pr('chr'), 'Stain glow':()=>pr('sgL')||pr('sgM')||pr('sgS'), 'Doorbell camera':()=>pr('bell') };
+  function pr(id){ const b=document.getElementById(id); return !!b&&b.getAttribute('aria-pressed')==='true'; }
+  let saved={}; try{ saved=JSON.parse(localStorage.getItem('pbatt-acc')||'{}'); }catch(_){}
+  const secs=[]; let first=null;
+  [...panel.children].forEach(div=>{ const l=div.querySelector(':scope > .lbl'); if(!l) return; const name=order.find(n=>l.textContent.trim().startsWith(n)); if(!name) return;
+    div.classList.add('acc'); if(saved[name]!==true) div.classList.add('closed');
+    const body=document.createElement('div'); body.className='acc-b'; body.id='acc-'+secs.length; [...div.childNodes].forEach(n=>{ if(n!==l) body.appendChild(n); });
+    const h=document.createElement('button'); h.type='button'; h.className='acc-h'; h.setAttribute('aria-controls',body.id); h.setAttribute('aria-expanded',!div.classList.contains('closed'));
+    h.innerHTML='<span></span><span class="acc-chip" hidden>On</span><span class="chev" aria-hidden="true"></span>'; h.firstChild.textContent=l.textContent.trim();
+    h.onclick=()=>{ const open=div.classList.toggle('closed')===false; h.setAttribute('aria-expanded',open); saved[name]=open; try{ localStorage.setItem('pbatt-acc',JSON.stringify(saved)); }catch(_){} };
+    div.appendChild(h); div.appendChild(body); secs.push({name,div,h,chip:h.querySelector('.acc-chip')}); if(!first) first=div; });
+  if(first){ const ctl=document.createElement('div'); ctl.className='acc-ctl'; ctl.innerHTML='<button type="button" data-a="1">Expand all</button><button type="button" data-a="0">Collapse all</button>';
+    ctl.onclick=e=>{ const b=e.target.closest('button'); if(!b) return; const open=b.dataset.a==='1'; secs.forEach(s=>{ s.div.classList.toggle('closed',!open); s.h.setAttribute('aria-expanded',open); saved[s.name]=open; }); try{ localStorage.setItem('pbatt-acc',JSON.stringify(saved)); }catch(_){} };
+    first.parentNode.insertBefore(ctl,first); }
+  const upd=()=>secs.forEach(s=>{ const f=chipOf[s.name]; s.chip.hidden=!(f&&f()); });
+  upd(); new MutationObserver(upd).observe(panel,{subtree:true,attributes:true,attributeFilter:['aria-pressed']});
+})();
+</script>
 <script type="importmap">{"imports":{"three":"./vendor/three.module.min.js","three/addons/":"./vendor/jsm/"}}</script>
 <script type="module">
 import * as THREE from 'three';
@@ -296,7 +340,7 @@ document.getElementById('mpath').addEventListener('click',e=>{ moonPath.visible=
 let day=false; const lm=document.getElementById('lm'), ld=document.getElementById('ld');
 function setLight(d){day=d; if(typeof applyIR==='function') try{applyIR();}catch(e){} lm.setAttribute('aria-pressed',!d); ld.setAttribute('aria-pressed',d);
   moon.visible=!d; sun.visible=d; night.visible=!d; skyMat.uniforms.top.value.set(d?0x5f8fc6:0x04060d); skyMat.uniforms.hor.value.set(d?0xcfdbe6:0x1f2a40); if(window.__hills) window.__hills.material.color.set(d?0x8a7f74:0x0b0d14); hemi.intensity=d?1.1:0.14; hemi.color.set(d?0xcfe0ff:0x9fb3d9); hemi.groundColor.set(d?0x8a6a50:0x2a2018);
-  scene.background=new THREE.Color(d?0x9cb7d6:0x070a12); r.toneMappingExposure=d?1.0:1.8; try{ setCut(cut); }catch(_){} render();}
+  scene.background=new THREE.Color(d?0x9cb7d6:0x070a12); r.toneMappingExposure=(d?1.0:1.8)*(window.__lumDim||1); if((window.__lumDim||1)<1) scene.background=new THREE.Color(0x05060a); try{ setCut(cut); }catch(_){} render();}
 lm.onclick=()=>setLight(false); ld.onclick=()=>setLight(true);
 // views
 const V={sattop:[[21.2,4,250],[22,4,0],50],yard:[[24,-2.0,6.5],[3.0,2.6,3.0],50],edge:[[3.4,2.9,9.5],[4.6,2.9,0],40],walk:[[11,2.6,2.2],[2,2.6,3.0],55],door:[[-1.2,0.65,4.4],[4,1.8,0],90],top:[[2.06,2.2,20],[2.0,2.2,0],45],corner:[[5.5,3.5,5.5],[0.5,-1.0,0],55]};
@@ -633,8 +677,12 @@ const labels=[]; function addLabel(p,t){ const el=document.createElement('div');
 function placeLabels(){ for(const L of labels){ if((L.layer&&layerVis[L.layer]===0)||(L.pp&&L.pp.hidden)){L.el.hidden=true;continue;} const s=toScreen(L.p); if(!s){L.el.hidden=true;continue;} L.el.hidden=false; L.el.style.left=s[0]+'px'; L.el.style.top=s[1]+'px'; } }
 const _r0=render; render=function(){ toolG.children.forEach(o=>{ o.visible=layerVis[o.userData.layer]!==0&&!(o.userData.pp&&o.userData.pp.hidden); }); _r0(); requestAnimationFrame(placeLabels); };
 ctl.addEventListener('change',()=>requestAnimationFrame(placeLabels)); addEventListener('resize',()=>requestAnimationFrame(placeLabels));
-const fmtIn=m=>{const i=m/IN; return i.toFixed(1)+'″ · '+(i/TILE_IN).toFixed(2)+' sp';};
+var UNIT='in'; try{ if(localStorage.getItem('pbatt-unit')==='mm') UNIT='mm'; }catch(_){}
+const fmtIn=m=>{const i=m/IN; return (UNIT==='mm'?(i*25.4).toFixed(1)+' mm':i.toFixed(2)+'″')+' · '+(i/TILE_IN).toFixed(2)+' sp';};   // measurements and path lengths: inches to 0.01 or millimetres to 0.1
 const dotMat=new THREE.MeshBasicMaterial({color:0xffd166,depthTest:false,transparent:true,opacity:0.35,depthWrite:false});
+// measure ends: a fine crosshair ring with a pinpoint centre (about 0.08in across), so small stains stay visible underneath
+const mDotGeo=new THREE.SphereGeometry(0.0011,10,8), mRingGeo=new THREE.TorusGeometry(0.003,0.0003,6,40), mBarGeo=new THREE.BoxGeometry(0.0024,0.00028,0.00028), mMat=new THREE.MeshBasicMaterial({color:0xffd166,depthTest:false,transparent:true});
+function measMarker(){ const d=new THREE.Mesh(mDotGeo,mMat); const r=new THREE.Mesh(mRingGeo,mMat); r.rotation.x=Math.PI/2; d.add(r); [0,1].forEach(q=>{ [-1,1].forEach(sg=>{ const b=new THREE.Mesh(mBarGeo,mMat); if(q) b.rotation.y=Math.PI/2; b.position[q?'z':'x']=sg*0.0042; d.add(b); }); }); d.traverse(o=>{ o.renderOrder=12; }); return d; }
 const pinGeo=new THREE.SphereGeometry(0.0028,10,8), pinMats={};
 function addPin(o,c){ const m=pinMats[c]||(pinMats[c]=new THREE.MeshBasicMaterial({color:c,depthTest:false,transparent:true})); const d=new THREE.Mesh(pinGeo,m); d.renderOrder=13; o.add(d); return o; } const lineMat=new THREE.LineBasicMaterial({color:0xffd166,depthTest:false,transparent:true});
 const dotGeo=new THREE.SphereGeometry(0.014,16,12);
@@ -642,7 +690,7 @@ let tool='none';
 // --- measure
 let mPend=null; const meas=[];
 const hist=[];
-function addMeasPoint(p){ curLayer='m'; const d=addPin(new THREE.Mesh(dotGeo,dotMat),0xffd166); hist.push({t:'m',d}); d.position.copy(p); d.renderOrder=10; toolG.add(d);
+function addMeasPoint(p){ curLayer='m'; const d=measMarker(); hist.push({t:'m',d}); d.position.copy(p); d.renderOrder=10; toolG.add(d);
   if(!mPend){ mPend={p:p.clone(),d}; render(); return; }
   const g=new THREE.BufferGeometry().setFromPoints([mPend.p,p]); const ln=new THREE.Line(g,lineMat); ln.renderOrder=10; toolG.add(ln);
   const dist=mPend.p.distanceTo(p); const L=addLabel(mPend.p.clone().add(p).multiplyScalar(0.5),fmtIn(dist));
@@ -845,14 +893,15 @@ const out=document.getElementById('tout');
 const hex=c=>'#'+c.toString(16).padStart(6,'0');
 const openDet=new Set();
 document.getElementById('tout').addEventListener('toggle',e=>{ const d=e.target; if(d.dataset&&d.dataset.p!=null){ const i=+d.dataset.p; d.open?openDet.add(i):openDet.delete(i); } },true);
-const psb=i=>i===active?'':`<button data-pa="${i}" title="Make this the active path" style="margin-left:6px;padding:1px 8px;font-size:11px;min-height:0;line-height:1.5">Select</button>`;
-const pvb=(P,i)=>`<button data-pv="${i}" aria-pressed="${!P.hidden}" title="Show or hide this path" style="margin-left:8px;padding:1px 8px;font-size:11px;min-height:0;line-height:1.5">${P.hidden?'Show':'Hide'}</button>`;
+const psb=i=>`<button data-pa="${i}" aria-pressed="${i===active}" title="${i===active?'This is the active path':'Make this the active path'}" style="margin-left:8px;padding:1px 8px;font-size:11px;min-height:0;line-height:1.5">${i===active?'Selected':'Select'}</button>`;
+const pvb=(P,i)=>`<button data-pv="${i}" class="peye" aria-label="${P.hidden?'Show':'Hide'} path ${i+1}" title="${P.hidden?'Show':'Hide'} this path" style="background:none;border:0;padding:2px 4px;margin-right:4px;min-height:0;line-height:0;vertical-align:-3px;cursor:pointer;color:inherit;opacity:${P.hidden?0.35:0.9}">${P.hidden?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.9 17.9A10.4 10.4 0 0 1 12 19C5 19 1 12 1 12a18.5 18.5 0 0 1 5.1-5.9M9.9 5.2A9.6 9.6 0 0 1 12 5c7 0 11 7 11 7a18.6 18.6 0 0 1-2.2 3.2M14.1 14.1a3 3 0 1 1-4.2-4.2"/><path d="M1 1l22 22"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>'}</button>`;
+{ const ub=document.getElementById('tunit'); const lbl=()=>{ ub.textContent='Units: '+(UNIT==='mm'?'millimetres':'inches'); }; lbl(); window.__unitBtn=lbl; ub.onclick=()=>{ UNIT=UNIT==='mm'?'in':'mm'; try{ localStorage.setItem('pbatt-unit',UNIT); }catch(_){} lbl(); if(window.__rescale) window.__rescale(); }; }
 document.getElementById('tout').addEventListener('click',e=>{ const sb=e.target.closest&&e.target.closest('[data-pa]'); if(sb){ e.preventDefault(); const i=+sb.dataset.pa; if(!paths[i]) return; active=i; if(selP&&selP!==paths[i]) select(null,null); updateOut(); render(); return; } const b=e.target.closest&&e.target.closest('[data-pv]'); if(!b) return; e.preventDefault(); const P=paths[+b.dataset.pv]; if(!P) return; P.hidden=!P.hidden; if(P.hidden&&selP===P) select(null,null); updateOut(); render(); });
 function updateOut(){ let h='';
   meas.forEach((m,i)=>{ h+=`<dl><dt>Measure ${i+1}</dt><dd>${fmtIn(m.dist)}</dd></dl>`; });
   paths.forEach((P,i)=>{ if(!P.pts.length) return; const sw=`<span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${hex(P.color)};margin-right:6px"></span>`;
-    if(!P.stats){ h+=`<dl><dt>${sw}Path ${i+1}${i===active?' (active)':''}${pvb(P,i)}${psb(i)}</dt><dd>1 point</dd></dl>`; return; }
-    h+=`<dl><dt>${sw}Path ${i+1}${i===active?' (active)':''}${pvb(P,i)}${psb(i)}</dt><dd>${fmtIn(P.stats.len)}</dd></dl><details data-p="${i}"${openDet.has(i)?' open':''}><summary>Details</summary><dl>${P.stats.segs.length>1?`<dt>Segments</dt><dd style="white-space:normal">${P.stats.segs.map(v=>(v/IN).toFixed(1)+'″').join(' · ')}</dd>`:''}<dt>Tightest turn</dt><dd>${isFinite(P.stats.minR)?(P.stats.minR/IN).toFixed(1)+'″':'straight'}</dd><dt>Tiles</dt><dd style="white-space:normal">${P.stats.tiles.join(', ')||'none'}</dd>${P.stats.eff?`<dt>One person, ${P.stats.eff.W} lb${' '+P.stats.eff.tilt}</dt><dd style="white-space:normal;grid-column:1/-1;text-align:left;font-family:var(--sans)">roll ≈${P.stats.eff.roll.toFixed(0)} lb push; sideways drag would need ≈${P.stats.eff.slide.toFixed(0)} lb</dd>${P.stats.eff.piv.map(q=>`<dt${q.R1<3?' style="color:#ffb020"':''}>Pivot at point ${q.k}${q.tp?' (tipped)':''}</dt><dd style="white-space:normal;grid-column:1/-1;text-align:left;font-family:var(--sans)${q.R1<3?';color:#ffb020':''}">turns ${q.deg.toFixed(0)}° with ≈${q.F.toFixed(0)} lb at the handles; wheel 1 rolls ${(q.r1).toFixed(1)}″ on a ${q.R1.toFixed(1)}″ radius${q.R1<3?' (twists more than it rolls: tread smears)':''}; wheel 2 rolls ${(q.r2).toFixed(1)}″${q.opp?' the opposite way':''} on ${q.R2.toFixed(1)}″</dd>`).join('')}`:''}${P.stats.pivots?`<dt>Pivot points</dt><dd>${P.stats.pivots}</dd>`:''}${P.stats.revs?`<dt>Reverses</dt><dd>${P.stats.revs}</dd>`:''}${P.stats.back1>0.001?`<dt style="color:#ffb020">Wheel 1 rolls backward</dt><dd style="color:#ffb020">${Math.round(P.stats.back1*100)}% of path</dd>`:''}${P.stats.st?`<dt>Stamps (${wheelD}″ wheel)</dt><dd>every ${(P.stats.st.C/2/IN).toFixed(1)}″ (½ turn) · net ${(P.stats.st.net/P.stats.st.C).toFixed(2)} turns</dd>${P.stats.st2?`<dt>Second wheel stamps</dt><dd>${P.stats.st2.n} · net ${(P.stats.st2.net/P.stats.st.C).toFixed(2)} turns</dd>`:''}`:''}${P.stats.ax?`<dt>Second wheel (${P.stats.ax.side}, ${gauge}″)</dt><dd>${(P.stats.ax.len/IN).toFixed(1)}″</dd><dt>Its tightest turn</dt><dd>${isFinite(P.stats.ax.minR)?(P.stats.ax.minR/IN).toFixed(1)+'″':'straight'}</dd>${P.stats.ax.back?`<dt style="color:#ffb020">Other wheel reverses</dt><dd style="color:#ffb020">${Math.round(P.stats.ax.back/P.stats.ax.N*100)}% of path</dd>`:''}<dt>Bend limit</dt><dd>${P.stats.minR*1/IN<gauge?`tightest bend ${(P.stats.minR/IN).toFixed(1)}″ < spacing ${gauge}″`:'none'}</dd>${P.stats.ax.blocked?`<dt style="color:#ff6b6b">Hits wall or bed</dt><dd style="color:#ff6b6b">${Math.round(P.stats.ax.blocked/P.stats.ax.N*100)}% of path</dd>`:''}`:''}</dl></details>`; });
+    if(!P.stats){ h+=`<dl><dt>${pvb(P,i)}${sw}Path ${i+1}${psb(i)}</dt><dd>1 point</dd></dl>`; return; }
+    h+=`<dl><dt>${pvb(P,i)}${sw}Path ${i+1}${psb(i)}</dt><dd>${fmtIn(P.stats.len)}</dd></dl><details data-p="${i}"${openDet.has(i)?' open':''}><summary>Details</summary><dl>${P.stats.segs.length>1?`<dt>Segments</dt><dd style="white-space:normal">${P.stats.segs.map(v=>(v/IN).toFixed(1)+'″').join(' · ')}</dd>`:''}<dt>Tightest turn</dt><dd>${isFinite(P.stats.minR)?(P.stats.minR/IN).toFixed(1)+'″':'straight'}</dd><dt>Tiles</dt><dd style="white-space:normal">${P.stats.tiles.join(', ')||'none'}</dd>${P.stats.eff?`<dt>One person, ${P.stats.eff.W} lb${' '+P.stats.eff.tilt}</dt><dd style="white-space:normal;grid-column:1/-1;text-align:left;font-family:var(--sans)">roll ≈${P.stats.eff.roll.toFixed(0)} lb push; sideways drag would need ≈${P.stats.eff.slide.toFixed(0)} lb</dd>${P.stats.eff.piv.map(q=>`<dt${q.R1<3?' style="color:#ffb020"':''}>Pivot at point ${q.k}${q.tp?' (tipped)':''}</dt><dd style="white-space:normal;grid-column:1/-1;text-align:left;font-family:var(--sans)${q.R1<3?';color:#ffb020':''}">turns ${q.deg.toFixed(0)}° with ≈${q.F.toFixed(0)} lb at the handles; wheel 1 rolls ${(q.r1).toFixed(1)}″ on a ${q.R1.toFixed(1)}″ radius${q.R1<3?' (twists more than it rolls: tread smears)':''}; wheel 2 rolls ${(q.r2).toFixed(1)}″${q.opp?' the opposite way':''} on ${q.R2.toFixed(1)}″</dd>`).join('')}`:''}${P.stats.pivots?`<dt>Pivot points</dt><dd>${P.stats.pivots}</dd>`:''}${P.stats.revs?`<dt>Reverses</dt><dd>${P.stats.revs}</dd>`:''}${P.stats.back1>0.001?`<dt style="color:#ffb020">Wheel 1 rolls backward</dt><dd style="color:#ffb020">${Math.round(P.stats.back1*100)}% of path</dd>`:''}${P.stats.st?`<dt>Stamps (${wheelD}″ wheel)</dt><dd>every ${(P.stats.st.C/2/IN).toFixed(1)}″ (½ turn) · net ${(P.stats.st.net/P.stats.st.C).toFixed(2)} turns</dd>${P.stats.st2?`<dt>Second wheel stamps</dt><dd>${P.stats.st2.n} · net ${(P.stats.st2.net/P.stats.st.C).toFixed(2)} turns</dd>`:''}`:''}${P.stats.ax?`<dt>Second wheel (${P.stats.ax.side}, ${gauge}″)</dt><dd>${(P.stats.ax.len/IN).toFixed(1)}″</dd><dt>Its tightest turn</dt><dd>${isFinite(P.stats.ax.minR)?(P.stats.ax.minR/IN).toFixed(1)+'″':'straight'}</dd>${P.stats.ax.back?`<dt style="color:#ffb020">Other wheel reverses</dt><dd style="color:#ffb020">${Math.round(P.stats.ax.back/P.stats.ax.N*100)}% of path</dd>`:''}<dt>Bend limit</dt><dd>${P.stats.minR*1/IN<gauge?`tightest bend ${(P.stats.minR/IN).toFixed(1)}″ < spacing ${gauge}″`:'none'}</dd>${P.stats.ax.blocked?`<dt style="color:#ff6b6b">Hits wall or bed</dt><dd style="color:#ff6b6b">${Math.round(P.stats.ax.blocked/P.stats.ax.N*100)}% of path</dd>`:''}`:''}</dl></details>`; });
   if(grooves.length) h+=`<dl><dt>Groove lines</dt><dd>${grooves.length}</dd></dl>`;
   if(marks.length) h+=`<dl><dt>Imprints marked</dt><dd>${marks.length}</dd></dl>`;
   if(bpaths.some(B=>B.pts.length)) h+=`<dl><dt>Blood paths</dt><dd>${bpaths.filter(B=>B.pts.length).length}</dd></dl>`;
@@ -899,10 +948,11 @@ let drag=null, dn=null, lastTap=null;
 function nearest(list,e,T){ let best=null,bd=T; list.forEach(o=>{ const sp=toScreen(o.pos); if(!sp) return; const d=Math.hypot(sp[0]-e.clientX,sp[1]-e.clientY); if(d<bd){bd=d;best=o;} }); return best; }
 function grab(e){ drag=null; const T=e.pointerType==='touch'?34:15;
   if(tool==='path'){
-    const cands=[]; paths.forEach((P,pi)=>P.handles.forEach((h,k)=>cands.push({pos:h.position,kind:'h',pi,k})));
+    const pOn=P=>!P.hidden&&layerVis.p!==0;   // hidden paths (or the hidden Wheel paths layer) can't be grabbed or bent
+    const cands=[]; paths.forEach((P,pi)=>{ if(pOn(P)) P.handles.forEach((h,k)=>cands.push({pos:h.position,kind:'h',pi,k})); });
     let g=nearest(cands,e,T); if(g){ active=g.pi; drag=g; select(paths[g.pi],paths[g.pi].handles[g.k]); updateOut(); return true; }
     let bs=null,bp=-1,bd=e.pointerType==='touch'?30:14;
-    paths.forEach((P,pi)=>P.samples.forEach(p=>{ const sp=toScreen(p); if(!sp) return; const d=Math.hypot(sp[0]-e.clientX,sp[1]-e.clientY); if(d<bd){bd=d;bs=p;bp=pi;} }));
+    paths.forEach((P,pi)=>{ if(pOn(P)) P.samples.forEach(p=>{ const sp=toScreen(p); if(!sp) return; const d=Math.hypot(sp[0]-e.clientX,sp[1]-e.clientY); if(d<bd){bd=d;bs=p;bp=pi;} }); });
     if(!bs) return false; const P=paths[bp]; active=bp;
     let k=0,inc=Infinity; for(let i=0;i<P.pts.length-1;i++){ const a=P.pts[i],b=P.pts[i+1]; const c=a.distanceTo(bs)+bs.distanceTo(b)-a.distanceTo(b); if(c<inc){inc=c;k=i;} }
     addHandle(P,bs,k+1); drag={kind:'h',pi:bp,k:k+1}; rebuildPath(P); return true; }
@@ -973,11 +1023,11 @@ const T3=v=>[+(v.x/S).toFixed(5),+(v.y/S).toFixed(5),+(v.z/S).toFixed(5)], V3=a=
 function sessionObj(){ const sl={}; document.querySelectorAll('input[type=range][id]').forEach(i=>sl[i.id]=+i.value);
   const pr=id=>{ const b=document.getElementById(id); return b?b.getAttribute('aria-pressed')==='true':null; };
   return {app:'PBATT',version:1,saved:new Date().toISOString(),sliders:sl,
-    view:{daylight:pr('ld'),cutaway:pr('cut'),moonPath:pr('mpath'),tileLabels:pr('grid'),footageMarks:pr('refs'),figure:{visible:fig.visible,pos:T3(fig.position)},chair:chrState(),spray:sprState(),camera:{pos:T3(cam.position),target:T3(ctl.target)}},
+    view:{daylight:pr('ld'),cutaway:pr('cut'),moonPath:pr('mpath'),tileLabels:pr('grid'),footageMarks:pr('refs'),figure:{visible:fig.visible,pos:T3(fig.position)},chair:chrState(),spray:sprState(),stainGlow:window.__sg?window.__sg.state():null,camera:{pos:T3(cam.position),target:T3(ctl.target)}},
     layers:{...layerVis},
     measure:meas.map(m=>[T3(m.objs[0].position),T3(m.objs[1].position)]),
     paths:paths.map(P=>({pts:P.pts.map(T3),pivot:P.handles.map(h=>h.userData.ptype||null),poff:P.handles.map(h=>h.userData.poff||0),tilt:P.handles.map(h=>h.userData.tilt||null),tdeg:P.handles.map(h=>h.userData.tdeg||null),hidden:!!P.hidden,reverse:P.handles.map(h=>!!h.userData.rev),axle:P.axle||0,stamps:!!P.stamps,tz:+P.tz||0})),
-    playback:{model:document.getElementById('tpbm').textContent.includes('chair')?'chair':'wheels',keep:pr('tkeep'),casters:pr('tcast'),startTipped:pr('ttilt')},
+    units:UNIT, playback:{model:document.getElementById('tpbm').textContent.includes('chair')?'chair':'wheels',keep:pr('tkeep'),casters:pr('tcast'),startTipped:pr('ttilt')},
     imprints:marks.map(m=>T3(m.d.position)), blood:bpaths.map(B=>B.pts.map(T3))}; }
 function loadSession(o){ if(!o||o.app!=='PBATT') throw new Error('not a PBATT session file');
   document.getElementById('tclear').onclick();
@@ -985,9 +1035,10 @@ function loadSession(o){ if(!o||o.app!=='PBATT') throw new Error('not a PBATT se
   const V=o.view||{}; const tog=(id,want)=>{ const b=document.getElementById(id); if(b&&want!=null&&(b.getAttribute('aria-pressed')==='true')!==!!want) b.click(); };
   if(V.daylight!=null) document.getElementById(V.daylight?'ld':'lm').click(); tog('cut',V.cutaway); tog('mpath',V.moonPath); tog('grid',V.tileLabels); tog('refs',V.footageMarks);
   if(V.figure){ fig.visible=!!V.figure.visible; fig.position.copy(V3(V.figure.pos)); const fb_=document.getElementById('fig'); if(fb_) fb_.setAttribute('aria-pressed',fig.visible); }
-  if(V.chair) chrLoad(V.chair); if(V.spray) sprLoad(V.spray);
+  if(V.chair) chrLoad(V.chair); if(V.spray) sprLoad(V.spray); if(V.stainGlow&&window.__sg) window.__sg.load(V.stainGlow);
   (o.measure||[]).forEach(([a,b])=>{ addMeasPoint(V3(a)); addMeasPoint(V3(b)); });
   (o.paths||[]).forEach(p=>{ const P=newPath(); p.pts.forEach(q=>addHandle(P,V3(q))); P.handles.forEach((h,k)=>{ if(p.pivot&&p.pivot[k]){ if(p.poff) h.userData.poff=p.poff[k]; setPType(h,p.pivot[k]); } if(p.tdeg&&p.tdeg[k]) h.userData.tdeg=p.tdeg[k]; if(p.tilt&&p.tilt[k]) setTiltMark(h,p.tilt[k]); if(p.reverse&&p.reverse[k]) setRev(h,true); }); P.axle=p.axle||0; P.stamps=!!p.stamps; P.hidden=!!p.hidden; P.tz=p.tz!=null?+p.tz:(+((o.sliders||{}).tz)||0); rebuildPath(P); });   // older files had one Stamp zero for every path
+  if(o.units==='mm'||o.units==='in'){ UNIT=o.units; if(window.__unitBtn) window.__unitBtn(); window.__rescale&&window.__rescale(); }
   if(o.playback){ const pb_=o.playback, mb=document.getElementById('tpbm'); if((pb_.model==='chair')!==mb.textContent.includes('chair')) mb.click(); tog('tcast',pb_.casters); tog('ttilt',pb_.startTipped); tog('tkeep',pb_.keep); }
   (o.imprints||[]).forEach(q=>addMark(V3(q)));
   (o.blood||[]).forEach(pts=>{ const B=newBlood(); pts.forEach(q=>addBloodHandle(B,V3(q))); rebuildBlood(B); });
@@ -1070,6 +1121,34 @@ document.getElementById('tfile').onchange=async e=>{ const f=e.target.files[0]; 
   window.__pbRefresh=()=>{ const ok=!!(paths[active]&&paths[active]._pb); pb.disabled=!ok; sl.disabled=!ok; document.querySelectorAll('#tplay ~ .stepb, .stepw:has(#tplay) .stepb').forEach(b=>b.disabled=!ok); if(!ok){ stop(); pbG.visible=false; } else if(pbG.visible&&(playing||keepM)){ build(); place(t); } };
   window.__pb={tryBuild:()=>{ try{ const P=paths[active]; const r=build(); return JSON.stringify({r,active,np:paths.length,pb:!!(P&&P._pb),pbChair,kids:pbG.children.length,ch:CH?CH.children.length:null}); }catch(e){ return e.stack; } },place:f=>{ build(); t=f; place(f); },dbg:()=>{ const P=paths[active], D=P._pb; return {ch:CH&&CH.position.toArray().map(v=>+(v/S).toFixed(2)), w1:D.W1[0].toArray().map(v=>+(v/S).toFixed(2)), w2:D.W2v[0].toArray().map(v=>+(v/S).toFixed(2)), cen0:casterSim&&casterSim.cen[0].toArray().map(v=>+(v/S).toFixed(2)), n:D.W1.length, kids:pbG.children.length, tiltDeg:CH&&CH.userData.tg?+(-CH.userData.tg.rotation.x*180/Math.PI).toFixed(1):null, vis:pbG.visible, chkids:CH?CH.children.length:null, pbkids:pbG.children.map(c=>c.children.length), same:pbG.children[0]===CH, chvis:CH?CH.visible:null, meshes:CH?(()=>{let n=0,v=0;CH.traverse(o=>{if(o.isMesh){n++; let ok=true; for(let q=o;q;q=q.parent) if(!q.visible) ok=false; if(ok)v++;}}); return [n,v];})():null}; }}; }
 window.__rescale=()=>{ paths.forEach(rebuildPath); meas.forEach(m=>{ m.label.el.textContent=fmtIn(m.dist); }); grooves.forEach(grooveGeom); updateOut(); render(); };
+// --- Stain glow: measured drop stains lit up by size band (like selective luminol). A stain is [row a, column b, diameter mm].
+{ const DEF=[[0.7555,0.2717,17.8],[0.7146,0.192,7.1],[0.8804,0.2986,5.1],[0.6333,0.1339,5.2],[0.5959,0.1626,18.2],[0.4829,0.0912,13.9],[0.6809,0.4107,9.1],[0.606,0.3353,8.2],[0.631,0.5279,11.9],[0.5879,0.3627,8.4],[0.4731,0.4623,15.8],[0.4822,0.5514,8.4],[0.3042,0.5202,10.2],[0.2196,0.2809,13.2],[0.5191,0.8126,17.2],[0.4178,0.8463,15.9],[0.6475,0.8844,4.0],[0.6114,0.9201,3.8],[0.5841,0.9185,2.7],[0.641,0.9859,16.8],[0.6826,1.0131,6.7],[0.8155,1.382,19.0],[0.7647,1.3891,6.1],[0.7955,1.4507,15.4],[0.9363,1.47,15.8],[1.1093,0.9708,15.2],[1.0922,0.7696,13.3],[1.291,0.7871,14.1],[1.3495,0.6044,12.5],[1.6079,1.6498,15.5],[1.6592,2.0217,12.0],[1.513,2.1243,14.9],[1.5925,2.0106,4.4],[1.5198,2.0086,6.3],[1.8664,2.4273,10.8],[2.2107,2.0188,6.4],[2.2313,2.0591,18.4],[2.3568,2.1305,7.1],[2.4601,2.1251,14.3],[2.5886,2.0946,12.8],[2.6389,2.1479,5.5],[2.4885,2.1832,5.5],[2.3636,2.1799,4.8],[2.4992,2.3624,5.1],[2.5858,2.3387,16.4],[2.5355,2.548,3.9],[3.9433,1.6522,13.2],[3.939,1.6102,3.6],[3.9089,1.6948,2.7],[4.0638,1.4452,3.3],[4.0457,2.1287,15.0],[4.2579,1.5216,9.9],[4.3112,1.411,9.7],[4.2827,1.6111,1.8],[4.3285,1.7214,2.4],[-0.0083,0.4297,8.9]];
+  let stains=DEF.slice(); const sgG=new THREE.Group(); sgG.renderOrder=15; scene.add(sgG); window.__sgG=sgG;
+  const COL={L:0x39c6ff,M:0x7dff8a,S:0xff6ad5}, on={L:false,M:false,S:false}; let dim=false;
+  const band=mm=>mm>=12.5?'L':mm>7.5?'M':'S';
+  const tex=(()=>{ const c=document.createElement('canvas'); c.width=c.height=128; const g=c.getContext('2d'), gr=g.createRadialGradient(64,64,0,64,64,64);
+    gr.addColorStop(0,'rgba(255,255,255,1)'); gr.addColorStop(0.18,'rgba(255,255,255,0.75)'); gr.addColorStop(0.45,'rgba(255,255,255,0.22)'); gr.addColorStop(1,'rgba(255,255,255,0)'); g.fillStyle=gr; g.fillRect(0,0,128,128); const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; })();
+  const mats={}, coreMats={}; ['L','M','S'].forEach(k=>{ mats[k]=new THREE.MeshBasicMaterial({map:tex,color:COL[k],transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false,opacity:0.9});
+    coreMats[k]=new THREE.MeshBasicMaterial({color:COL[k],transparent:true,opacity:0.95,depthWrite:false,toneMapped:false}); });
+  const halo=new THREE.PlaneGeometry(1,1), core=new THREE.CircleGeometry(0.5,24);
+  function build(){ sgG.clear(); const sz=+document.getElementById('sgSz').value;
+    stains.forEach(([a,b,mm])=>{ const k=band(mm); if(!on[k]) return; const x=-b*S, z=a*S, y=surfaceY(x,z,0.05)+0.004, d=mm/25.4*IN;
+      const h=new THREE.Mesh(halo,mats[k]); h.rotation.x=-Math.PI/2; h.scale.setScalar(d*sz); h.position.set(x,y,z); h.renderOrder=15; h.raycast=()=>{};
+      const c=new THREE.Mesh(core,coreMats[k]); c.rotation.x=-Math.PI/2; c.scale.setScalar(d); c.position.set(x,y+0.0005,z); c.renderOrder=16; c.raycast=()=>{}; sgG.add(h,c); });
+    const n={L:0,M:0,S:0}; stains.forEach(s=>n[band(s[2])]++);
+    document.getElementById('sginfo').textContent=stains.length+' stains: '+n.L+' large, '+n.M+' medium, '+n.S+' small'+(stains===DEF||JSON.stringify(stains)===JSON.stringify(DEF)?' (the 56 measured on the porch)':' (from your measurements)');
+    render(); }
+  const btn=(id,k)=>{ const b=document.getElementById(id); b.onclick=()=>{ on[k]=!on[k]; b.setAttribute('aria-pressed',on[k]); build(); }; };
+  btn('sgL','L'); btn('sgM','M'); btn('sgS','S');
+  document.getElementById('sgSz').addEventListener('input',e=>{ document.getElementById('sgSzv').textContent=e.target.value+'×'; build(); });
+  const db=document.getElementById('sgDim'); db.onclick=()=>{ dim=!dim; db.setAttribute('aria-pressed',dim); window.__lumDim=dim?0.16:1; setLight(day); };
+  document.getElementById('sgFrom').onclick=()=>{ if(!meas.length){ document.getElementById('sginfo').textContent='No measurements yet: measure each stain across its widest point, then try again.'; return; }
+    stains=meas.map(m=>{ const p=m.objs[0].position, q=m.objs[1].position; return [+(((p.z+q.z)/2)/S).toFixed(4),+((-(p.x+q.x)/2)/S).toFixed(4),+(m.dist/IN*25.4).toFixed(1)]; }); build(); };
+  document.getElementById('sgDef').onclick=()=>{ stains=DEF.slice(); build(); };
+  window.__sg={state:()=>({L:on.L,M:on.M,S:on.S,dim,size:+document.getElementById('sgSz').value,stains}),
+    load:o=>{ if(!o) return; if(Array.isArray(o.stains)) stains=o.stains; ['L','M','S'].forEach(k=>{ on[k]=!!o[k]; document.getElementById('sg'+k).setAttribute('aria-pressed',on[k]); });
+      if(o.size){ document.getElementById('sgSz').value=o.size; document.getElementById('sgSzv').textContent=o.size+'×'; } if(!!o.dim!==dim) db.click(); build(); }};
+  setTimeout(build,0); }
 window.__surf={surfaceY:(x,z,h)=>surfaceY(x,z,h),surfaceYRay:(x,z,h)=>surfaceYRay(x,z,h),SG};
 window.__tool={sessionObj:()=>sessionObj(),loadSession:o=>loadSession(o),addBloodAB:(a,b,ext)=>{ const v=new THREE.Vector3(-b*S,0,a*S); v.y=surfaceY(v.x,v.z,0.05); addBloodPoint(v,ext); },bpaths,setLayer,pivotIdx:(k,ty)=>{ const P=paths[active]; select(P,P.handles[k]); setPType(P.handles[k],ty||'L'); rebuildPath(P); pivBtn(); },revIdx:(k)=>{ const P=paths[active]; select(P,P.handles[k]); setRev(P.handles[k],true); rebuildPath(P); pivBtn(); },addAB:(a,b)=>{ const v=new THREE.Vector3(-b*S,0,a*S); v.y=surfaceY(v.x,v.z,0.05); addPathPoint(v); },grooves,setTool,addPathPoint,addMeasPoint,addMark,newPath,marks,paths};
 }
