@@ -412,7 +412,7 @@ function siteUpdate(root){ const get=n=>{ let f=null; root.traverse(o=>{ if(!f&&
       palmAt(-69.39,77.07,1); palmAt(-100.41,30.77,2); pt.parent.remove(pt); pf.parent.remove(pf);
       const m=new THREE.Mesh(new THREE.SphereGeometry(1,20,14),shM); m.scale.set(3.4*S,2.9*S,3.4*S); m.position.copy(W(pa,pb,-0.37+2.9*0.75)); m.name='shrub_palmspot'; m.castShadow=m.receiveShadow=true; sg.add(m); } }
   // ground layers that share a height draw in a fixed order instead of flickering
-  { const pri=[[/^yard_drive/,1],[/^(lawn$|yard_walkway|pool_coping|house_porchfloor)/,2],[/^(mulch_|yard_pave)/,3],[/^(lawn_border|pool_water)/,4],[/^site_path/,5]];
+  { const pri=[[/^yard_drive/,1],[/^(lawn$|yard_walkway|pool_coping|house_porchfloor)/,2],[/^(mulch_|yard_pave)/,3],[/^(lawn_border|pool_water)/,4],[/^site_path/,5],[/^walkway_ext/,6]];   // the front walkway draws over the side-path overlay where they overlap
     root.traverse(o=>{ if(!o.isMesh) return; const e=pri.find(([re])=>re.test(o.name)); if(!e) return; const k=e[1]; o.material=o.material.clone(); o.material.polygonOffset=true; o.material.polygonOffsetFactor=-k; o.material.polygonOffsetUnits=-4*k; o.renderOrder=Math.max(o.renderOrder||0,k); }); }
 }
 new GLTFLoader().load('porch.glb?v=120',g=>{
@@ -1277,7 +1277,7 @@ document.getElementById('tfile').onchange=async e=>{ const f=e.target.files[0]; 
   try{ loadSession(JSON.parse(await f.text())); b.textContent='Loaded'; }catch(err){ b.textContent='Not a session file'; } e.target.value=''; setTimeout(()=>b.textContent='Load',2000); };
 // fixed reference marks found in footage (not part of the tools; Clear all keeps them)
 { const refG=new THREE.Group(); scene.add(refG); refG.visible=false; layerVis.ref=0;
-  const dropG=new THREE.Group(); scene.add(dropG); const dropMat=new THREE.MeshBasicMaterial({color:0x7a0d12});   // the walkway drops themselves, always shown
+  const dropG=new THREE.Group(); scene.add(dropG); const dropMat=new THREE.MeshBasicMaterial({color:0x7a0d12,polygonOffset:true,polygonOffsetFactor:-8,polygonOffsetUnits:-32});   // stays on top of the walkway, which is itself lifted over the side-path overlay   // the walkway drops themselves, always shown
   const REFS=[{a:7.05,b:3.82,t:'W1 · walkway stain (est. ±2″)'},{a:12.715,b:3.546,t:'W2 · walkway drop (from video, approx.)'},{a:15.658,b:12.684,t:'Broken sprinkler (approx.)',c:0xf59e0b},{a:-42.61,b:-34.55,h:6.35,t:'Broken floodlight',c:0xf59e0b}];   // NewsNation Day 3 frame, ground-plane fit to the step edge and curbs
   REFS.forEach(R_=>{ const p=new THREE.Vector3(-R_.b*S,0,R_.a*S); p.y=R_.h!=null?R_.h*S:-0.35*S+0.006;   // walkway level, or on a wall at height h
     if(/^W\d/.test(R_.t)){ const d=new THREE.Mesh(new THREE.CircleGeometry(0.008,20),dropMat); d.rotation.x=-Math.PI/2; d.scale.set(1,1.25,1); d.position.copy(p); d.position.y-=0.003; dropG.add(d); }
