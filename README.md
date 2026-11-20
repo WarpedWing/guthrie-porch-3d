@@ -1,6 +1,6 @@
 # PBATT: Porch Blood Analysis and Timing Tool
 
-Interactive, photo-textured, to-scale 3D model of the Guthrie front porch, with moon lighting for any minute of the night of Feb 1, 2026 (MST), and tools for measuring, tracing wheel paths and axles, and marking imprints on the floor. By WarpedWing Labs.
+Interactive, photo-textured, to-scale 3D model of the Guthrie front porch, with moon lighting for any minute of the night of Feb 1, 2026 (MST), and tools for measuring and marking imprints on the floor. By WarpedWing Labs.
 
 ## Files
 
